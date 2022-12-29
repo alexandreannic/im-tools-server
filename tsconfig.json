@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es2019",
+    "rootDir": "./src",
+    "declaration": true,
+    "alwaysStrict": true,
+    "outDir": "./lib",
+    "sourceMap": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": ["src"],
+  "exclude": ["./lib", "./node_modules"]
+}
