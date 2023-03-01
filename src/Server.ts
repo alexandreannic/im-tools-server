@@ -1,21 +1,26 @@
 import express, {NextFunction, Request, Response} from 'express'
 import * as bodyParser from 'body-parser'
-import {getRoutes} from './conf/Routes'
-import {logger} from './utils/Logger'
+import {getRoutes} from './Routes'
+import {Logger} from './utils/Logger'
 import {HttpError} from './utils/Error'
 import {AppConf} from './conf/AppConf'
 import {genUUID} from './utils/Common'
-
+import {KoboClient} from './kobo/KoboClient/KoboClient'
+import {Client} from 'pg'
 
 export class Server {
+  
   constructor(
     private conf: AppConf,
+    private pgClient: Client,
+    private koboClient: KoboClient,
+    private logger: Logger,
   ) {
   }
 
-  static readonly errorHandler = (err: HttpError, req: Request, res: Response, next: (err?: any) => void) => {
+  readonly errorHandler = (err: HttpError, req: Request, res: Response, next: (err?: any) => void) => {
     const errorId = genUUID()
-    logger.error(`[${errorId}] Error ${err.code}: ${err.message}\n${err.stack}`)
+    this.logger.error(`[${errorId}] Error ${err.code}: ${err.message}\n${err.stack}`)
     console.error(err.error)
     res.status(err.code).json({
       data: err.code === 500 ? 'Something went wrong.' : err.message,
@@ -35,10 +40,10 @@ export class Server {
     app.use(Server.corsHeader)
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({extended: false}))
-    app.use(getRoutes())
-    app.use(Server.errorHandler)
+    app.use(getRoutes(this.pgClient, this.koboClient, this.logger))
+    app.use(this.errorHandler)
     app.listen(this.conf.port, () => {
-      logger.info(`server start listening on port ${this.conf.port}`)
+      this.logger.info(`server start listening on port ${this.conf.port}`)
     })
   }
 }

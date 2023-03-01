@@ -1,29 +1,39 @@
-// const options = {
-//   method: 'GET',
-//   headers: {Authorization: 'Token 8eafb975ac74bc2c8cfe57fb6879ea362368089c'}
-// }
-//
-// fetch('https://kf.kobotoolbox.org/api/v2/assets/a5bMNqnRbitCHuM9j4Kbd3.json', options)
-//   .then(response => response.json())
-//   .then(response => console.log(response))
-//   .catch(err => console.error(err))
-
-
 import {ApiClient} from './client/ApiClient'
-import {KoboClient} from './client/KoboClient/KoboClient'
-import {Server} from './Server'
+import {KoboClient} from './kobo/KoboClient/KoboClient'
 import {appConf} from './conf/AppConf'
+import {Server} from './Server'
+import {Database} from './db/Database'
+import {logger} from './utils/Logger'
+import {Fetch} from './fetch'
 
+const R = Fetch
+// const R = Axios
+const run = async () => {
+  const tokens = await R.getTokenAndSession()
+  const logins = await R.login(tokens)
+  const res = await R.getData(R.extractTokens(logins))
+  console.log(await res.text())
+}
 
 (async () => {
+  await run()
+  process.exit(0)
+  
   const conf = appConf
   const http = new ApiClient({
     baseUrl: conf.kobo.url + '/api',
     headers: {
-      Authorization: conf.kobo.token,
+      Authorization: KoboClient.genAuthorizationHeader(conf.kobo.token),
     }
   })
-  const client = new KoboClient(http)
+  const pgClient = new Database(conf).client
+  const koboClient = new KoboClient(http)
+  
+  logger.info(`Connecting to ${conf.db.database}...`)
+  await pgClient.connect()
+  // logger.info(`Applying evolutions...`)
+  // await new EvolutionManager(pgClient).run()
 
-  new Server(conf).start()
+
+  new Server(conf, pgClient, koboClient, logger).start()
 })()

@@ -2,7 +2,7 @@ import {SelectQueryBuilder} from 'typeorm'
 
 export type OrderBy = 'desc' | 'asc';
 
-export interface PaginateOptions<T> {
+export interface PaginateOptions<T extends Record<string, any>> {
   limit?: number
   offset?: number
   orderBy?: OrderBy
