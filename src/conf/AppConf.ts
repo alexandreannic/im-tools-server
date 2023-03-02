@@ -17,6 +17,10 @@ export const appConf = {
     database: e(required)('DB_NAME'),
     password: e(required)('DB_PASSWORD'),
     port: e(int, defaultValue(5432))('DB_PORT')
+  },
+  ecrecApp: {
+    login: e(required)('ECRECAPP_LOGIN'),
+    password: e(required)('ECRECAPP_PASSWORD'),
   }
 }
 

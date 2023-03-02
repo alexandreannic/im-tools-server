@@ -4,31 +4,16 @@ import {appConf} from './conf/AppConf'
 import {Server} from './Server'
 import {Database} from './db/Database'
 import {logger} from './utils/Logger'
-import {Fetch} from './fetch'
-import {_axios} from './_axios'
+import {EcrecAppClient} from './ecrecAppClient/EcrecAppClient'
+import {EcrecAppSdk} from './ecrecAppClient/EcrecAppSdk'
 
-const R = Fetch
-// const R = _axios
 const run = async () => {
-  const tokens = await R.getTokenAndSession()
-  console.log('> tokens', tokens)
-  console.warn('\nLogin')
-  const logins = await R.login(tokens)
-  console.log('> tokens', R.extractTokens(logins)[0])
-  console.log(logins.headers)
-  console.log('connected ?', await logins.text().then(_ => _.includes('new MainController();')))
-  console.warn('\nGETDATA() with token ' + R.extractTokens(logins))
-  const res = await R.getData(R.extractTokens(logins))
+  const R = new EcrecAppSdk(new EcrecAppClient(appConf.ecrecApp))
+  const res = await R.getData()
   console.log(await res.text())
 }
 
 (async () => {
-  console.clear()
-  console.log('start')
-  
-  await run()
-  // process.exit(0)
-
   const conf = appConf
   const http = new ApiClient({
     baseUrl: conf.kobo.url + '/api',
