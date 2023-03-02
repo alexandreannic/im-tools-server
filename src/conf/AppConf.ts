@@ -1,4 +1,4 @@
-import {defaultValue, env, int} from '@alexandreannic/ts-utils'
+import {defaultValue, env, int, required} from '@alexandreannic/ts-utils'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
@@ -9,8 +9,21 @@ export const appConf = {
   port: e(int, defaultValue(80))('PORT'),
   kobo: {
     url: e(defaultValue('https://kf.kobotoolbox.org'))('KOBO_URL'),
-    token: e(defaultValue('Token 8eafb975ac74bc2c8cfe57fb6879ea362368089c'))('KOBO_TOKEN'),
+    token: e(required)('KOBO_TOKEN'),
+  },
+  db: {
+    host: e(required)('DB_HOST'),
+    user: e(required)('DB_USER'),
+    database: e(required)('DB_NAME'),
+    password: e(required)('DB_PASSWORD'),
+    port: e(int, defaultValue(5432))('DB_PORT')
+  },
+  ecrecApp: {
+    login: e(required)('ECRECAPP_LOGIN'),
+    password: e(required)('ECRECAPP_PASSWORD'),
   }
 }
+
+// console.log(appConf)
 
 export type AppConf = typeof appConf

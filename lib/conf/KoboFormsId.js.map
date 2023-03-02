@@ -1,0 +1,1 @@
+{"version":3,"file":"KoboFormsId.js","sourceRoot":"","sources":["../../src/conf/KoboFormsId.ts"],"names":[],"mappings":";;;AAAa,QAAA,WAAW,GAAG;IACzB,IAAI,EAAE;QACJ,YAAY,EAAE,wBAAwB;QACtC,QAAQ,EAAE,wBAAwB;QAClC,YAAY,EAAE,wBAAwB;QACtC,WAAW,EAAE,wBAAwB;KACtC;IACD,GAAG,EAAE;QACH,QAAQ,EAAE,wBAAwB;QAClC,YAAY,EAAE,wBAAwB;QACtC,WAAW,EAAE,wBAAwB;KACtC;CACF,CAAA"}

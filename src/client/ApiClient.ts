@@ -1,5 +1,6 @@
 import axios, {AxiosResponse, ResponseType} from 'axios'
 import * as qs from 'qs'
+import {objectToQueryString} from '../utils/Common'
 
 export interface RequestOption {
   readonly qs?: any
@@ -70,6 +71,10 @@ export class ApiClient {
       baseURL: baseUrl,
       headers: {...headers},
     })
+    client.interceptors.request.use(request => {
+      // console.log('Starting Request', JSON.stringify(request, null, 2))
+      return request
+    })
 
     this.baseUrl = baseUrl
 
@@ -78,9 +83,10 @@ export class ApiClient {
       return client
         .request({
           method,
-          url,
+          url: url + (options ? '?' + objectToQueryString(options.qs) : ''),
           headers: builtOptions?.headers,
-          params: options?.qs,
+          // TODO(Alex) Check if it works
+          // params: options?.qs,
           data: options?.body,
           paramsSerializer: {
             encode: params => qs.stringify(params, {arrayFormat: 'repeat'}),
@@ -90,7 +96,6 @@ export class ApiClient {
         .catch(
           mapError ??
           ((_: any) => {
-            console.log(_)
             const request = {method, url, qs: options?.qs, body: options?.body}
             if (_.response && _.response.data) {
               const message = _.response.data.details ?? _.response.data.timeout ?? JSON.stringify(_.response.data)
