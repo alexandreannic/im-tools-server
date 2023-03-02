@@ -1,4 +1,22 @@
 import axios, {AxiosResponse} from 'axios'
+import { wrapper } from 'axios-cookiejar-support';
+import { CookieJar } from 'tough-cookie';
+import * as http from 'http'
+import * as https from 'https'
+
+
+class CookieJar2 {
+  getCookieString = async (currentUrl: string): Promise<string> => {
+    return ''
+  }
+
+  setCookie = async (cookieString: string, currentUrl: string, opts: {ignoreError: boolean}): Promise<any> => {
+    console.log('> Set-cookie', cookieString)
+    return ''
+  }
+}
+const jar = new CookieJar2();
+
 
 export const extractCookie = (cookies: string) => {
   return cookies?.split(';')[0]
@@ -9,19 +27,21 @@ export const email = 'alexandre.annic@drc.ngo'
 export const password = '4awH1ulU'
 export const authBuffer = 'Basic ' + btoa(`${email}:${password}`)
 
-const c = axios.create({
-  // jar,
+const c = wrapper(axios.create({
+  jar,
   baseURL: 'https://lap.drc.ngo',
   withCredentials: true,
-  maxRedirects: 0,
-  // httpAgent: new http.Agent({keepAlive: true}),
-  // httpsAgent: new https.Agent({keepAlive: true}),
-  // beforeRedirect: console.log,
+  // maxRedirects: 0,
+  httpAgent: new http.Agent({keepAlive: true}),
+  httpsAgent: new https.Agent({keepAlive: true}),
+  beforeRedirect: (options: Record<string, any>, responseDetails: {headers: Record<string, string>}) => {
+    console.info('> beforeRedirect', options.path, responseDetails?.headers)
+  },
   transformRequest: (...x: any[]) => {
-    console.log('HEADER---\n', x[1], '\n----')
+    console.info('> transformRequest', x[1], '\n')
     return x[2]
   }
-})
+}))
 
 
 const extractTokens = (r: AxiosResponse): [string, string] => {
@@ -36,15 +56,13 @@ const getTokenAndSession = async (): Promise<[string, string]> => {
 }
 
 const login = async ([csrf, session]: [string, string]) => {
-  // const formData = new FormData()
-  // formData.append('_csrf', csrf)
-  const formData = {'_csrf': csrf}
+  const formData = new FormData()
+  formData.append('_csrf', csrf)
+  // const formData = {'_csrf': csrf}
 
   return await c.post('/j_spring_security_check',
-    // formData,
-    undefined,
+    formData,
     {
-      data: formData,
       withCredentials: true,
       // auth: {
       //   username: 'alexandre.annic@drc',
@@ -52,7 +70,7 @@ const login = async ([csrf, session]: [string, string]) => {
       // },
       headers: {
         Authorization: authBuffer,
-        // 'Cookie': session
+        'Cookie': session
       }
     })
 }
@@ -61,7 +79,7 @@ const getData = async ([csrf, session]: [string, string]) => {
   return c.post('/admin/msd/get-list-data', {
     withCredentials: true,
     headers: {
-      'bvalbal': 'blabla',
+      'Cookie': session,
       'X-CSRF-TOKEN': csrf,
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json, text/javascript, */*; q=0.01',
@@ -77,7 +95,7 @@ const getData = async ([csrf, session]: [string, string]) => {
   })
 }
 
-export const Axios = {
+export const _axios = {
   getTokenAndSession,
   login,
   getData,
