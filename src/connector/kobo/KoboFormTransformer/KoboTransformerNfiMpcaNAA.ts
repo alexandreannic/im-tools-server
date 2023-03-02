@@ -1,5 +1,5 @@
 import {KoboTransformer} from './KoboTransformer'
-import {koboFormsId} from '../../conf/KoboFormsId'
+import {koboFormsId} from '../../../conf/KoboFormsId'
 
 export interface KoboTransformerNfiMcpaNAA {
   oblast?: string

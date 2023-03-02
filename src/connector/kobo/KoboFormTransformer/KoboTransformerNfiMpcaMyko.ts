@@ -1,4 +1,4 @@
-import {koboFormsId} from '../../conf/KoboFormsId'
+import {koboFormsId} from '../../../conf/KoboFormsId'
 import {KoboTransformer} from './KoboTransformer'
 
 export interface KoboTransformerNfiMpcaMyko {

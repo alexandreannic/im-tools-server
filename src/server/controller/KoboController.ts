@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express'
-import {KoboClient} from '../kobo/KoboClient/KoboClient'
+import {KoboClient} from '../../connector/kobo/KoboClient/KoboClient'
 import {Client} from 'pg'
 
 export class KoboController {

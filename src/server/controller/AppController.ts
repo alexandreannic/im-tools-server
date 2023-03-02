@@ -1,13 +1,14 @@
 import {NextFunction, Request, Response} from 'express'
-import {KoboClient} from '../kobo/KoboClient/KoboClient'
+import {KoboClient} from '../../connector/kobo/KoboClient/KoboClient'
 import {Client} from 'pg'
-import {koboFormsId} from '../conf/KoboFormsId'
-import {Logger} from '../utils/Logger'
-import {KoboTransformClient} from '../kobo/KoboFormTransformer/KoboTransformer'
-import {koboTransformerNfiMpcaMyko} from '../kobo/KoboFormTransformer/KoboTransformerNfiMpcaMyko'
+import {koboFormsId} from '../../conf/KoboFormsId'
+import {Logger} from '../../utils/Logger'
+import {KoboTransformClient} from '../../connector/kobo/KoboFormTransformer/KoboTransformer'
+import {koboTransformerNfiMpcaMyko} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaMyko'
 import {sub} from 'date-fns'
-import {koboTransformerNfiMcpa, Program, Status} from '../kobo/KoboFormTransformer/KoboTransformerNfiMcpa'
-import {koboTransformerNfiMcpaNaa} from '../kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
+import {koboTransformerNfiMcpa, Program, Status} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMcpa'
+import {koboTransformerNfiMcpaNaa} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
+import {EcrecAppSdk} from '../../connector/ecrec/EcrecAppSdk'
 
 interface NfiaMpcaResult {
   kits: number
@@ -21,6 +22,7 @@ export class AppController {
   constructor(
     private pgClient: Client,
     private koboClient: KoboClient,
+    private ecrecSdk: EcrecAppSdk,
     private logger: Logger,
     private koboTransformClient = new KoboTransformClient(koboClient)
   ) {

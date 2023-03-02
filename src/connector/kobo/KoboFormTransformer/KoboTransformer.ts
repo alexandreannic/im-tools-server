@@ -1,4 +1,4 @@
-import {mapObjectColumns, MappedColumn, pipe} from '../../utils/Common'
+import {mapObjectColumns, MappedColumn, pipe} from '../../../utils/Common'
 import {KoboClient} from '../KoboClient/KoboClient'
 import {KoboAnswer, KoboAnswerParams, KoboApiList} from '../KoboClient/type/KoboAnswer'
 

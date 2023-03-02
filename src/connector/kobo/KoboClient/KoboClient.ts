@@ -1,7 +1,7 @@
-import {Id} from '../../type/Common'
-import {ApiClient} from '../../client/ApiClient'
+import {Id} from '../../../utils/Type'
+import {ApiClient} from '../../../client/ApiClient'
 import {KoboAnswer, KoboAnswerParams, KoboApiList} from './type/KoboAnswer'
-import {toYYYYMMDD} from '../../utils/Common'
+import {toYYYYMMDD} from '../../../utils/Common'
 
 export class KoboClient {
   constructor(private api: ApiClient) {

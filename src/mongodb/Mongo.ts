@@ -1,5 +1,5 @@
 import {Collection, Db, MongoClient, ServerApiVersion} from 'mongodb'
-import {KoboAnswer} from '../kobo/KoboClient/type/KoboAnswer'
+import {KoboAnswer} from '../connector/kobo/KoboClient/type/KoboAnswer'
 
 interface MongoConn {
   client: MongoClient,
