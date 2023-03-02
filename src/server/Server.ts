@@ -7,7 +7,7 @@ import {AppConf} from '../conf/AppConf'
 import {genUUID} from '../utils/Common'
 import {KoboClient} from '../connector/kobo/KoboClient/KoboClient'
 import {Client} from 'pg'
-import {EcrecAppSdk} from '../connector/ecrec/EcrecAppSdk'
+import {EcrecSdk} from '../connector/ecrec/EcrecSdk'
 
 export class Server {
   
@@ -15,7 +15,7 @@ export class Server {
     private conf: AppConf,
     private pgClient: Client,
     private koboClient: KoboClient,
-    private ecrecSdk: EcrecAppSdk,
+    private ecrecSdk: EcrecSdk,
     private logger: Logger,
   ) {
   }

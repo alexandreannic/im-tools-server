@@ -8,7 +8,7 @@ import {koboTransformerNfiMpcaMyko} from '../../connector/kobo/KoboFormTransform
 import {sub} from 'date-fns'
 import {koboTransformerNfiMcpa, Program, Status} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMcpa'
 import {koboTransformerNfiMcpaNaa} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
-import {EcrecAppSdk} from '../../connector/ecrec/EcrecAppSdk'
+import {EcrecSdk} from '../../connector/ecrec/EcrecSdk'
 
 interface NfiaMpcaResult {
   kits: number
@@ -22,7 +22,7 @@ export class AppController {
   constructor(
     private pgClient: Client,
     private koboClient: KoboClient,
-    private ecrecSdk: EcrecAppSdk,
+    private ecrecSdk: EcrecSdk,
     private logger: Logger,
     private koboTransformClient = new KoboTransformClient(koboClient)
   ) {

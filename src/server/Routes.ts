@@ -5,12 +5,12 @@ import {KoboClient} from '../connector/kobo/KoboClient/KoboClient'
 import {Client} from 'pg'
 import {KoboController} from './controller/KoboController'
 import {Logger} from '../utils/Logger'
-import {EcrecAppSdk} from '../connector/ecrec/EcrecAppSdk'
+import {EcrecSdk} from '../connector/ecrec/EcrecSdk'
 
 export const getRoutes = (
   pgClient: Client,
   koboClient: KoboClient,
-  ecrecSdk: EcrecAppSdk,
+  ecrecSdk: EcrecSdk,
   logger: Logger,
 ) => {
   const router = express.Router()
