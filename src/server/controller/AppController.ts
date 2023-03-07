@@ -9,6 +9,7 @@ import {sub} from 'date-fns'
 import {koboTransformerNfiMcpa, Program, Status} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMcpa'
 import {koboTransformerNfiMcpaNaa} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
 import {EcrecSdk} from '../../connector/ecrec/EcrecSdk'
+import {LegalaidSdk} from '../../connector/legalaid/LegalaidSdk'
 
 interface NfiaMpcaResult {
   kits: number
@@ -23,6 +24,7 @@ export class AppController {
     private pgClient: Client,
     private koboClient: KoboClient,
     private ecrecSdk: EcrecSdk,
+    private legalAidSdk: LegalaidSdk,
     private logger: Logger,
     private koboTransformClient = new KoboTransformClient(koboClient)
   ) {

@@ -1,4 +1,4 @@
-import {Id} from '../../../utils/Type'
+import {UUID} from '../../../utils/Type'
 import {ApiClient} from '../../../client/ApiClient'
 import {KoboAnswer, KoboAnswerParams, KoboApiList} from './type/KoboAnswer'
 import {toYYYYMMDD} from '../../../utils/Common'
@@ -11,7 +11,7 @@ export class KoboClient {
 
   static readonly genAuthorizationHeader = (token: string) => `Token ${token}`
   
-  readonly getAnswers = (formId: Id, params?: KoboAnswerParams): Promise<KoboApiList<KoboAnswer>> => {
+  readonly getAnswers = (formId: UUID, params?: KoboAnswerParams): Promise<KoboApiList<KoboAnswer>> => {
     let query = {}
     if (params?.start && params.end) {
       query = {

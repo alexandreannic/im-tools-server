@@ -23,7 +23,7 @@ export const queryStringToObject = (qs: string): Index<string> => qs
 
 export const toYYYYMMDD = (_: Date) => format(_, 'yyyy-MM-dd')//_.toString().substring(0, 10)
 
-export const objectToQueryString = (obj: {[key: string]: any}): string => {
+export const objectToQueryString = (obj: {[key: string]: any} = {}): string => {
   const params = new URLSearchParams()
   for (const [key, value] of Object.entries(obj)) {
     if (value !== null && value !== undefined) {
@@ -71,3 +71,5 @@ export const mapMultipleChoices = <T>(value: string | undefined, map: {[key: str
   })
   return res
 }
+
+export const msToString = (duration: number) => format(duration, 'dd hh:mm:ss')

@@ -6,15 +6,23 @@ import {Client} from 'pg'
 import {KoboController} from './controller/KoboController'
 import {Logger} from '../utils/Logger'
 import {EcrecSdk} from '../connector/ecrec/EcrecSdk'
+import {LegalaidSdk} from '../connector/legalaid/LegalaidSdk'
 
 export const getRoutes = (
   pgClient: Client,
   koboClient: KoboClient,
   ecrecSdk: EcrecSdk,
+  legalAidSdk: LegalaidSdk,
   logger: Logger,
 ) => {
   const router = express.Router()
-  const app = new AppController(pgClient, koboClient, ecrecSdk, logger)
+  const app = new AppController(
+    pgClient,
+    koboClient,
+    ecrecSdk,
+    legalAidSdk,
+    logger
+  )
   const kobo = new KoboController(pgClient, koboClient)
   router.get('/', app.index)
   router.get('/kobo/import', kobo.importAnswers)

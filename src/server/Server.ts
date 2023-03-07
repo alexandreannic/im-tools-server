@@ -8,6 +8,7 @@ import {genUUID} from '../utils/Common'
 import {KoboClient} from '../connector/kobo/KoboClient/KoboClient'
 import {Client} from 'pg'
 import {EcrecSdk} from '../connector/ecrec/EcrecSdk'
+import {LegalaidSdk} from '../connector/legalaid/LegalaidSdk'
 
 export class Server {
   
@@ -16,6 +17,7 @@ export class Server {
     private pgClient: Client,
     private koboClient: KoboClient,
     private ecrecSdk: EcrecSdk,
+    private legalaidSdk: LegalaidSdk,
     private logger: Logger,
   ) {
   }
@@ -42,7 +44,13 @@ export class Server {
     app.use(Server.corsHeader)
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({extended: false}))
-    app.use(getRoutes(this.pgClient, this.koboClient, this.ecrecSdk, this.logger))
+    app.use(getRoutes(
+      this.pgClient,
+      this.koboClient,
+      this.ecrecSdk,
+      this.legalaidSdk,
+      this.logger,
+    ))
     app.use(this.errorHandler)
     app.listen(this.conf.port, () => {
       this.logger.info(`server start listening on port ${this.conf.port}`)
