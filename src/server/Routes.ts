@@ -1,9 +1,9 @@
 import express from 'express'
-import {AppController} from './controller/AppController'
+import {ControllerMonitoring} from './controller/ControllerMonitoring'
 import {Mongo} from '../mongodb/Mongo'
 import {KoboClient} from '../connector/kobo/KoboClient/KoboClient'
 import {Client} from 'pg'
-import {KoboController} from './controller/KoboController'
+import {ControllerKobo} from './controller/ControllerKobo'
 import {Logger} from '../utils/Logger'
 import {EcrecSdk} from '../connector/ecrec/EcrecSdk'
 import {LegalaidSdk} from '../connector/legalaid/LegalaidSdk'
@@ -16,14 +16,14 @@ export const getRoutes = (
   logger: Logger,
 ) => {
   const router = express.Router()
-  const app = new AppController(
+  const app = new ControllerMonitoring(
     pgClient,
     koboClient,
     ecrecSdk,
     legalAidSdk,
     logger
   )
-  const kobo = new KoboController(pgClient, koboClient)
+  const kobo = new ControllerKobo(pgClient, koboClient)
   router.get('/', app.index)
   router.get('/kobo/import', kobo.importAnswers)
   return router

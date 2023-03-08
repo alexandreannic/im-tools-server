@@ -2,7 +2,6 @@ import {UUID} from '../../utils/Type'
 
 export namespace Legalaid {
 
-  // TODO(Alex): To complete
   export type ColumnType = 'longText' | 'number' | 'ratioGroup' | 'select' | 'text' | 'datePicker'
 
   export interface PaginateRequest {

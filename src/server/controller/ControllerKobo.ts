@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from 'express'
 import {KoboClient} from '../../connector/kobo/KoboClient/KoboClient'
 import {Client} from 'pg'
 
-export class KoboController {
+export class ControllerKobo {
 
   constructor(
     private pgClient: Client,

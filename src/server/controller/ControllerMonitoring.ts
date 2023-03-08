@@ -10,6 +10,8 @@ import {koboTransformerNfiMcpa, Program, Status} from '../../connector/kobo/Kobo
 import {koboTransformerNfiMcpaNaa} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
 import {EcrecSdk} from '../../connector/ecrec/EcrecSdk'
 import {LegalaidSdk} from '../../connector/legalaid/LegalaidSdk'
+import {Arr} from '@alexandreannic/ts-utils'
+import {Controller} from './Controller'
 
 interface NfiaMpcaResult {
   kits: number
@@ -18,7 +20,7 @@ interface NfiaMpcaResult {
   cashForRent?: number
 }
 
-export class AppController {
+export class ControllerMonitoring extends Controller {
 
   constructor(
     private pgClient: Client,
@@ -28,7 +30,7 @@ export class AppController {
     private logger: Logger,
     private koboTransformClient = new KoboTransformClient(koboClient)
   ) {
-
+    super({errorKey: 'monitoring'})
   }
 
   readonly index = async (req: Request, res: Response, next: NextFunction) => {
@@ -50,6 +52,24 @@ export class AppController {
       next(e)
     }
     // res.send({blanks, kits, counts: fcrmMpcaAnswers.length})
+  }
+  
+  private readonly getLegalAidsData = async (start: Date, end: Date) => {
+    const offices = await this.legalAidSdk.fetchOfficesAll()
+      .then(_ => Object.values(_).flatMap(_ => _.id))
+      .catch(this.error(500, `Cannot fetch offices`))
+
+    const groups$ = this.legalAidSdk.fetchGroupsByOffices({
+      offices,
+      start,
+      end
+    }).then(_ => Arr(_.data).sum(_ => _.women + _.men))
+      .catch(this.error(500, `Cannot fetch groups`))
+    const individuals$ = await this.legalAidSdk.fetchBeneficiariesByOffices({
+      offices, start, end
+    }).catch(this.error(500, `Cannot fetch individuals`))
+    
+    return Promise.all([groups$, individuals$]).then(([group, individuals]) => ({group, individuals}))
   }
   
   private readonly getNfiData = async (start: Date, end: Date): Promise<NfiaMpcaResult> => {

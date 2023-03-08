@@ -8,7 +8,6 @@ import {EcrecClient} from './connector/ecrec/EcrecClient'
 import {EcrecSdk} from './connector/ecrec/EcrecSdk'
 import {LegalaidSdk, PollType} from './connector/legalaid/LegalaidSdk'
 import {sub} from 'date-fns'
-import {arr} from './utils/Arr'
 
 (async () => {
   const conf = appConf
@@ -41,23 +40,6 @@ import {arr} from './utils/Arr'
   //   ]
   // })
 
-
-  const start = new Date(2022, 11, 1)
-  const end = sub(new Date(2023, 2, 1), {days: 1})
-
-  const offices = await legalAidSdk.fetchOfficesAll()
-    .then(_ => Object.values(_).flatMap(_ => _.id))
-  
-  const g = await legalAidSdk.fetchGroupsByOffices({
-    offices, start, end
-  })
-    .then(_ => arr(_.data).sum(_ => _.women + _.men))
-  console.log(g)
-  
-  const i = await legalAidSdk.fetchBeneficiariesByOffices({
-    offices, start, end
-  })
-  console.log(i.data.length)
   // const resG = await legalAidSdk.fetchBeneficiaryForAllOffice({start, end, pollType: PollType.Group})
   // console.log('ind')
   // const resI = await legalAidSdk.fetchBeneficiaryForAllOffice({start, end, pollType: PollType.Individual})
