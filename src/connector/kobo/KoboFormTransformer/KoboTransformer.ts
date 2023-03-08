@@ -1,4 +1,4 @@
-import {mapObjectColumns, MappedColumn, pipe} from '../../../utils/Common'
+import {renameObjectProperties, MappedColumn, pipe} from '../../../utils/Common'
 import {KoboClient} from '../KoboClient/KoboClient'
 import {KoboAnswer, KoboAnswerParams, KoboApiList} from '../KoboClient/type/KoboAnswer'
 
@@ -13,7 +13,7 @@ export class KoboTransformer<F> {
 
   readonly transform = (a: KoboAnswer): F => {
     const res = pipe(
-      mapObjectColumns(this.columnsMap),
+      renameObjectProperties(this.columnsMap),
       this.transformer,
     )(a)
     // const res = mapObjectColumns(this.columnsMap)(a)

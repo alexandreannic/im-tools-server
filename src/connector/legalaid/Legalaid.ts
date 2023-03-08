@@ -52,19 +52,12 @@ export namespace Legalaid {
     // [key: string]: any
   }
 
-  export interface AgeGroup<T> {
-    men_0_17: T
-    men_18_49: T
-    men_50_65: T
-    men_66_: T
-    women_0_17: T
-    women_18_49: T
-    women_50_65: T
-    women_66_: T
-    
+  export interface Gender<T> {
+    men: T
+    women: T
   }
 
-  export interface BeneficiaryGroup extends Beneficiary, AgeGroup<number> {
+  export interface BeneficiaryGroup extends Beneficiary, Gender<number> {
   }
 
   export class Config {

@@ -49,17 +49,17 @@ export type MappedColumn<T, O = string> = {
   [P in keyof T]: T[P] extends undefined | string | number | boolean | any[] ? O : MappedColumn<T[P], O>
 }
 
-export const mapObjectColumns = <O>(columnsMap: Partial<MappedColumn<O>>) => (input: any): O => {
-  return Object.keys(columnsMap).reduce((acc, key) => {
-    if (typeof columnsMap[key] === 'object') {
+export const renameObjectProperties = <O>(propsMap: Partial<MappedColumn<O>>) => (input: any): O => {
+  return Object.keys(propsMap).reduce((acc, key) => {
+    if (typeof propsMap[key] === 'object') {
       return {
         ...acc,
-        [key]: mapObjectColumns(columnsMap[key])(input)
+        [key]: renameObjectProperties(propsMap[key])(input)
       }
     }
     return {
       ...acc,
-      [key]: input[columnsMap[key]]
+      [key]: input[propsMap[key]]
     }
   }, {} as O)
 }

@@ -8,7 +8,9 @@ import PaginateResult = Legalaid.PaginateResult
 import Beneficiary = Legalaid.Beneficiary
 import Config = Legalaid.Config
 import BeneficiaryGroup = Legalaid.BeneficiaryGroup
-import AgeGroup = Legalaid.AgeGroup
+import Gender = Legalaid.Gender
+import {arr} from '../../utils/Arr'
+import {toYYYYMMDD} from '../../utils/Common'
 
 export enum PollType {
   Group,
@@ -26,18 +28,16 @@ const pollSearch = {
 }
 
 export class LegalaidSdk {
-
-
+  
   constructor(private client: ApiClient) {
-
   }
 
-  private static readonly formatDate = (d: Date) => d.toISOString()
-
+  private static readonly formatDate = toYYYYMMDD
+  
   readonly fetchOfficesAll = async () => {
     return Config.offices
   }
-  
+
   readonly fetchPolls = Cache.request(({
     officeId,
     search
@@ -100,24 +100,18 @@ export class LegalaidSdk {
     }).then(LegalaidSdk.mapBeneficiaries(dateColumnUUID))
   }
 
-  private readonly fetchBeneficiaryGroupAgeColumns = async (pollId: UUID): Promise<AgeGroup<UUID>> => {
+  private readonly fetchBeneficiaryGroupAgeColumns = async (pollId: UUID): Promise<Gender<UUID[]>> => {
     const cols = await this.fetchBeneficiaries({limit: 1, skip: 0, pollId}).then(_ => _.cols)
-    const get = (pattern: RegExp) => {
-      const r = Object.keys(cols).find(k => pattern.test(cols[k].name))
-      if (!r) {
+    const get = (pattern: string) => {
+      const r = Object.keys(cols).filter(k => cols[k].name.includes(pattern))
+      if (r.length === 0) {
         throw new Error(`Cannot find column pattern ${pattern} for pollId=${pollId}`)
       }
       return r
     }
     return {
-      men_0_17: get(/MEN.*?<\s*18/),
-      men_18_49: get(/MEN.*?18-49/),
-      men_50_65: get(/MEN.*?50-65/),
-      men_66_: get(/MEN.*?65+/),
-      women_0_17: get(/WOM.*?<\s*18/),
-      women_18_49: get(/WOM.*?18-49/),
-      women_50_65: get(/WOM.*?50-65/),
-      women_66_: get(/WOM.*?65+/),
+      men: get('MEN'),
+      women: get('WOM'),
     }
   }
 
@@ -127,10 +121,14 @@ export class LegalaidSdk {
     const colsUUID = await this.fetchBeneficiaryGroupAgeColumns(filters.pollId)
     return this.fetchBeneficiaries(filters).then(_ => ({
       ..._,
-      data: _.data.map(_ => {
-        const ageGroups = Enum.entries(colsUUID).reduce<AgeGroup<number>>((acc, [k, v]) => ({...acc, [k]: _[v]}), {} as any)
+      data: _.data.map(benef => {
+        const ageGroups = Enum.entries(colsUUID).reduce<Gender<number>>((acc, [k, v]) => {
+          return ({
+            ...acc, [k]: arr(v.map(_ => benef[_])).sum((_?: number) => isNaN(_!) ? 0 : +_!)
+          })
+        }, {} as any)
         return {
-          ..._,
+          ...benef,
           ...ageGroups,
         }
       })
@@ -163,7 +161,12 @@ export class LegalaidSdk {
         .then(throwIf(_ => _.polls.length === 0, `Poll with search '${pollSearch[PollType.Group]}' not found for office ${officeId}`))
         .then(_ => _.polls[0])
     ))
-    return await Promise.all(polls.map(_ => this.fetchGroups({pollId: _._id, ...filters})))
+    console.log(polls.map(x => x._id))
+    return await Promise.all(polls.map(_ => this.fetchBeneficiaries({pollId: _._id, ...filters})))
+      .then(x => {
+        console.log(x.map(x => x.data.length))
+        return x
+      })
       .then(LegalaidSdk.reducePaginates)
   }
 
