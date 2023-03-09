@@ -2,13 +2,13 @@ import express, {NextFunction, Request, Response} from 'express'
 import * as bodyParser from 'body-parser'
 import {getRoutes} from './Routes'
 import {Logger} from '../utils/Logger'
-import {HttpError} from '../utils/Error'
 import {AppConf} from '../conf/AppConf'
 import {genUUID} from '../utils/Common'
 import {KoboClient} from '../connector/kobo/KoboClient/KoboClient'
 import {Client} from 'pg'
 import {EcrecSdk} from '../connector/ecrec/EcrecSdk'
 import {LegalaidSdk} from '../connector/legalaid/LegalaidSdk'
+import {HttpError} from './controller/Controller'
 
 export class Server {
   

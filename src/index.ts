@@ -6,8 +6,7 @@ import {Database} from './db/Database'
 import {logger} from './utils/Logger'
 import {EcrecClient} from './connector/ecrec/EcrecClient'
 import {EcrecSdk} from './connector/ecrec/EcrecSdk'
-import {LegalaidSdk, PollType} from './connector/legalaid/LegalaidSdk'
-import {sub} from 'date-fns'
+import {LegalaidSdk} from './connector/legalaid/LegalaidSdk'
 
 (async () => {
   const conf = appConf

@@ -9,32 +9,32 @@ type StatusCode =
   500 |
   504;
 
-class HttpError extends Error {
+export class HttpError extends Error {
   constructor(public code: StatusCode, public message: string, public error?: Error) {
-    super(message);
+    super(message)
   }
 }
 
 export abstract class Controller {
-  
+
   constructor(private readonly params: {
     errorKey: string
   }) {
   }
-  
+
   readonly error = (code: StatusCode, message: string) => (e?: Error) => {
-    return Promise.reject(new HttpError(code, message, e));
-  };
-  
+    return Promise.reject(new HttpError(code, message, e))
+  }
+
   readonly errorIf = <T>(condition: (t: T) => boolean, message: string, code: StatusCode = 500) => (entity: T): Promise<T> => {
-    return condition(entity) ? Promise.reject(new HttpError(code, message)) : Promise.resolve(entity);
-  };
-  
+    return condition(entity) ? Promise.reject(new HttpError(code, message)) : Promise.resolve(entity)
+  }
+
   readonly errorNotExists = (message: string) => <T>(entity?: T): Promise<T> => {
-    return (entity === undefined) ? Promise.reject(new HttpError(404, message)) : Promise.resolve(entity);
-  };
-  
-  
+    return (entity === undefined) ? Promise.reject(new HttpError(404, message)) : Promise.resolve(entity)
+  }
+
+
   readonly errorKey = (key: string) => ({
     notFound: `error.$key.none`,
     badRequest: `error.$key.bad.request`,
