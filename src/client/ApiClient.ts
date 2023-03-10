@@ -96,6 +96,7 @@ export class ApiClient {
         .catch(
           mapError ??
           ((_: any) => {
+            console.warn(_)
             const request = {method, url, qs: options?.qs, body: options?.body}
             if (_.response && _.response.data) {
               const message = _.response.data.details ?? _.response.data.timeout ?? JSON.stringify(_.response.data)
