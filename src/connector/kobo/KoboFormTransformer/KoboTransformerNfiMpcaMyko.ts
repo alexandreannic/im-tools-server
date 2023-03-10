@@ -1,31 +1,10 @@
 import {koboFormsId} from '../../../conf/KoboFormsId'
 import {KoboTransformer} from './KoboTransformer'
+import {KoboNfiMcpa, mapNfisCount, Program} from './KoboNfiMcpa'
 
-export interface KoboTransformerNfiMpcaMyko {
-  oblast: string
-  kits: {
-    HKMV: number
-    HKF: number
-    BLN: number
-    WKB1: number
-    WKB2: number
-    WKB3: number
-    WKB4: number
-    BK1: number
-    BK2: number
-    BK3: number
-    BK4: number
-  }
-  totalCosts: {
-    HKMV: number
-    HKF: number
-    BLN: number
-    Allkits: number
-  }
-}
-
-export const koboTransformerNfiMpcaMyko = new KoboTransformer<KoboTransformerNfiMpcaMyko>(
-  koboFormsId.prod.fcrmMpcaMyko, {
+export const koboTransformerNfiMpcaMyko = new KoboTransformer<KoboNfiMcpa>(
+  koboFormsId.prod.fcrmMpcaMyko, 
+  {
     kits: {
       HKMV: 'module_eligibility_screening_001/group_un9ff13_header/HKMV_',
       HKF: 'module_eligibility_screening_001/group_un9ff13_header/HKF_',
@@ -39,36 +18,14 @@ export const koboTransformerNfiMpcaMyko = new KoboTransformer<KoboTransformerNfi
       BK3: 'module_eligibility_screening_001/group_un9ff13_header/BK3_How_many',
       BK4: 'module_eligibility_screening_001/group_un9ff13_header/BK4_How_many',
     },
-    totalCosts: {
-      HKMV: 'module_eligibility_screening_001/group_un9ff13_header/Total_Cost_HKMV',
-      HKF: 'module_eligibility_screening_001/group_un9ff13_header/Total_Cost_HKF',
-      BLN: 'module_eligibility_screening_001/group_un9ff13_header/Total_Cost_BLN',
-      Allkits: 'module_eligibility_screening_001/group_un9ff13_header/Total_Cost_Allkits',
-    }
   },
   _ => {
     return ({
       ..._,
       oblast: 'Mykolaivska',
-      kits: {
-        HKMV: Number(_.kits.HKMV ?? 0),
-        HKF: Number(_.kits.HKF ?? 0),
-        BLN: Number(_.kits.BLN ?? 0),
-        WKB1: Number(_.kits.WKB1 ?? 0),
-        WKB2: Number(_.kits.WKB2 ?? 0),
-        WKB3: Number(_.kits.WKB3 ?? 0),
-        WKB4: Number(_.kits.WKB4 ?? 0),
-        BK1: Number(_.kits.BK1 ?? 0),
-        BK2: Number(_.kits.BK2 ?? 0),
-        BK3: Number(_.kits.BK3 ?? 0),
-        BK4: Number(_.kits.BK4 ?? 0),
-      },
-      totalCosts: {
-        HKMV: Number(_.totalCosts.HKMV ?? 0),
-        HKF: Number(_.totalCosts.HKF ?? 0),
-        BLN: Number(_.totalCosts.BLN ?? 0),
-        Allkits: Number(_.totalCosts.Allkits ?? 0),
-      }
+      program: [Program.NFI],
+      houseHoldSize: Number(_.houseHoldSize ?? 0),
+      kits: mapNfisCount(_.kits),
     })
   }
 )

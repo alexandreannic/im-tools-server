@@ -1,3 +1,5 @@
+import {UUID} from '../../../../utils/Type'
+
 export interface KoboAnswerParams {
   start?: Date
   end?: Date
@@ -13,22 +15,22 @@ export type KoboAnswerTags = any
 export type KoboAnswerNotes = any
 
 export interface KoboAnswerMetaData {
-  _id: number,
-  'formhub/uuid': string,
+  // _id: number,
+  // 'formhub/uuid': string,
   start: Date,
   end: Date,
-  __version__: string,
-  'meta/instanceID': string,
-  _xform_id_string: string,
-  _uuid: string,
-  _attachments: KoboAnswerAttachements[],
-  _status: KoboAnswerStatus,
-  _geolocation: KoboAnswerGeolocation[],
+  // __version__: string,
+  // 'meta/instanceID': string,
+  // _xform_id_string: string,
+  _uuid: UUID,
+  // _attachments: KoboAnswerAttachements[],
+  // _status: KoboAnswerStatus,
+  // _geolocation: KoboAnswerGeolocation[],
   _submission_time: Date,
-  _tags: KoboAnswerTags[],
-  _notes: KoboAnswerNotes[],
-  _validation_status: any,
-  _submitted_by: any
+  // _tags: KoboAnswerTags[],
+  // _notes: KoboAnswerNotes[],
+  // _validation_status: any,
+  // _submitted_by: any
 }
 
 // export interface KoboAnswer extends KoboAnswerMetaData {
@@ -49,22 +51,22 @@ export class KoboAnswerUtils {
    */
   static readonly extractAnswerFromMetadata = (a : KoboAnswer) => {
     const dataToExtract: (keyof KoboAnswerMetaData)[] = [
-      '_id',
-      'formhub/uuid',
+      // '_id',
+      // 'formhub/uuid',
       'start',
       'end',
-      '__version__',
-      'meta/instanceID',
-      '_xform_id_string',
+      // '__version__',
+      // 'meta/instanceID',
+      // '_xform_id_string',
       '_uuid',
-      '_attachments',
-      '_status',
-      '_geolocation',
+      // '_attachments',
+      // '_status',
+      // '_geolocation',
       '_submission_time',
-      '_tags',
-      '_notes',
-      '_validation_status',
-      '_submitted_by',
+      // '_tags',
+      // '_notes',
+      // '_validation_status',
+      // '_submitted_by',
     ]
     // const {
     //  

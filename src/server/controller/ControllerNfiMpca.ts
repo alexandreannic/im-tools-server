@@ -1,132 +1,134 @@
 import {NextFunction, Request, Response} from 'express'
 import {KoboClient} from '../../connector/kobo/KoboClient/KoboClient'
 import {Client} from 'pg'
-import {koboFormsId} from '../../conf/KoboFormsId'
 import {Logger} from '../../utils/Logger'
 import {KoboTransformClient} from '../../connector/kobo/KoboFormTransformer/KoboTransformer'
 import {koboTransformerNfiMpcaMyko} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaMyko'
 import {sub} from 'date-fns'
-import {koboTransformerNfiMcpa, Program, Status} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMcpa'
-import {koboTransformerNfiMcpaNaa} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
-import {EcrecSdk} from '../../connector/ecrec/EcrecSdk'
-import {LegalaidSdk} from '../../connector/legalaid/LegalaidSdk'
-import {Arr} from '@alexandreannic/ts-utils'
+import {babyKits, KoboNfiMcpa, koboTransformerNfiMcpa, nfis, NFIs, Program, winterizationKits} from '../../connector/kobo/KoboFormTransformer/KoboNfiMcpa'
 import {Controller} from './Controller'
+import {Arr, Enum} from '@alexandreannic/ts-utils'
+import {koboTransformerNfiMcpaNaa} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
 
-interface NfiaMpcaResult {
-  kits: number
-  blanks: number
-  mpcaAssistedPeoples?: number
-  cashForRent?: number
+export interface NfiaMpcaStats extends NFIs<number> {
+  submissions: number,
+  individuals: number
+  mpcaSubmissions: number
+  nfiSubmissions: number
+  cashForRentSubmissions: number
+  mpcaIndividuals: number
+  nfiIndividuals: number
+  cashForRentIndividuals: number
+  totalNFIs: number
+  totalBabyKits: number
+  totalWinterizationKits: number
 }
 
-export class ControllerMonitoring extends Controller {
+interface Filters {
+  start: Date
+  end: Date
+}
+
+export class ControllerNfiMpca extends Controller {
 
   constructor(
     private pgClient: Client,
     private koboClient: KoboClient,
-    private ecrecSdk: EcrecSdk,
-    private legalAidSdk: LegalaidSdk,
     private logger: Logger,
     private koboTransformClient = new KoboTransformClient(koboClient)
   ) {
     super({errorKey: 'monitoring'})
   }
 
+  readonly raw = async (req: Request, res: Response, next: NextFunction) => {
+    const start = sub(new Date(2022, 11, 1), {days: 0})
+    const end = sub(new Date(2023, 2, 1), {days: 0})
+    const x = await this.koboTransformClient.getAnswers(koboTransformerNfiMcpa, {start, end})
+    // const x = await this.koboTransformClient.getAnswers(koboTransformerNfiMpcaMyko, {start, end})
+    // const x = await this.koboClient.getAnswers(koboFormsId.prod.fcrmMpcaNAA)
+    res.send(x.results.sort((a, b) => b.start.getTime() - a.start.getTime()).map((_, i) => _._uuid + ' ' + _.start.toISOString() + ' ' + _.start.toLocaleString() + ' ' + i))
+  }
+
   readonly index = async (req: Request, res: Response, next: NextFunction) => {
     this.logger.info(`Try...`)
-    // const start = new Date(2022, 0, 1)
-    // const end = new Date(2022, 11, 31)
-    const start = sub(new Date(), {days: 3})
-    const end = sub(new Date(), {days: 2})
+    const filters = {
+      start: new Date(2022, 11, 1),
+      end: new Date(2023, 2, 1),
+    }
 
     try {
-      const test = await this.koboClient.getAnswers(
-        koboFormsId.prod.protectionHh,
-        {start, end}
-      )
-      // const nfiMpcaData = await this.getNfiData(start, end)
-      this.logger.info(`Done`)
-      res.send({test})
+      const main$ = this.koboTransformClient.getAnswers(koboTransformerNfiMcpa, filters)
+      const myko$ = this.koboTransformClient.getAnswers(koboTransformerNfiMpcaMyko, filters)
+      const naa$ = this.koboTransformClient.getAnswers(koboTransformerNfiMcpaNaa, filters)
+      return Promise.all([
+        main$.then(_ => this.reduce(_.results)),
+        myko$.then(_ => this.reduce(_.results)),
+        naa$.then(_ => this.reduce(_.results)),
+      ]).then(([main, myko, naa]) => res.send({total: Arr([main, myko, naa]).sumObjects(), main, myko, naa}))
     } catch (e) {
       next(e)
     }
     // res.send({blanks, kits, counts: fcrmMpcaAnswers.length})
   }
-  
-  private readonly getLegalAidsData = async (start: Date, end: Date) => {
-    const offices = await this.legalAidSdk.fetchOfficesAll()
-      .then(_ => Object.values(_).flatMap(_ => _.id))
-      .catch(this.error(500, `Cannot fetch offices`))
 
-    const groups$ = this.legalAidSdk.fetchGroupsByOffices({
-      offices,
-      start,
-      end
-    }).then(_ => Arr(_.data).sum(_ => _.women + _.men))
-      .catch(this.error(500, `Cannot fetch groups`))
-    const individuals$ = await this.legalAidSdk.fetchBeneficiariesByOffices({
-      offices, start, end
-    }).catch(this.error(500, `Cannot fetch individuals`))
-    
-    return Promise.all([groups$, individuals$]).then(([group, individuals]) => ({group, individuals}))
-  }
-  
-  private readonly getNfiData = async (start: Date, end: Date): Promise<NfiaMpcaResult> => {
-    const params = {start, end}
-    return Promise.all<NfiaMpcaResult>([
-      this.koboTransformClient.getAnswers(koboTransformerNfiMcpa, params)
-        .then(_ => _.results)
-        .then(res => {
-          let kits = 0
-          let blanks = 0
-          let mpcaAssistedPeoples = 0
-          let cashForRent = 0
-          res.forEach(_ => {
-            blanks += _.kits.BLN
-            mpcaAssistedPeoples += _.program?.includes(Program.MPCA) ? _.houseHoldSize : 0
-            cashForRent += _.program?.includes(Program.CashForRent) ? _.houseHoldSize : 0
-            if (_.status === Status.IPD) {
-              kits += Object.keys(_.kits ?? {}).reduce((sum, key) => sum + _.kits[key], 0) - _.kits.BLN
-            }
-          })
-          return {kits, blanks, mpcaAssistedPeoples, cashForRent}
-        }),
-      this.koboTransformClient.getAnswers(koboTransformerNfiMpcaMyko, params)
-        .then(_ => _.results)
-        .then(res => {
-          let kits = 0
-          let blanks = 0
-          res.forEach(_ => {
-            blanks += _.kits.BLN
-            kits += Object.keys(_.kits ?? {}).reduce((sum, key) => sum + _.kits[key], 0) - _.kits.BLN
-          })
-          return {kits, blanks}
-        }),
-      this.koboTransformClient.getAnswers(koboTransformerNfiMcpaNaa, params)
-        .then(_ => _.results)
-        .then(res => {
-          let kits = 0
-          let blanks = 0
-          res.forEach(_ => {
-            blanks += _.kits.BLN
-            kits += Object.keys(_.kits ?? {}).reduce((sum, key) => sum + _.kits[key], 0) - _.kits.BLN
-          })
-          return {kits, blanks}
-        }),
-    ]).then(_ => _.reduce((acc, curr) => ({
-      kits: acc.kits + curr.kits,
-      blanks: acc.blanks + curr.blanks,
-      mpcaAssistedPeoples: (acc.mpcaAssistedPeoples ?? 0) + (curr.mpcaAssistedPeoples ?? 0),
-      cashForRent: (acc.cashForRent ?? 0) + (curr.cashForRent ?? 0),
-    })))
+  private readonly searchNfi = async (filters: Filters) => {
+    return this.koboTransformClient.getAnswers(koboTransformerNfiMcpa, filters)
   }
 
-  readonly uploadAnswers = async (req: Request, res: Response, next: NextFunction) => {
-    const answers = await this.koboClient.getAnswers(koboFormsId.prod.fcrmMpca)
-      .then(_ => _.results)
-      .then()
-    res.send(answers)
+  private readonly reduce = (input: KoboNfiMcpa[]): NfiaMpcaStats => {
+    const init = {
+      submissions: 0,
+      individuals: 0,
+      nfiSubmissions: 0,
+      nfiIndividuals: 0,
+      mpcaSubmissions: 0,
+      mpcaIndividuals: 0,
+      cashForRentSubmissions: 0,
+      cashForRentIndividuals: 0,
+      totalBabyKits: 0,
+      totalNFIs: 0,
+      totalWinterizationKits: 0,
+      ...nfis.reduce((acc, curr) => ({...acc, [curr]: 0}), {} as NFIs<number>)
+    }
+    const stats = input.reduce<NfiaMpcaStats>((acc, curr) => {
+      const res = {} as NfiaMpcaStats
+      if (curr.program?.includes(Program.MPCA)) {
+        res.mpcaIndividuals = acc.mpcaIndividuals + (curr.houseHoldSize ?? 0)
+        res.mpcaSubmissions = acc.mpcaSubmissions + 1
+      }
+      if (curr.program?.includes(Program.NFI)) {
+        res.nfiIndividuals = acc.nfiIndividuals + (curr.houseHoldSize ?? 0)
+        res.nfiSubmissions = acc.nfiSubmissions + 1
+      }
+      if (curr.program?.includes(Program.CashForRent)) {
+        res.cashForRentIndividuals = acc.cashForRentIndividuals + (curr.houseHoldSize ?? 0)
+        res.cashForRentSubmissions = acc.cashForRentSubmissions + 1
+      }
 
+      return {
+        ...acc,
+        ...res,
+        submissions: acc.submissions + 1,
+        individuals: acc.individuals + curr.houseHoldSize,
+        ...Enum.keys(curr.kits as NFIs<number>).reduce((nfis, k) => ({
+          ...nfis,
+          [k]: acc[k] + curr.kits[k]!,
+        }), {} as NFIs<number>)
+      }
+    }, init)
+    return {
+      ...stats,
+      totalNFIs: Arr(nfis).map(_ => stats[_]).sum(),
+      totalBabyKits: Arr(babyKits).map(_ => stats[_]).sum(),
+      totalWinterizationKits: Arr(winterizationKits).map(_ => stats[_]).sum(),
+    }
+  }
+
+  private readonly getAll = async (filters: Filters): Promise<KoboNfiMcpa[]> => {
+    return await Promise.all([
+      this.koboTransformClient.getAnswers(koboTransformerNfiMcpa, filters),
+      this.koboTransformClient.getAnswers(koboTransformerNfiMpcaMyko, filters),
+      this.koboTransformClient.getAnswers(koboTransformerNfiMcpaNaa, filters),
+    ]).then(_ => _.flatMap(_ => _.results))
   }
 }

@@ -8,7 +8,8 @@ export class KoboClient {
   constructor(private api: ApiClient) {
   }
 
-  static readonly parseDate = toYYYYMMDD
+  static readonly parseDate = (_: Date) => _.toISOString()
+  // static readonly parseDate = toYYYYMMDD
 
   static readonly genAuthorizationHeader = (token: string) => `Token ${token}`
   
@@ -23,14 +24,14 @@ export class KoboClient {
         '$and': [
           // {_submission_time: {'$gt': KoboClient.parseDate(params.start)}},
           // {_submission_time: {'$lt': KoboClient.parseDate(params.end)}},
-          {_submission_time: {'$gt': KoboClient.parseDate(params.start)}},
-          {_submission_time: {'$lt': KoboClient.parseDate(params.end)}},
+          {start: {'$gte': KoboClient.parseDate(params.start)}},
+          {start: {'$lte': KoboClient.parseDate(params.end)}},
         ]
       }
     } else if (params?.start) {
-      query = {_submission_time: {'$gt': KoboClient.parseDate(params.start)}}
+      query = {start: {'$gte': KoboClient.parseDate(params.start)}}
     } else if (params?.end) {
-      query = {_submission_time: {'$lt': KoboClient.parseDate(params.end)}}
+      query = {start: {'$lte': KoboClient.parseDate(params.end)}}
     }
     // const query = JSON.stringify({
     //   ...(params?.start || params?.end) && {
@@ -45,12 +46,14 @@ export class KoboClient {
       {qs: {query: JSON.stringify(query)}}
     )
       .then(res => {
-          const results = res.results.map(_ => ({
-            ..._,
-            start: new Date(_.start),
-            end: new Date(_.end),
-            _submission_time: new Date(_._submission_time),
-          })) as KoboAnswer[]
+          const results = res.results.map(_ => {
+            return ({
+              ..._,
+              start: new Date(_.start),
+              end: new Date(_.end),
+              _submission_time: new Date(_._submission_time),
+            })
+          }) as KoboAnswer[]
           return {
             ...res,
             results

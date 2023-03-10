@@ -1,26 +1,46 @@
-import {renameObjectProperties, MappedColumn, pipe} from '../../../utils/Common'
+import {MappedColumn, pipe, renameObjectProperties} from '../../../utils/Common'
 import {KoboClient} from '../KoboClient/KoboClient'
-import {KoboAnswer, KoboAnswerParams, KoboApiList} from '../KoboClient/type/KoboAnswer'
+import {KoboAnswer, KoboAnswerMetaData, KoboAnswerParams, KoboApiList} from '../KoboClient/type/KoboAnswer'
 
-export class KoboTransformer<F> {
+type Transformer<F> = (_: MappedColumn<F, any>) => F
+
+export class KoboTransformer<F extends KoboAnswerMetaData> {
 
   constructor(
     public formId: string,
     private columnsMap: Partial<MappedColumn<F>>,
-    private transformer?: (_: MappedColumn<F, any>) => F
+    private transformer?: Transformer<F>
   ) {
   }
 
   readonly transform = (a: KoboAnswer): F => {
+    const allColumns: Partial<MappedColumn<F>> = {
+      ...this.mapMetaProperties,
+      ...this.columnsMap,
+    }
     const res = pipe(
-      renameObjectProperties(this.columnsMap),
+      renameObjectProperties(allColumns),
+      this.transformMetaProperties,
       this.transformer,
     )(a)
-    // const res = mapObjectColumns(this.columnsMap)(a)
-    // const x = (this.transformer ?? (_ => _))(res)
-    // console.log('before', res)
-    // console.log('after', x)
     return res
+  }
+
+  readonly mapMetaProperties: MappedColumn<KoboAnswerMetaData> = {
+    start: 'start',
+    end: 'end',
+    _submission_time: '_submission_time',
+    _uuid: '_uuid',
+  }
+
+  readonly transformMetaProperties = (_: MappedColumn<F, any>): F => {
+    return ({
+      ..._,
+      start: new Date(_.start as string),
+      end: new Date(_.end as string),
+      _submission_time: new Date(_._submission_time as string),
+      _uuid: _._uuid as string,
+    }) as F
   }
 }
 
@@ -31,7 +51,7 @@ export class KoboTransformClient {
   ) {
   }
 
-  readonly getAnswers = <T>(parser: KoboTransformer<T>, params?: KoboAnswerParams): Promise<KoboApiList<T>> => {
+  readonly getAnswers = <T extends KoboAnswerMetaData>(parser: KoboTransformer<T>, params?: KoboAnswerParams): Promise<KoboApiList<T>> => {
     return this.api.getAnswers(parser.formId, params).then(_ => ({
       ..._,
       results: _.results.map(parser.transform)

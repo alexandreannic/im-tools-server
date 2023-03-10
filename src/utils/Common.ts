@@ -1,6 +1,11 @@
 import {v4} from 'uuid'
 import {format} from 'date-fns'
 
+export type StandardEnum<T> = {
+  [id: string]: T | string
+  [nu: number]: string
+}
+
 export const genUUID = v4
 
 export interface Index<T> {
@@ -46,7 +51,7 @@ export const pipe: PipeFunction = (fn1, ...fns) => {
 }
 
 export type MappedColumn<T, O = string> = {
-  [P in keyof T]: T[P] extends undefined | string | number | boolean | any[] ? O : MappedColumn<T[P], O>
+  [P in keyof T]: T[P] extends undefined | Date | string | number | boolean | any[] ? O : MappedColumn<T[P], O>
 }
 
 export const renameObjectProperties = <O>(propsMap: Partial<MappedColumn<O>>) => (input: any): O => {

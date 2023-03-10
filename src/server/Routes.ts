@@ -36,6 +36,7 @@ export const getRoutes = (
   router.get('/', main.index)
   router.get('/kobo/import', kobo.importAnswers)
   router.get('/legalaid', legalaid.index)
+  router.get('/nfi/raw', nfi.raw)
   router.get('/nfi', nfi.index)
   router.get('/ecrec', ecrec.index)
   return router
