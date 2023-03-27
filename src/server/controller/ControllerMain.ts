@@ -1,15 +1,19 @@
 import {NextFunction, Request, Response} from 'express'
-import {KoboClient} from '../../connector/kobo/KoboClient/KoboClient'
-import {Client} from 'pg'
+import {ServiceStats} from '../services/ServiceStats'
 
 export class ControllerMain {
 
   constructor(
+    private stats: ServiceStats
   ) {
 
   }
 
-  readonly index = async (req: Request, res: Response, next: NextFunction) => {
-    res.send({})
+  readonly htmlStats = async (req: Request, res: Response, next: NextFunction) => {
+    const html = await this.stats.getAll({
+      start: new Date(2022, 11, 1),
+      end: new Date(2023, 2, 1)
+    })
+    res.send(html)
   }
 }

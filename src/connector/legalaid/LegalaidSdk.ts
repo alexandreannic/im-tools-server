@@ -1,4 +1,4 @@
-import {UUID} from '../../utils/Type'
+import {UUID} from '../../core/Type'
 import {ApiClient} from '../../client/ApiClient'
 import {Legalaid} from './Legalaid'
 import {Arr, Cache, duration, Enum, throwIf} from '@alexandreannic/ts-utils'
@@ -160,12 +160,7 @@ export class LegalaidSdk {
         .then(throwIf(_ => _.polls.length === 0, `Poll with search '${pollSearch[PollType.Group]}' not found for office ${officeId}`))
         .then(_ => _.polls[0])
     ))
-    console.log(polls.map(x => x._id))
     return await Promise.all(polls.map(_ => this.fetchBeneficiaries({pollId: _._id, ...filters})))
-      .then(x => {
-        console.log(x.map(x => x.data.length))
-        return x
-      })
       .then(LegalaidSdk.reducePaginates)
   }
 

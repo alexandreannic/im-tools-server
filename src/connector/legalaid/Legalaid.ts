@@ -1,4 +1,4 @@
-import {UUID} from '../../utils/Type'
+import {UUID} from '../../core/Type'
 
 export namespace Legalaid {
 

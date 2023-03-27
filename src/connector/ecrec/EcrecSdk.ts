@@ -1,6 +1,8 @@
 import {EcrecClient} from './EcrecClient'
-import {EcrecGetDataFilters, EcrecGetDataResponse, EcrecMsdStatus, EcrecSmeStatus} from './EcrecSdkType'
-import {format} from 'date-fns'
+import {EcrecGetDataFilters, EcrecGetDataResponse, EcrecMsdStatus, EcrecSmeStatus, EcrecVetStatus, FundedStatus} from './EcrecSdkType'
+import {format, sub} from 'date-fns'
+import {StandardEnum} from '../../utils/Common'
+import {Arr} from '@alexandreannic/ts-utils'
 
 export class EcrecSdk {
 
@@ -11,7 +13,32 @@ export class EcrecSdk {
 
   private static readonly formatDate = (d: Date) => format(d, EcrecSdk.dateFormat)
 
-  readonly getMsd = async (params: EcrecGetDataFilters<EcrecMsdStatus>) => {
+  private static readonly makeDateFilter = (field: string, start?: Date, end?: Date) => {
+    return start || end ? {
+      dateEnd: end && EcrecSdk.formatDate(sub(end, {seconds: 1})),
+      dateStart: start && EcrecSdk.formatDate(start),
+      dateFormat: EcrecSdk.dateFormat,
+      fieldName: field,
+    } : undefined
+  }
+
+  readonly fetchMsd = async (filters: EcrecGetDataFilters<typeof EcrecMsdStatus>) => {
+    return this.fetch<typeof EcrecMsdStatus>('msd', filters)
+  }
+
+  readonly fetchVet = async (filters: EcrecGetDataFilters<typeof EcrecVetStatus>) => {
+    return this.fetch<typeof EcrecVetStatus>('vet', filters)
+  }
+
+  readonly fetchSme = async (filters: EcrecGetDataFilters<typeof EcrecSmeStatus>) => {
+    return this.fetch<typeof EcrecSmeStatus>('sme', filters)
+  }
+  
+  readonly fetchMicro = async (filters: EcrecGetDataFilters<typeof EcrecSmeStatus>) => {
+    return this.fetch<typeof EcrecSmeStatus>('micro', filters)
+  }
+
+  readonly fetchMsdOLD = async (params: EcrecGetDataFilters<typeof EcrecMsdStatus>) => {
     const body = {
       parameters: null,
       page: params.offset && params.limit ? (params.offset / params.limit) : 1,
@@ -38,7 +65,6 @@ export class EcrecSdk {
         type: 'DESC'
       }
     }
-    console.log(body)
     return this.client.post<EcrecGetDataResponse<any>>(`/admin/msd-redesigned/get-list-data`, {
         body,
         ...params,
@@ -46,15 +72,31 @@ export class EcrecSdk {
     )
   }
 
-  readonly getData = async () => {
-    return this.client.post('https://lap.drc.ngo/admin/msd/get-list-data', {
+  private readonly fetch = async <T extends StandardEnum<unknown>, R = any>(data: 'msd' | 'sme' | 'vet' | 'micro', filters: EcrecGetDataFilters<T>) => {
+    return this.client.post<EcrecGetDataResponse<R>>(`/admin/${data}-redesigned/get-list-data`, {
       body: {
-        'parameters': null,
-        'page': 1,
-        'count': 10,
-        'filterData': {'filterRangeInts': [], 'filterRangeDoubles': [], 'filterLongs': [], 'filterStrings': [], 'filterTimes': [], 'filterDates': []},
-        'searchData': [],
-        'sortData': {'fieldName': 'tmspDtCreate', 'type': 'DESC'}
+        parameters: null,
+        page: filters.offset && filters.limit ? (filters.offset / filters.limit) : 1,
+        count: filters.limit ?? 10,
+        filterData: {
+          filterRangeInts: [],
+          filterRangeDoubles: [],
+          filterLongs: Arr([
+            filters.status ? {fieldName: 'typeStatusId', values: filters.status,} : undefined,
+            filters.funded ? {fieldName: 'funding', values: [filters.funded ? FundedStatus.Funded : FundedStatus.Pending]} : undefined,
+          ]).compact(),
+          filterStrings: [],
+          filterTimes: [],
+          filterDates: Arr([
+            EcrecSdk.makeDateFilter('tmspDtCreate', filters.start, filters.end),
+            EcrecSdk.makeDateFilter('fundingDate', filters.fundingDateStart, filters.fundingDateEnd),
+          ]).compact()
+        },
+        searchData: [],
+        sortData: {
+          fieldName: 'tmspDtCreate',
+          type: 'DESC'
+        }
       }
     })
   }

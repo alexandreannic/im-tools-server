@@ -1,4 +1,4 @@
-import {UUID} from '../../../../utils/Type'
+import {ApiPaginate, UUID} from '../../../../core/Type'
 
 export interface KoboAnswerParams {
   start?: Date
@@ -36,7 +36,7 @@ export interface KoboAnswerMetaData {
 // export interface KoboAnswer extends KoboAnswerMetaData {
 //   [key: string]: string
 // }
-export type KoboAnswer = (KoboAnswerMetaData & {[key: string]: string})
+export type KoboAnswer = (KoboAnswerMetaData & {[key: string]: any})
 
 export interface KoboApiList<T> {
   count: number,
@@ -45,6 +45,22 @@ export interface KoboApiList<T> {
 
 export class KoboAnswerUtils {
 
+  static readonly mapAnswersMetaData = (k: ApiPaginate<Record<keyof KoboAnswerMetaData, any>>): ApiPaginate<KoboAnswerMetaData> => {
+    return {
+      ...k,
+      data: k.data.map(KoboAnswerUtils.mapAnswerMetaData)
+    }
+  }
+  
+  static readonly mapAnswerMetaData = (k: Record<keyof KoboAnswerMetaData, any>): KoboAnswerMetaData => {
+    return {
+      ...k,
+      start: new Date(k.start),
+      end: new Date(k.end),
+      _submission_time: new Date(k._submission_time),
+    }
+  }
+  
   /**
    * It's verbose and unoptimized but it's type safe. If field of KoboAnswerMetaData are changed,
    * compiler will throw an error

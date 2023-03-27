@@ -69,8 +69,11 @@ export const renameObjectProperties = <O>(propsMap: Partial<MappedColumn<O>>) =>
   }, {} as O)
 }
 
-export const mapMultipleChoices = <T>(value: string | undefined, map: {[key: string]: T}): T[] => {
+export const mapMultipleChoices = <T>(value: string | undefined, map: {[key: string]: T}, defaultValue: T[] = []): T[] => {
   const res: T[] = []
+  if(!value) {
+    return defaultValue
+  }
   Object.keys(map).forEach(k => {
     if (value?.includes(k)) res.push(map[k])
   })
@@ -78,3 +81,14 @@ export const mapMultipleChoices = <T>(value: string | undefined, map: {[key: str
 }
 
 export const msToString = (duration: number) => format(duration, 'dd hh:mm:ss')
+
+export const makeid = (length = 16) => {
+  let result = ''
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789_'
+  const charactersLength = characters.length
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+  }
+  return result
+
+}

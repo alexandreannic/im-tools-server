@@ -5,6 +5,7 @@ import {KoboNfiMcpa, mapNfisCount, Program} from './KoboNfiMcpa'
 export const koboTransformerNfiMcpaNaa = new KoboTransformer<KoboNfiMcpa>(
   koboFormsId.prod.fcrmMpcaNAA,
   {
+    houseHoldSize: 'module_eligibility_screening/group_kj9wg97/Total_Family',
     kits: {
       HKMV: 'module_eligibility_screening_001/group_un9ff13_header/HKMV_',
       HKF: 'module_eligibility_screening_001/group_un9ff13_header/HKF_',

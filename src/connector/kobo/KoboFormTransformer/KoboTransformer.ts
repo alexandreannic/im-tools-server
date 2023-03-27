@@ -1,6 +1,7 @@
 import {MappedColumn, pipe, renameObjectProperties} from '../../../utils/Common'
 import {KoboClient} from '../KoboClient/KoboClient'
-import {KoboAnswer, KoboAnswerMetaData, KoboAnswerParams, KoboApiList} from '../KoboClient/type/KoboAnswer'
+import {KoboAnswer, KoboAnswerMetaData, KoboAnswerParams} from '../KoboClient/type/KoboAnswer'
+import {ApiPaginate} from '../../../core/Type'
 
 type Transformer<F> = (_: MappedColumn<F, any>) => F
 
@@ -51,10 +52,10 @@ export class KoboTransformClient {
   ) {
   }
 
-  readonly getAnswers = <T extends KoboAnswerMetaData>(parser: KoboTransformer<T>, params?: KoboAnswerParams): Promise<KoboApiList<T>> => {
+  readonly getAnswers = <T extends KoboAnswerMetaData>(parser: KoboTransformer<T>, params?: KoboAnswerParams): Promise<ApiPaginate<T>> => {
     return this.api.getAnswers(parser.formId, params).then(_ => ({
       ..._,
-      results: _.results.map(parser.transform)
+      data: _.data.map(parser.transform)
     }))
   }
 }

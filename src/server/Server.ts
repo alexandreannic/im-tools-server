@@ -9,6 +9,7 @@ import {Client} from 'pg'
 import {EcrecSdk} from '../connector/ecrec/EcrecSdk'
 import {LegalaidSdk} from '../connector/legalaid/LegalaidSdk'
 import {HttpError} from './controller/Controller'
+import {Services} from './services'
 
 export class Server {
   
@@ -18,6 +19,7 @@ export class Server {
     private koboClient: KoboClient,
     private ecrecSdk: EcrecSdk,
     private legalaidSdk: LegalaidSdk,
+    private services: Services,
     private logger: Logger,
   ) {
   }
@@ -49,6 +51,7 @@ export class Server {
       this.koboClient,
       this.ecrecSdk,
       this.legalaidSdk,
+      this.services,
       this.logger,
     ))
     app.use(this.errorHandler)

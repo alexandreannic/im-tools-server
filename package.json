@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/index.ts",
+    "start-once": "ts-node src/index.ts",
     "debug": "npm run build && node --inspect-brk lib/index.js",
     "build": "tsc"
   },
@@ -37,6 +38,7 @@
     "tough-cookie": "^4.1.2",
     "tsc-watch": "^6.0.0",
     "uuid": "^9.0.0",
-    "winston": "^3.8.2"
+    "winston": "^3.8.2",
+    "yup": "^1.0.2"
   }
 }

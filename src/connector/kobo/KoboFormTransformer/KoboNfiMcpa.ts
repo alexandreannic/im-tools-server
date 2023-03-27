@@ -49,6 +49,23 @@ export const winterizationKits: (keyof NFIs)[] = [
   'BLN',
 ]
 
+export const nfisTranslations: NFIs<string> = {
+  HKMV: 'Family hygiene kit for IDPs on the move',
+  HKF: 'Hygiene kit',
+  NFKF: 'Family NFI Kit',
+  KS: 'Family kitchen set',
+  BK1: 'Baby Hygiene Kit 1',
+  BK2: 'Baby Hygiene Kit 2',
+  BK3: 'Baby Hygiene Kit 3',
+  BK4: 'Baby Hygiene Kit 4',
+  WKB1: 'Baby Winterization Kit 1',
+  WKB2: 'Baby Winterization Kit 2',
+  WKB3: 'Baby Winterization Kit 3',
+  WKB4: 'Baby Winterization Kit 4',
+  BLN: 'High Thermal Blankets',
+  SL: 'Solar lamps',
+}
+
 export interface NFIs<T = any> {
   // Family hygiene kit for IDPs on the move
   HKMV: T
@@ -133,7 +150,7 @@ export const koboTransformerNfiMcpa = new KoboTransformer<KoboNfiMcpa>(
         'nfi': Program.NFI,
         'mpca': Program.MPCA,
         'cash_for_rent': Program.CashForRent,
-      }),
+      }, [Program.NFI]),
       houseHoldSize: Number(_.houseHoldSize ?? 0),
       kits: mapNfisCount(_.kits),
     }

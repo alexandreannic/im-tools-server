@@ -5,12 +5,12 @@ import {EcrecSdk} from '../../connector/ecrec/EcrecSdk'
 export class ControllerEcrec extends Controller {
 
   constructor(
-    private ecrecSdk: EcrecSdk
+    private sdk: EcrecSdk
   ) {
     super({errorKey: 'ecrec'})
   }
 
   readonly index = async (req: Request, res: Response, next: NextFunction) => {
-
+    res.send({})
   }
 }

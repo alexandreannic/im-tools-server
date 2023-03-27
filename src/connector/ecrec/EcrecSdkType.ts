@@ -1,16 +1,26 @@
-import {Enum} from '@alexandreannic/ts-utils'
+import {StandardEnum} from '../../utils/Common'
 
 export interface EcrecGetDataResponse<T> {
   totalCount: number
   data: T[]
 }
 
-export interface EcrecGetDataFilters<Status extends Enum> {
+// 3390303229
+
+export interface EcrecGetDataFilters<Status extends StandardEnum<unknown>> {
+  funded?: boolean
+  fundingDateStart?: Date
+  fundingDateEnd?: Date
   status?: Status[]
   start?: Date
   end?: Date
   limit?: number
   offset?: number
+}
+
+export enum FundedStatus {
+  Pending = '118',
+  Funded = '117',
 }
 
 export interface EcrecGetDataRawParams {
