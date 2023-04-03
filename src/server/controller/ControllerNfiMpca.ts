@@ -15,7 +15,6 @@ import {koboFormsId} from '../../conf/KoboFormsId'
 export class ControllerNfiMpca extends Controller {
 
   constructor(
-    private pgClient: Client,
     private koboClient: KoboClient,
     private service: ServiceNfi,
     private logger: Logger,

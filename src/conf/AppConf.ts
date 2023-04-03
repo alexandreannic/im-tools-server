@@ -24,6 +24,9 @@ export const appConf = {
   },
   legalAid: {
     apiToken: e(required)('LEGALAID_API_TOKEN')
+  },
+  activityInfo: {
+    apiToken: e(required)('ACTIVITY_INFO_API_TOKEN')
   }
 }
 

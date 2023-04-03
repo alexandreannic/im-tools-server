@@ -22,4 +22,5 @@ export declare const mapMultipleChoices: <T>(value: string | undefined, map: {
     [key: string]: T;
 }, defaultValue?: T[]) => T[];
 export declare const msToString: (duration: number) => string;
+export declare const makeid: (length?: number) => string;
 export {};

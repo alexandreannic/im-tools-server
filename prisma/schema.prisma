@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://alexandreac:sieges78@localhost:5432/im-tools"
+}
+
+model KoboServer {
+  id    String @id @default(uuid())
+  url   String
+  token String
+}
+
+model KoboAnswers {
+  id              String   @id @db.Uuid
+  start           DateTime
+  end             DateTime
+  uuid            String
+  version         String
+  submission_time DateTime
+  status          String?
+  geolocation     String?
+  answers         Json
+}

@@ -82,13 +82,15 @@ export const mapMultipleChoices = <T>(value: string | undefined, map: {[key: str
 
 export const msToString = (duration: number) => format(duration, 'dd hh:mm:ss')
 
-export const makeid = (length = 16) => {
+export const makeid = (length = 14) => {
   let result = ''
-  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789_'
+  const letters = 'abcdefghijklmnopqrstuvwxyz'
+  const numbers = '0123456789'
+  const characters = letters + numbers
   const charactersLength = characters.length
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i < length - 1; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength))
   }
-  return result
+  return 'alexdrc' + result
 
 }

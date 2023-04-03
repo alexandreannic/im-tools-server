@@ -1,4 +1,6 @@
+
 export const koboFormsId = {
+  
   prod: {
     protectionHh: 'aFU8x6tHksveU2c3hK7RUG',
     fcrmMpca: 'a4Sx3PrFMDAMZEGsyzgJJg',
@@ -11,3 +13,19 @@ export const koboFormsId = {
     fcrmMpcaNAA: 'aPPgvLA2YZUCX2hU8thw22',
   }
 }
+
+interface KoboForm {
+  id: string
+  name: string
+  server: string
+  groupName: string
+}
+
+// const x:  = [
+//   { server: 'prod', id: '', name: '', groupName: ''},
+//   { server: 'prod', id: '', name: 'global', groupName: ''},
+//   { server: 'prod', id: '', name: 'myko', groupName: ''},
+//   { server: 'prod', id: '', name: 'NAA', groupName: ''},
+//   { server: 'dev', id: '', name: 'NAA', groupName: ''},
+//   { server: 'dev', id: '', name: 'NAA', groupName: ''},
+//   { server: 'dev', id: '', name: 'NAA', groupName: ''},

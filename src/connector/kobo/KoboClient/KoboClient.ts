@@ -1,8 +1,8 @@
 import {UUID} from '../../../core/Type'
 import {ApiClient} from '../../../client/ApiClient'
 import {KoboAnswer, KoboAnswerParams, KoboAnswerUtils, KoboApiList} from './type/KoboAnswer'
-import {KoboQuestion} from './type/KoboForm'
-import {ApiPaginate, koboToApiPaginate} from '../../../core/Type'
+import {KoboQuestion, koboToApiPaginate} from './type/KoboForm'
+import {ApiPaginate} from '../../../core/Type'
 import {Cache, map} from '@alexandreannic/ts-utils'
 
 export class KoboClient {
@@ -14,14 +14,14 @@ export class KoboClient {
   static readonly makeDateFilter = (name: string, operator: 'gte' | 'lte', date: Date) => {
     return {[name]: {['$' + operator]: KoboClient.parseDate(date)}}
   }
-  
+
   // static readonly parseDate = toYYYYMMDD
 
   static readonly makeAuthorizationHeader = (token: string) => `Token ${token}`
 
   readonly getForm = (form: UUID): Promise<KoboQuestion[]> => {
     return this.api.get(`/v2/assets/${form}`)
-      .then(_ => _.content.survey)
+      .then(_ => _)
   }
 
   readonly getAnswers = Cache.request((form: UUID, params: KoboAnswerParams = {}): Promise<ApiPaginate<KoboAnswer>> => {
@@ -35,4 +35,9 @@ export class KoboClient {
       }))
       .then(koboToApiPaginate)
   })
+
+  readonly getForms = () => {
+    // return this.api.get(`/v2/assets/`)
+    return this.api.get(`/v2/assets/?q=asset_type%3Asurvey&limit=200`)
+  }
 }

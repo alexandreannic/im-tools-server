@@ -5,11 +5,4 @@ export interface ApiPaginate<T> {
   data: T[]
 }
 
-export const koboToApiPaginate = <T>(_: KoboApiList<T>): ApiPaginate<T> => {
-  return {
-    total: _.count,
-    data: _.results,
-  }
-}
-
 export type UUID = string

@@ -8,7 +8,6 @@ import {Controller} from './Controller'
 export class ControllerLegalAid extends Controller {
 
   constructor(
-    private pgClient: Client,
     private legalAidSdk: LegalaidSdk,
     private logger: Logger,
   ) {

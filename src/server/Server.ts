@@ -10,12 +10,13 @@ import {EcrecSdk} from '../connector/ecrec/EcrecSdk'
 import {LegalaidSdk} from '../connector/legalaid/LegalaidSdk'
 import {HttpError} from './controller/Controller'
 import {Services} from './services'
+import {PrismaClient} from '@prisma/client'
 
 export class Server {
   
   constructor(
     private conf: AppConf,
-    private pgClient: Client,
+    private pgClient: PrismaClient,
     private koboClient: KoboClient,
     private ecrecSdk: EcrecSdk,
     private legalaidSdk: LegalaidSdk,
@@ -25,6 +26,8 @@ export class Server {
   }
 
   readonly errorHandler = (err: HttpError, req: Request, res: Response, next: (err?: any) => void) => {
+    console.log('--------------------------------------------------------------------------------')
+    console.log('--------------------------------------------------------------------------------')
     const errorId = genUUID()
     this.logger.error(`[${errorId}] Error ${err.code}: ${err.message}\n${err.stack}`)
     console.error(err.error)
