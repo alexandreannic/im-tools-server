@@ -71,7 +71,7 @@ export class ControllerKobo {
     const sdk = await this.constructSdk('746f2270-d15a-11ed-afa1-0242ac120002')
     const localForm = await getCsv(sdk)
     const filtered = localForm.filter(_ =>
-      (!filters.start || _.start > format(filters.start, 'yyyy-MM-dd')) &&
+      (!filters.start || _.end > format(filters.start, 'yyyy-MM-dd')) &&
       (!filters.end || _.end < format(filters.end, 'yyyy-MM-dd'))
     )
     res.send(filtered)
