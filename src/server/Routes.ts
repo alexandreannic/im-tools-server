@@ -38,6 +38,7 @@ export const getRoutes = (
   try {
     router.get('/', main.htmlStats)
     router.get('/kobo', kobo.getServers)
+    router.get('/kobo/local-form', kobo.getLocalDbAnswers)
     router.get('/kobo/:id', kobo.getForms)
     router.get('/kobo/:id/:formId/answers', kobo.getAnswers)
     router.get('/kobo/:id/:formId', kobo.getForm)

@@ -1,7 +1,7 @@
 import {UUID} from '../../../core/Type'
 import {ApiClient} from '../../../client/ApiClient'
 import {KoboAnswer, KoboAnswerParams, KoboAnswerUtils, KoboApiList} from './type/KoboAnswer'
-import {KoboQuestion, koboToApiPaginate} from './type/KoboForm'
+import {KoboForm, KoboQuestion, koboToApiPaginate} from './type/KoboForm'
 import {ApiPaginate} from '../../../core/Type'
 import {Cache, map} from '@alexandreannic/ts-utils'
 
@@ -19,9 +19,8 @@ export class KoboClient {
 
   static readonly makeAuthorizationHeader = (token: string) => `Token ${token}`
 
-  readonly getForm = (form: UUID): Promise<KoboQuestion[]> => {
+  readonly getForm = (form: UUID): Promise<KoboForm> => {
     return this.api.get(`/v2/assets/${form}`)
-      .then(_ => _)
   }
 
   readonly getAnswers = Cache.request((form: UUID, params: KoboAnswerParams = {}): Promise<ApiPaginate<KoboAnswer>> => {

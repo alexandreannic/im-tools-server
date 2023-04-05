@@ -1,6 +1,31 @@
 import {KoboApiList} from './KoboAnswer'
 import {ApiPaginate} from '../../../../core/Type'
 
+export interface KoboForm {
+  content: {
+    choices: {
+      $autovalue: string,
+      $kuid: string,
+      label: string[],
+      list_name: string,
+      name: string,
+    }[]
+    schema: string
+    settings: {version: string, default_language: string}
+    survey: {
+      $autoname: string
+      $kuid: string
+      $qpath: string
+      $xpath: string
+      name: string
+      type: 'select_one' | 'select_multiple'
+      select_from_list_name?: string
+    }[]
+    translated: ['hint', 'label', 'media::image']
+    translations: [string, string]
+  }
+}
+
 export enum KoboQuestionType {
   SelectOne = 'select_one',
   Text = 'text',

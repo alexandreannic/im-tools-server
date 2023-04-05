@@ -34,7 +34,7 @@ class Api {
   readonly post = (path: string, init?: ApiParams) => {
     return this.request(path, {...init, method: 'POST'}).then(_ => _.json())
   }
-  
+
   readonly postNoJSON = (path: string, init?: ApiParams) => {
     return this.request(path, {...init, method: 'POST'}).then(_ => _.text())
   }
@@ -82,17 +82,16 @@ export class ActivityInfoSdk {
       body: params
     })
   }
-  
+
   readonly publish = (params: FormParams) => {
-    console.dir(this.makeForm(params), {depth: null})
+    console.dir(ActivityInfoSdk.makeForm(params), {depth: null})
     return this.api.post(`/resources/update`, {
-      body: this.makeForm(params)
+      body: ActivityInfoSdk.makeForm(params)
     })
   }
 
-  private readonly makeForm = (params: FormParams): any => {
+  static readonly makeForm = (params: FormParams): any => {
     const getKeyId = (id: keyof typeof inputs) => inputs[id].id
-
     // const buildOption = <T extends keyof typeof inputsOptions>(t: T, defaultValue?: keyof (typeof inputsOptions)[T]) => {
     //   return {
     //     [inputs[t].id]: (inputs[t] as any).optionsId + ':' + ((inputsOptions as any)[t][(params as any)[t] ?? defaultValue])
