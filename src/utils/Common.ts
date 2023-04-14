@@ -91,6 +91,6 @@ export const makeid = (length = 14) => {
   for (let i = 0; i < length - 1; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength))
   }
-  return 'alexdrc' + result
+  return result
 
 }

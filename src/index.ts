@@ -13,7 +13,7 @@ import {ServiceNfi} from './server/services/ServiceNfi'
 import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
-import {getCsv} from './connector/kobo/cleanKoboDb/CleadedKoboDbLoader'
+import {ActivityInfoSdk} from './connector/activity-info/ActivityInfoSdk'
 
 const initServices = (
   koboClient: KoboClient,
@@ -48,6 +48,7 @@ const initServices = (
       }
     })
   )
+  const activityInfoSdk = new ActivityInfoSdk()
   const ecrecAppSdk = new EcrecSdk(new EcrecClient(appConf.ecrecApp))
   const legalAidSdk = new LegalaidSdk(new ApiClient({
     baseUrl: 'https://api.lau-crm.org.ua',
@@ -66,5 +67,13 @@ const initServices = (
   // await pgClient.connect()
   // logger.info(`Applying evolutions...`)
   // await new EvolutionManager(pgClient).run()
-  new Server(conf, prisma, koboSdk, ecrecAppSdk, legalAidSdk, services, logger).start()
+  new Server(
+    conf,
+    prisma,
+    koboSdk,
+    ecrecAppSdk,
+    legalAidSdk,
+    services,
+    logger,
+  ).start()
 })()

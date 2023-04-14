@@ -11,6 +11,8 @@ import {ControllerEcrec} from './controller/ControllerEcrec'
 import {Services} from './services'
 import {PrismaClient} from '@prisma/client'
 import {ControllerKoboForm} from './controller/ControllerKoboForm'
+import {ControllerActivityInfo} from './controller/ControllerActivityInfo'
+import {ActivityInfoSdk} from '../connector/activity-info/ActivityInfoSdk'
 
 export const getRoutes = (
   pgClient: PrismaClient,
@@ -35,8 +37,10 @@ export const getRoutes = (
   )
   const main = new ControllerMain(services.stats)
   const kobo = new ControllerKobo(pgClient)
+  const activityInfo = new ControllerActivityInfo()
   try {
     router.get('/', main.htmlStats)
+    router.post('/activity-info/activity', activityInfo.submitActivity)
     router.get('/kobo', kobo.getServers)
     router.get('/kobo/local-form', kobo.getLocalDbAnswers)
     router.get('/kobo/:id', kobo.getForms)

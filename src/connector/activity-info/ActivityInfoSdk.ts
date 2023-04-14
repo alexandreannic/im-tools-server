@@ -1,7 +1,7 @@
 import {AIID, Database, Form, FormDescs} from './ActivityInfo'
-import {FormParams, inputs, inputsOptions} from './activity/AiProtectionHhs'
 import {makeid} from '../../utils/Common'
 import {appConf} from '../../conf/AppConf'
+import {AiProtectionHhs} from './activity/AiProtectionHhs'
 
 interface ActicityInfoBody {
   [key: string]: any
@@ -77,45 +77,45 @@ export class ActivityInfoSdk {
       })
   }
 
-  readonly publish2 = (params: any) => {
-    return this.api.postNoJSON(`/resources/update`, {
-      body: params
-    })
-  }
-
-  readonly publish = (params: FormParams) => {
+  readonly publish = (params: any) => {
     console.dir(ActivityInfoSdk.makeForm(params), {depth: null})
-    return this.api.post(`/resources/update`, {
+    return this.api.postNoJSON(`/resources/update`, {
       body: ActivityInfoSdk.makeForm(params)
     })
   }
 
-  static readonly makeForm = (params: FormParams): any => {
-    const getKeyId = (id: keyof typeof inputs) => inputs[id].id
-    // const buildOption = <T extends keyof typeof inputsOptions>(t: T, defaultValue?: keyof (typeof inputsOptions)[T]) => {
+  // readonly publish2 = (params: AiProtectionHhs.FormParams) => {
+  //   return this.api.post(`/resources/update`, {
+  //     body: ActivityInfoSdk.makeForm(params)
+  //   })
+  // }
+
+  static readonly makeForm = (params: AiProtectionHhs.FormParams): any => {
+    const getKeyId = (id: keyof typeof AiProtectionHhs.inputs) => AiProtectionHhs.inputs[id].id
+    // const buildOption = <T extends keyof typeof AiProtectionHhs.inputsOptions>(t: T, defaultValue?: keyof (typeof AiProtectionHhs.inputsOptions)[T]) => {
     //   return {
-    //     [inputs[t].id]: (inputs[t] as any).optionsId + ':' + ((inputsOptions as any)[t][(params as any)[t] ?? defaultValue])
+    //     [inputs[t].id]: (inputs[t] as any).optionsId + ':' + ((AiProtectionHhs.inputsOptions as any)[t][(params as any)[t] ?? defaultValue])
     //   }
     // }
-    // const buildValue = <T extends keyof FormParams>(t: T) => {
+    // const buildValue = <T extends keyof AiProtectionHhs.FormParams>(t: T) => {
     //   return {[inputs[t].id]: params[t]}
     // }
 
     // @ts-ignore
-    const buildOption = <T extends Partial<Record<keyof typeof inputs, any>>, K extends keyof T>(obj: T, k: K, defaultValue?: keyof (typeof inputsOptions)[K]) => {
-      const input = (inputs as any)[k]
+    const buildOption = <T extends Partial<Record<keyof typeof inputs, any>>, K extends keyof T>(obj: T, k: K, defaultValue?: keyof (typeof AiProtectionHhs.inputsOptions)[K]) => {
+      const input = (AiProtectionHhs.inputs as any)[k]
       const value = (obj as any)[k] ?? defaultValue
       if (value !== undefined)
-        return {[input.id]: input.optionsId + ':' + (inputsOptions as any)[k][value]}
+        return {[input.id]: input.optionsId + ':' + (AiProtectionHhs.inputsOptions as any)[k][value]}
     }
 
-    const buildValue = <T extends Partial<Record<keyof typeof inputs, any>>, K extends keyof T>(obj: T, k: K) => {
-      const input = (inputs as any)[k]
+    const buildValue = <T extends Partial<Record<keyof typeof AiProtectionHhs.inputs, any>>, K extends keyof T>(obj: T, k: K) => {
+      const input = (AiProtectionHhs.inputs as any)[k]
       const value = obj[k]
       if (value !== undefined)
         return {[input.id]: value}
     }
-    const recordId = 'alexannicdrcprot' + makeid(2)
+    const recordId = 'drcaalex' + makeid(9)
     return {
       'changes': [
         {
@@ -136,7 +136,7 @@ export class ActivityInfoSdk {
         ...params.subActivities.map(x => {
           return {
             formId: 'cy3vehlldsu5aeb6',
-            recordId: makeid(16),
+            recordId: 'alexdrc' + makeid(9),
             parentRecordId: recordId,
             fields: {
               ...buildValue(x, 'Reporting Month'),
