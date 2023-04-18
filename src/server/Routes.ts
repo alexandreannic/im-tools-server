@@ -1,6 +1,6 @@
 import express from 'express'
 import {ControllerNfiMpca} from './controller/ControllerNfiMpca'
-import {KoboClient} from '../connector/kobo/KoboClient/KoboClient'
+import {KoboSdk} from '../connector/kobo/KoboClient/KoboSdk'
 import {ControllerKobo} from './controller/ControllerKobo'
 import {Logger} from '../utils/Logger'
 import {EcrecSdk} from '../connector/ecrec/EcrecSdk'
@@ -16,7 +16,7 @@ import {ActivityInfoSdk} from '../connector/activity-info/ActivityInfoSdk'
 
 export const getRoutes = (
   pgClient: PrismaClient,
-  koboClient: KoboClient,
+  koboSdk: KoboSdk,
   ecrecSdk: EcrecSdk,
   legalAidSdk: LegalaidSdk,
   services: Services,
@@ -24,7 +24,7 @@ export const getRoutes = (
 ) => {
   const router = express.Router()
   const nfi = new ControllerNfiMpca(
-    koboClient,
+    koboSdk,
     services.nfi,
     logger
   )
@@ -36,15 +36,17 @@ export const getRoutes = (
     logger,
   )
   const main = new ControllerMain(services.stats)
-  const kobo = new ControllerKobo(pgClient)
+  const kobo = new ControllerKobo(koboSdk, pgClient)
   const activityInfo = new ControllerActivityInfo()
   try {
     router.get('/', main.htmlStats)
     router.post('/activity-info/activity', activityInfo.submitActivity)
     router.get('/kobo', kobo.getServers)
-    router.get('/kobo/local-form', kobo.getLocalDbAnswers)
+    router.get('/kobo/local-form', kobo.getAnswersFromLocalCsv)
+    router.get('/kobo/:formId/answers', kobo.getAnswers)
+    router.get('/kobo/:formId/sync', kobo.synchronizeAnswersFromKoboServer)
     router.get('/kobo/:id', kobo.getForms)
-    router.get('/kobo/:id/:formId/answers', kobo.getAnswers)
+    router.get('/kobo/:id/:formId/answers/kobo', kobo.getAnswersFromKoboServer)
     router.get('/kobo/:id/:formId', kobo.getForm)
     router.post('/kobo/:id/:formId', kobo.importAnswers)
     router.get('/legalaid', legalaid.index)

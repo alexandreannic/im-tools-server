@@ -14,13 +14,26 @@ model KoboServer {
 }
 
 model KoboAnswers {
-  id              String   @id @db.Uuid
-  start           DateTime
-  end             DateTime
-  uuid            String
-  version         String
-  submission_time DateTime
-  status          String?
-  geolocation     String?
-  answers         Json
+  id                     String   @id
+  form                   KoboForm @relation(fields: [formId], references: [id])
+  formId                 String
+  start                  DateTime
+  end                    DateTime
+  version                String
+  submissionTime         DateTime
+  validationStatus       String?
+  validatedBy            String?
+  lastValidatedTimestamp Int?
+  geolocation            String?
+  answers                Json
+}
+
+model KoboForm {
+  id          String        @id
+  name        String
+  serverId    String
+  createdAt   DateTime
+  updatedAt   DateTime
+  uploadedBy  String?
+  KoboAnswers KoboAnswers[]
 }

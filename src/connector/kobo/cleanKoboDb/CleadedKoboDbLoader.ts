@@ -1,12 +1,12 @@
 import * as csvToJson from 'csvtojson/v2'
-import {KoboClient} from '../KoboClient/KoboClient'
+import {KoboSdk} from '../KoboClient/KoboSdk'
 import * as fs from 'fs'
 import {lazy} from '@alexandreannic/ts-utils'
 
 const metaColumns = [
   '_id',
 ]
-export const getCsv = lazy(async (koboSdk: KoboClient): Promise<any[]> => {
+export const getCsv = lazy(async (koboSdk: KoboSdk): Promise<any[]> => {
   const stream = fs.createReadStream('/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/connector/kobo/cleanKoboDb/cleaned-kobo-db.csv')
   const csv = await csvToJson.default({}).fromStream(stream)
   const form = await koboSdk.getForm('aFU8x6tHksveU2c3hK7RUG')

@@ -5,14 +5,14 @@ import {KoboForm, KoboQuestion, koboToApiPaginate} from './type/KoboForm'
 import {ApiPaginate} from '../../../core/Type'
 import {Cache, map} from '@alexandreannic/ts-utils'
 
-export class KoboClient {
+export class KoboSdk {
   constructor(private api: ApiClient) {
   }
 
   static readonly parseDate = (_: Date) => _.toISOString()
 
   static readonly makeDateFilter = (name: string, operator: 'gte' | 'lte', date: Date) => {
-    return {[name]: {['$' + operator]: KoboClient.parseDate(date)}}
+    return {[name]: {['$' + operator]: KoboSdk.parseDate(date)}}
   }
 
   // static readonly parseDate = toYYYYMMDD
@@ -24,14 +24,16 @@ export class KoboClient {
   }
 
   readonly getAnswers = Cache.request((form: UUID, params: KoboAnswerParams = {}): Promise<ApiPaginate<KoboAnswer>> => {
-    const start = map(params.start, _ => KoboClient.makeDateFilter('start', 'gte', _))
-    const end = map(params.end, _ => KoboClient.makeDateFilter('start', 'lte', _))
+    const start = map(params.start, _ => KoboSdk.makeDateFilter('start', 'gte', _))
+    const end = map(params.end, _ => KoboSdk.makeDateFilter('start', 'lte', _))
     const query = start && end ? {'$and': [start, end]} : start ?? end
-    return this.api.get<KoboApiList<KoboAnswer>>(`/v2/assets/${form}/data.json`, {qs: {query: query ? JSON.stringify(query) : undefined}})
-      .then(res => ({
-        ...res,
-        results: res.results.map(KoboAnswerUtils.mapAnswerMetaData).sort((a, b) => a.start.getTime() - b.start.getTime())
-      }))
+    return this.api.get<KoboApiList<any>>(`/v2/assets/${form}/data.json`, {qs: {query: query ? JSON.stringify(query) : undefined}})
+      .then(res => {
+        return ({
+          ...res,
+          results: res.results.map(KoboAnswerUtils.mapAnswer).sort((a, b) => a.submissionTime.getTime() - b.submissionTime.getTime())
+        })
+      })
       .then(koboToApiPaginate)
   })
 

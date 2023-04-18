@@ -4,7 +4,7 @@ import {getRoutes} from './Routes'
 import {Logger} from '../utils/Logger'
 import {AppConf} from '../conf/AppConf'
 import {genUUID} from '../utils/Common'
-import {KoboClient} from '../connector/kobo/KoboClient/KoboClient'
+import {KoboSdk} from '../connector/kobo/KoboClient/KoboSdk'
 import {Client} from 'pg'
 import {EcrecSdk} from '../connector/ecrec/EcrecSdk'
 import {LegalaidSdk} from '../connector/legalaid/LegalaidSdk'
@@ -17,7 +17,7 @@ export class Server {
   constructor(
     private conf: AppConf,
     private pgClient: PrismaClient,
-    private koboClient: KoboClient,
+    private koboClient: KoboSdk,
     private ecrecSdk: EcrecSdk,
     private legalaidSdk: LegalaidSdk,
     private services: Services,
@@ -26,8 +26,6 @@ export class Server {
   }
 
   readonly errorHandler = (err: HttpError, req: Request, res: Response, next: (err?: any) => void) => {
-    console.log('--------------------------------------------------------------------------------')
-    console.log('--------------------------------------------------------------------------------')
     const errorId = genUUID()
     this.logger.error(`[${errorId}] Error ${err.code}: ${err.message}\n${err.stack}`)
     console.error(err.error)

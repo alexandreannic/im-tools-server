@@ -18,5 +18,8 @@ export declare const appConf: {
     legalAid: {
         apiToken: string;
     };
+    activityInfo: {
+        apiToken: string;
+    };
 };
 export type AppConf = typeof appConf;

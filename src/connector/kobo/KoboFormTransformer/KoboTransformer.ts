@@ -1,5 +1,5 @@
 import {MappedColumn, pipe, renameObjectProperties} from '../../../utils/Common'
-import {KoboClient} from '../KoboClient/KoboClient'
+import {KoboSdk} from '../KoboClient/KoboSdk'
 import {KoboAnswer, KoboAnswerMetaData, KoboAnswerParams} from '../KoboClient/type/KoboAnswer'
 import {ApiPaginate} from '../../../core/Type'
 
@@ -30,8 +30,10 @@ export class KoboTransformer<F extends KoboAnswerMetaData> {
   readonly mapMetaProperties: MappedColumn<KoboAnswerMetaData> = {
     start: 'start',
     end: 'end',
-    _submission_time: '_submission_time',
-    _uuid: '_uuid',
+    version: 'version',
+    submissionTime: 'submissionTime',
+    validationStatus: 'validationStatus',
+    id: 'id',
   }
 
   readonly transformMetaProperties = (_: MappedColumn<F, any>): F => {
@@ -39,8 +41,9 @@ export class KoboTransformer<F extends KoboAnswerMetaData> {
       ..._,
       start: new Date(_.start as string),
       end: new Date(_.end as string),
-      _submission_time: new Date(_._submission_time as string),
-      _uuid: _._uuid as string,
+      submissionTime: new Date(_.submissionTime as string),
+      // id: _.id as string,
+      // validationStatus: _.validationStatus as string,
     }) as F
   }
 }
@@ -48,7 +51,7 @@ export class KoboTransformer<F extends KoboAnswerMetaData> {
 export class KoboTransformClient {
 
   constructor(
-    private api: KoboClient
+    private api: KoboSdk
   ) {
   }
 

@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express'
-import {KoboClient} from '../../connector/kobo/KoboClient/KoboClient'
+import {KoboSdk} from '../../connector/kobo/KoboClient/KoboSdk'
 import {Client} from 'pg'
 import {koboFormsId} from '../../conf/KoboFormsId'
 import * as yup from 'yup'
@@ -19,7 +19,7 @@ export class ControllerKoboForm {
 
   constructor(
     private pgClient: PrismaClient,
-    private koboClient: KoboClient,
+    private koboClient: KoboSdk,
   ) {
 
   }

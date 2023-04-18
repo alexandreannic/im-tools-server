@@ -14,78 +14,98 @@ export type KoboAnswerGeolocation = any
 export type KoboAnswerTags = any
 export type KoboAnswerNotes = any
 
-export interface KoboAnswerMetaData {
-  // _id: number,
-  // 'formhub/uuid': string,
+export type KoboAnswerMetaData = Pick<ApiKoboAnswerMetaData, 'start' | 'end'> & {
+  version: ApiKoboAnswerMetaData['__version__']
+  submissionTime: ApiKoboAnswerMetaData['_submission_time']
+  id: ApiKoboAnswerMetaData['_id']
+  validationStatus?: 'validation_status_approved'
+  validatedBy?: string
+  lastValidatedTimestamp?: number
+}
+
+interface ApiKoboAnswerMetaData {
+  _id: string,
   start: Date,
   end: Date,
-  // __version__: string,
-  // 'meta/instanceID': string,
-  // _xform_id_string: string,
+  __version__: string,
+  _xform_id_string: string,
   _uuid: UUID,
-  // _attachments: KoboAnswerAttachements[],
-  // _status: KoboAnswerStatus,
-  // _geolocation: KoboAnswerGeolocation[],
+  _attachments: KoboAnswerAttachements[],
+  _status: KoboAnswerStatus,
+  _geolocation: KoboAnswerGeolocation[],
   _submission_time: Date,
-  // _tags: KoboAnswerTags[],
-  // _notes: KoboAnswerNotes[],
-  // _validation_status: any,
-  // _submitted_by: any
+  _tags: KoboAnswerTags[],
+  _notes: KoboAnswerNotes[],
+  _validation_status: {
+    timestamp: number
+    uid: 'validation_status_approved'
+    by_whom: string
+  },
+  _submitted_by: any
+  // 'formhub/uuid': string,
+  // 'meta/instanceID': string,
 }
 
 // export interface KoboAnswer extends KoboAnswerMetaData {
 //   [key: string]: string
 // }
-export type KoboAnswer = (KoboAnswerMetaData & {[key: string]: any})
+export type KoboAnswer = KoboAnswerMetaData & {answers: Record<string, any>}
 
 export interface KoboApiList<T> {
   count: number,
   results: T[]
 }
 
+
 export class KoboAnswerUtils {
 
-  static readonly mapAnswersMetaData = (k: ApiPaginate<Record<keyof KoboAnswerMetaData, any>>): ApiPaginate<KoboAnswerMetaData> => {
+  static readonly mapAnswersMetaData = (k: ApiPaginate<Record<keyof ApiKoboAnswerMetaData, any>>): ApiPaginate<KoboAnswerMetaData> => {
     return {
       ...k,
-      data: k.data.map(KoboAnswerUtils.mapAnswerMetaData)
+      data: k.data.map(KoboAnswerUtils.mapAnswer)
     }
   }
-  
-  static readonly mapAnswerMetaData = (k: Record<keyof KoboAnswerMetaData, any>): KoboAnswerMetaData => {
+
+  static readonly mapAnswer = (k: ApiKoboAnswerMetaData & Record<string, any>): KoboAnswer => {
+    delete k['formhub/uuid']
+    delete k['meta/instanceId']
+    const {
+      _id,
+      start,
+      end,
+      __version__,
+      _xform_id_string,
+      _uuid,
+      _attachments,
+      _status,
+      _geolocation,
+      _submission_time,
+      _tags,
+      _notes,
+      _validation_status,
+      _submitted_by,
+      ...answers
+    } = k
     return {
-      ...k,
-      start: new Date(k.start),
-      end: new Date(k.end),
-      _submission_time: new Date(k._submission_time),
+      start: new Date(start ?? _submission_time),
+      end: new Date(end ?? _submission_time),
+      submissionTime: new Date(_submission_time),
+      version: __version__,
+      id: '' + _id,
+      validationStatus: _validation_status.uid,
+      lastValidatedTimestamp: _validation_status.timestamp,
+      validatedBy: _validation_status.by_whom,
+      answers,
     }
   }
-  
-  /**
-   * It's verbose and unoptimized but it's type safe. If field of KoboAnswerMetaData are changed,
-   * compiler will throw an error
-   */
-  static readonly extractAnswerFromMetadata = (a : KoboAnswer) => {
-    const dataToExtract: (keyof KoboAnswerMetaData)[] = [
-      // '_id',
-      // 'formhub/uuid',
-      'start',
-      'end',
-      // '__version__',
-      // 'meta/instanceID',
-      // '_xform_id_string',
-      '_uuid',
-      // '_attachments',
-      // '_status',
-      // '_geolocation',
-      '_submission_time',
-      // '_tags',
-      // '_notes',
-      // '_validation_status',
-      // '_submitted_by',
-    ]
-    // const {
-    //  
-    // }
-  }
+
+  // static readonly mapAnswerMetaData = (k: Record<keyof KoboAnswerMetaData, any>): KoboAnswerMetaData => {
+  //   return {
+  //     ...k,
+  //     start: new Date(k.start),
+  //     end: new Date(k.end),
+  //     _submission_time: new Date(k._submission_time),
+  //   }
+  // }
 }
+

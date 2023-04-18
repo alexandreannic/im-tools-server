@@ -18,6 +18,9 @@
 #cd ok, cwd=/site/wwwroot                                                                                                                               
 #lftp -u 'drc-imaa-ukr-tools\$drc-imaa-ukr-tools,rJxEsj09zN3nqknoS9GpxBM1W4vykcqXoZrCNzGungbgKspNMqSePuno4EAY' ftps://waws-prod-db3-195.ftp.azurewebsites.windows.net/site/wwwroot
 #lftp -u 'drc-imaa-ukr-tools-api\$drc-imaa-ukr-tools-api,R8LSo8wxpat8lplxosjzn6WaYjDoT59MJx6xseixPwkJeuk6hhj8PaobAdWX' ftps://waws-prod-db3-195.ftp.azurewebsites.windows.net/site/wwwroot
-#ssh 'drc-imaa-ukr-tools-api\$drc-imaa-ukr-tools-api':R8LSo8wxpat8lplxosjzn6WaYjDoT59MJx6xseixPwkJeuk6hhj8PaobAdWX@https://drc-imaa-ukr-tools-api.azurewebsites.net/
 
-az webapp up --sku F1 --name drc-imaa-ukr-tools-api
+#lftp -e "mirror -R lib/ /site/wwwroot/lib" -u 'drc-imaa-ukr-tools-api\$drc-imaa-ukr-tools-api,R8LSo8wxpat8lplxosjzn6WaYjDoT59MJx6xseixPwkJeuk6hhj8PaobAdWX' ftps://waws-prod-db3-195.ftp.azurewebsites.windows.net/site/wwwroot
+#lftp -e "mirror -R node_modules/ /site/wwwroot/lib" -u 'drc-imaa-ukr-tools-api\$drc-imaa-ukr-tools-api,R8LSo8wxpat8lplxosjzn6WaYjDoT59MJx6xseixPwkJeuk6hhj8PaobAdWX' ftps://waws-prod-db3-195.ftp.azurewebsites.windows.net/site/wwwroot
+#lftp -e "put package.json /site/wwwroot/package.json" -u 'drc-imaa-ukr-tools-api\$drc-imaa-ukr-tools-api,R8LSo8wxpat8lplxosjzn6WaYjDoT59MJx6xseixPwkJeuk6hhj8PaobAdWX' ftps://waws-prod-db3-195.ftp.azurewebsites.windows.net/site/wwwroot
+#lftp  -u 'drc-imaa-ukr-tools-api\$drc-imaa-ukr-tools-api,R8LSo8wxpat8lplxosjzn6WaYjDoT59MJx6xseixPwkJeuk6hhj8PaobAdWX' ftps://waws-prod-db3-195.ftp.azurewebsites.windows.net/site/wwwroot
+

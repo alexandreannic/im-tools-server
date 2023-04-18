@@ -3,7 +3,7 @@ import {Arr, Enum} from '@alexandreannic/ts-utils'
 import {koboTransformerNfiMpcaMyko} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaMyko'
 import {koboTransformerNfiMcpaNaa} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
 import {KoboTransformClient} from '../../connector/kobo/KoboFormTransformer/KoboTransformer'
-import {KoboClient} from '../../connector/kobo/KoboClient/KoboClient'
+import {KoboSdk} from '../../connector/kobo/KoboClient/KoboSdk'
 import {StatsFilters} from './ServiceStats'
 
 export interface NfiaMpcaStats extends NFIs<number> {
@@ -23,7 +23,7 @@ export interface NfiaMpcaStats extends NFIs<number> {
 export class ServiceNfi {
 
   constructor(
-    private koboClient: KoboClient,
+    private koboClient: KoboSdk,
     private koboTransformClient = new KoboTransformClient(koboClient),
   ) {
   }

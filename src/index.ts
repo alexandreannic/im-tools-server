@@ -1,5 +1,5 @@
 import {ApiClient} from './client/ApiClient'
-import {KoboClient} from './connector/kobo/KoboClient/KoboClient'
+import {KoboSdk} from './connector/kobo/KoboClient/KoboSdk'
 import {appConf} from './conf/AppConf'
 import {Server} from './server/Server'
 import {Database} from './db/Database'
@@ -14,9 +14,10 @@ import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
 import {ActivityInfoSdk} from './connector/activity-info/ActivityInfoSdk'
+import {KoboService} from './feature/KoboService'
 
 const initServices = (
-  koboClient: KoboClient,
+  koboClient: KoboSdk,
   ecrecSdk: EcrecSdk,
   legalaidSdk: LegalaidSdk,
 ): Services => {
@@ -41,10 +42,10 @@ const initServices = (
   const pgClient = new Database(conf).client
   const prisma = new PrismaClient()
 
-  const koboSdk = new KoboClient(new ApiClient({
+  const koboSdk = new KoboSdk(new ApiClient({
       baseUrl: conf.kobo.url + '/api',
       headers: {
-        Authorization: KoboClient.makeAuthorizationHeader(conf.kobo.token),
+        Authorization: KoboSdk.makeAuthorizationHeader(conf.kobo.token),
       }
     })
   )
@@ -63,6 +64,11 @@ const initServices = (
     legalAidSdk,
   )
 
+  const koboSync = new KoboService(
+    koboSdk,
+    prisma,
+  )
+  await koboSync.syncImportAnswers('aRHsewShwZhXiy8jrBj9zf')
   // logger.info(`Connecting to ${conf.db.database}...`)
   // await pgClient.connect()
   // logger.info(`Applying evolutions...`)

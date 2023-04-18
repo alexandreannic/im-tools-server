@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express'
-import {KoboClient} from '../../connector/kobo/KoboClient/KoboClient'
+import {KoboSdk} from '../../connector/kobo/KoboClient/KoboSdk'
 import {Client} from 'pg'
 import {Logger} from '../../utils/Logger'
 import {KoboTransformClient} from '../../connector/kobo/KoboFormTransformer/KoboTransformer'
@@ -15,7 +15,7 @@ import {koboFormsId} from '../../conf/KoboFormsId'
 export class ControllerNfiMpca extends Controller {
 
   constructor(
-    private koboClient: KoboClient,
+    private koboClient: KoboSdk,
     private service: ServiceNfi,
     private logger: Logger,
     private koboTransformClient = new KoboTransformClient(koboClient)
@@ -29,7 +29,7 @@ export class ControllerNfiMpca extends Controller {
     const x = await this.koboTransformClient.getAnswers(koboTransformerNfiMcpa, {start, end})
     // const x = await this.koboTransformClient.getAnswers(koboTransformerNfiMpcaMyko, {start, end})
     // const x = await this.koboClient.getAnswers(koboFormsId.prod.fcrmMpcaNAA)
-    res.send(x.data.sort((a, b) => b.start.getTime() - a.start.getTime()).map((_, i) => _._uuid + ' ' + _.start.toISOString() + ' ' + _.start.toLocaleString() + ' ' + i))
+    res.send(x.data.sort((a, b) => b.start.getTime() - a.start.getTime()).map((_, i) => _.id + ' ' + _.start.toISOString() + ' ' + _.start.toLocaleString() + ' ' + i))
   }
 
   readonly index = async (req: Request, res: Response, next: NextFunction) => {
