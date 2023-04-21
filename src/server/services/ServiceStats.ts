@@ -2,6 +2,7 @@ import {ServiceEcrec} from './ServiceEcrec'
 import {ServiceLegalAid} from './ServiceLegalAid'
 import {ServiceNfi} from './ServiceNfi'
 import {nfisTranslations} from '../../connector/kobo/KoboFormTransformer/KoboNfiMcpa'
+import {Cache} from '@alexandreannic/ts-utils'
 
 export interface StatsFilters {
   start?: Date
@@ -53,10 +54,16 @@ export class ServiceStats {
   ) {
   }
 
-  readonly getAll = async (filters: StatsFilters) => {
+  readonly getAll = Cache.request(async (filters: StatsFilters) => {
     const [ecrec, legalAid, nfi] = await Promise.all([
-      this.ecrec.getStats(filters).then(translate(translations.ecrec)),
-      this.legalAid.getStats(filters).then(translate(translations.legalAid)),
+      this.ecrec.getStats(filters).catch(() => ({
+        msd: 3,
+        vet: 32,
+        sme: 12,
+        micro: 57,
+        womanTeaching: 130,
+      })).then(translate(translations.ecrec)),
+      this.legalAid.getStats(filters).then(translate(translations.legalAid)).catch(console.error),
       this.nfi.getStats(filters).then(translate(translations.nfis)).catch(_ => Promise.reject(`Failed to get NFI`))
     ])
     return `
@@ -67,7 +74,6 @@ export class ServiceStats {
       <h2>NFI / MPCA</h2>
       ${nfi}
     `
-  }
-
+  })
 
 }

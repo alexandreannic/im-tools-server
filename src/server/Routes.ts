@@ -13,6 +13,7 @@ import {PrismaClient} from '@prisma/client'
 import {ControllerKoboForm} from './controller/ControllerKoboForm'
 import {ControllerActivityInfo} from './controller/ControllerActivityInfo'
 import {ActivityInfoSdk} from '../connector/activity-info/ActivityInfoSdk'
+import {ControllerKoboApi} from './controller/ControllerKoboApi'
 
 export const getRoutes = (
   pgClient: PrismaClient,
@@ -36,19 +37,23 @@ export const getRoutes = (
     logger,
   )
   const main = new ControllerMain(services.stats)
-  const kobo = new ControllerKobo(koboSdk, pgClient)
+  const kobo = new ControllerKobo(pgClient)
+  const koboApi = new ControllerKoboApi(pgClient)
   const activityInfo = new ControllerActivityInfo()
   try {
     router.get('/', main.htmlStats)
     router.post('/activity-info/activity', activityInfo.submitActivity)
+
     router.get('/kobo', kobo.getServers)
-    router.get('/kobo/local-form', kobo.getAnswersFromLocalCsv)
     router.get('/kobo/:formId/answers', kobo.getAnswers)
-    router.get('/kobo/:formId/sync', kobo.synchronizeAnswersFromKoboServer)
-    router.get('/kobo/:id', kobo.getForms)
-    router.get('/kobo/:id/:formId/answers/kobo', kobo.getAnswersFromKoboServer)
-    router.get('/kobo/:id/:formId', kobo.getForm)
-    router.post('/kobo/:id/:formId', kobo.importAnswers)
+
+    router.get('/kobo-api/local-form', koboApi.getAnswersFromLocalCsv)
+    router.get('/kobo-api/:formId/sync', koboApi.synchronizeAnswersFromKoboServer)
+    router.get('/kobo-api/:id', koboApi.getForms)
+    router.get('/kobo-api/:id/:formId/answers/kobo', koboApi.getAnswers)
+    router.get('/kobo-api/:id/:formId', koboApi.getForm)
+    // router.post('/kobo-api/:id/:formId', koboApi.importAnswers)
+
     router.get('/legalaid', legalaid.index)
     router.get('/nfi/raw', nfi.raw)
     router.get('/nfi', nfi.index)
