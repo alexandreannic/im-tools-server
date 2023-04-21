@@ -1,6 +1,11 @@
 import {KoboSdk} from '../connector/kobo/KoboClient/KoboSdk'
 import {Prisma, PrismaClient} from '@prisma/client'
 
+export interface Period {
+  start: Date
+  end: Date
+}
+
 export class KoboService {
 
   constructor(
@@ -45,9 +50,15 @@ export class KoboService {
     })
   }
 
-  readonly fetchAnswers = (formId: string) => {
+  readonly fetchAnswers = (formId: string, filters: Partial<Period>) => {
     return this.prisma.koboAnswers.findMany({
-      where: {formId}
+      where: {
+        formId,
+        // end: {
+        //   gte: filters.start,
+        //   lte: filters.end,
+        // }
+      }
     })
   }
 }

@@ -68,7 +68,7 @@ const initServices = (
     koboSdk,
     prisma,
   )
-  await koboSync.syncImportAnswers('aRHsewShwZhXiy8jrBj9zf')
+  await koboSync.syncImportAnswers('aFU8x6tHksveU2c3hK7RUG')
   // logger.info(`Connecting to ${conf.db.database}...`)
   // await pgClient.connect()
   // logger.info(`Applying evolutions...`)

@@ -87,7 +87,8 @@ export class ControllerKobo {
 
   readonly getAnswers = async (req: Request, res: Response, next: NextFunction) => {
     const {formId} = req.params
-    const answers = await this.koboService.fetchAnswers(formId)
+    const filters = await answersFiltersValidation.validate(req.query)
+    const answers = await this.koboService.fetchAnswers(formId, filters)
     res.send(answers)
   }
 
