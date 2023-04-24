@@ -8,9 +8,10 @@ datasource db {
 }
 
 model KoboServer {
-  id    String @id @default(uuid())
-  url   String
-  token String
+  id       String     @id @default(uuid())
+  url      String
+  token    String
+  KoboForm KoboForm[]
 }
 
 model KoboAnswers {
@@ -31,6 +32,7 @@ model KoboAnswers {
 model KoboForm {
   id          String        @id
   name        String
+  server      KoboServer    @relation(fields: [serverId], references: [id])
   serverId    String
   createdAt   DateTime
   updatedAt   DateTime

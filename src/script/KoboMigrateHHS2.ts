@@ -2,8 +2,14 @@ import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
 import {ProtHHS_2_1Options} from '../feature/kobo/formInterface/ProtHHS_2_1Options'
 import {ProtHHS_2_1} from '../feature/kobo/formInterface/ProtHHS_2_1'
 import {ProtHHS_2_1_fields} from '../feature/kobo/formInterface/ProtHHS_2_1_fields'
+import {PrismaClient} from '@prisma/client'
 
-export const koboMigrateHHS2 = async (sdk: KoboSdk) => {
+
+export const koboMigrateHHS2 = async (sdk: KoboSdk, prisma: PrismaClient) => {
+  prisma.koboServer
+}
+
+export const mapToNewForm = async (sdk: KoboSdk) => {
   const res = await sdk.getAnswers('aRHsewShwZhXiy8jrBj9zf')
   const unhandledQuestionName = new Set<string>()
   const unhandledOptions: Record<string, string> = {}

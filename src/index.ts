@@ -97,5 +97,6 @@ const startApp = async () => {
       }
     })
   )
-  koboMigrateHHS2(koboSdk)
+  const prisma = new PrismaClient()
+  koboMigrateHHS2(koboSdk, prisma)
 })()
