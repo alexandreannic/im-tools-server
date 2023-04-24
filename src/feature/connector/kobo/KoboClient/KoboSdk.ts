@@ -34,6 +34,35 @@ export class KoboSdk {
       })
   }
 
+  readonly updateData = ({
+    formId,
+    submissionId,
+    group,
+    questionName,
+    newValue,
+  }: {
+    formId: string,
+    submissionId: string,
+    group?: string,
+    questionName: string,
+    newValue: string
+  }) => {
+    // return this.api.patch(`/v2/assets/${formId}/data/${submissionId}/`, {
+    //   body: {
+    //     'start': new Date().toISOString(),
+    //   }
+    // })
+    return this.api.patch(`/v2/assets/${formId}/data/bulk/`, {
+      qs: {format: 'json'},
+      body: {
+        payload: {
+          submissionId: [submissionId],
+          data: {[(group ? group + '/' : '') + questionName]: newValue}
+        }
+      }
+    })
+  }
+
   readonly getFormByVersion = (formId: string, versionId: string) => {
     return this.api.get<KoboApiForm>(`/v2/assets/${formId}/versions/${versionId}`)
   }

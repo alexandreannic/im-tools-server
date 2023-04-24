@@ -67,7 +67,7 @@ export class ControllerKoboApi {
 
   readonly synchronizeAnswersFromKoboServer = async (req: Request, res: Response, next: NextFunction) => {
     const {id, formId} = await this.extractParams(req)
-    this.service.syncImportAnswers(formId, id)
+    this.service.saveApiAnswerToDb(formId, id)
     res.send()
   }
 

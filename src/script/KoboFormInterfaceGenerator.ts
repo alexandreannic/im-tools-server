@@ -47,8 +47,28 @@ class KoboFormInterfaceGenerator {
 
     const mainInterface = this.generateMainInterface(form.content.survey)
     const options = this.generateOptionsType(form.content)
+    const mapping = this.generateFunctionMapping(form.content.survey)
     await fs.writeFileSync(this.options.outDir + '/' + this.options.formName + '.ts', mainInterface)
     await fs.writeFileSync(this.options.outDir + '/' + this.options.formName + 'Options.ts', options)
+    await fs.writeFileSync(this.options.outDir + '/' + this.options.formName + 'Mapping.ts', mapping)
+  }
+
+  readonly generateFunctionMapping = (survey: KoboApiForm['content']['survey']) => {
+    const fnMappings = survey
+      .map(question => [
+          question.name,
+          fnSwitch(question.type, {
+            date: `_.${question.name} ? new Date(_.${question.name}) : undefined`,
+            select_multiple: `_.${question.name}?.split(' ')`,
+          }, _ => undefined)
+        ]
+      )
+      .filter(_ => _[1] !== undefined)
+    return `import {${this.options.formName}} from './${this.options.formName}'\n\n`
+      + `export const map${this.options.formName} = (_: Record<keyof ${this.options.formName}, string | undefined>): ${this.options.formName} => ({\n`
+      + `\t..._,\n`
+      + `${fnMappings.map(([questionName, fn]) => `\t${questionName}: ${fn},`).join('\n')}\n`
+      + `}) as ${this.options.formName}`
   }
 
   readonly generateMainInterface = (survey: KoboApiForm['content']['survey']) => {
@@ -60,12 +80,13 @@ class KoboFormInterfaceGenerator {
         'select_multiple': `Opt<'${lastQuestionNameHavingOptionId}'>`,
         'integer': 'number',
         'text': 'string',
+        'date': 'Date',
       }, () => 'string')
       return `${x.name}: ${type} | undefined,`
     })
     return `import {${this.options.formName}Options} from './${this.options.formName}Options'\n\n`
       + `type Opt<T extends keyof typeof ${this.options.formName}Options> = keyof (typeof ${this.options.formName}Options)[T]\n\n`
-      + `interface ${this.options.formName} {\n${properties.join('\n\t')}\n}`
+      + `export interface ${this.options.formName} {\n${properties.join('\n\t')}\n}`
   }
 
   readonly generateOptionsType = (content: KoboApiForm['content']) => {

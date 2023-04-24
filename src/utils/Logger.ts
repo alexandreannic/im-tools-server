@@ -1,15 +1,17 @@
 import * as winston from 'winston'
-import {Logger as WinstonLogger} from 'winston'
+import {format, Logger as WinstonLogger} from 'winston'
 
 export type Logger = WinstonLogger;
 
-export const logger = winston.createLogger({
+export const logger = (label?: string) => winston.createLogger({
   format: winston.format.combine(
+    format.label({label}),
     winston.format.timestamp({
       format: 'YYYY-MM-DD hh:mm:ss'
     }),
     winston.format.colorize(),
     winston.format.simple(),
+    format.printf((props) => `${props.timestamp} [${props.label}] ${props.level}: ${props.message}`)
   ),
   transports: [
     new winston.transports.Console({
@@ -17,9 +19,3 @@ export const logger = winston.createLogger({
     })
   ],
 })
-
-export const logMorganStream = {
-  write: (message) => {
-    logger.info(message)
-  }
-}

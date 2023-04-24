@@ -87,8 +87,10 @@ export class KoboAnswerUtils {
       ...answers
     } = k
     return {
-      start: new Date(start ?? _submission_time),
-      end: new Date(end ?? _submission_time),
+      start: start,
+      end: end,
+      // start: new Date(start ?? _submission_time),
+      // end: new Date(end ?? _submission_time),
       submissionTime: new Date(_submission_time),
       version: __version__,
       id: '' + _id,

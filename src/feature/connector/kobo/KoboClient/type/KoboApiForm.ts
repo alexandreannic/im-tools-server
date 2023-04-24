@@ -2,6 +2,7 @@ import {KoboApiList} from './KoboAnswer'
 import {ApiPaginate} from '../../../../../core/Type'
 
 export interface KoboApiForm {
+  name: string
   content: {
     choices: {
       $autovalue: string,

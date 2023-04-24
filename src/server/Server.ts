@@ -1,7 +1,7 @@
 import express, {NextFunction, Request, Response} from 'express'
 import * as bodyParser from 'body-parser'
 import {getRoutes} from './Routes'
-import {Logger} from '../utils/Logger'
+import {logger, Logger} from '../utils/Logger'
 import {AppConf} from '../core/conf/AppConf'
 import {genUUID} from '../utils/Common'
 import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
@@ -21,13 +21,13 @@ export class Server {
     private ecrecSdk: EcrecSdk,
     private legalaidSdk: LegalaidSdk,
     private services: Services,
-    private logger: Logger,
+    private log = logger('Server'),
   ) {
   }
 
   readonly errorHandler = (err: HttpError, req: Request, res: Response, next: (err?: any) => void) => {
     const errorId = genUUID()
-    this.logger.error(`[${errorId}] Error ${err.code}: ${err.message}\n${err.stack}`)
+    this.log.error(`[${errorId}] Error ${err.code}: ${err.message}\n${err.stack}`)
     console.error(err.error)
     res.status(err.code).json({
       data: err.code === 500 ? 'Something went wrong.' : err.message,
@@ -53,11 +53,11 @@ export class Server {
       this.ecrecSdk,
       this.legalaidSdk,
       this.services,
-      this.logger,
+      this.log,
     ))
     app.use(this.errorHandler)
     app.listen(this.conf.port, () => {
-      this.logger.info(`server start listening on port ${this.conf.port}`)
+      this.log.info(`server start listening on port ${this.conf.port}`)
     })
   }
 }
