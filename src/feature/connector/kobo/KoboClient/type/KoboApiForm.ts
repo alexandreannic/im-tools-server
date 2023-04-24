@@ -1,7 +1,7 @@
 import {KoboApiList} from './KoboAnswer'
-import {ApiPaginate} from '../../../../core/Type'
+import {ApiPaginate} from '../../../../../core/Type'
 
-export interface KoboForm {
+export interface KoboApiForm {
   content: {
     choices: {
       $autovalue: string,
@@ -18,7 +18,16 @@ export interface KoboForm {
       $qpath: string
       $xpath: string
       name: string
-      type: 'select_one' | 'select_multiple'
+      type:
+        'begin_group' |
+        'select_one' |
+        'note' |
+        'end_group' |
+        'text' |
+        'calculate' |
+        'integer' |
+        'select_multiple' |
+        'date'
       select_from_list_name?: string
     }[]
     translated: ['hint', 'label', 'media::image']

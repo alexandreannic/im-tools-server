@@ -1,16 +1,16 @@
 import {NextFunction, Request, Response} from 'express'
-import {KoboSdk} from '../../connector/kobo/KoboClient/KoboSdk'
+import {KoboSdk} from '../../feature/connector/kobo/KoboClient/KoboSdk'
 import {Client} from 'pg'
 import {Logger} from '../../utils/Logger'
-import {KoboTransformClient} from '../../connector/kobo/KoboFormTransformer/KoboTransformer'
+import {KoboTransformClient} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformer'
 import {sub} from 'date-fns'
-import {koboTransformerNfiMcpa} from '../../connector/kobo/KoboFormTransformer/KoboNfiMcpa'
+import {koboTransformerNfiMcpa} from '../../feature/connector/kobo/KoboFormTransformer/KoboNfiMcpa'
 import {Controller} from './Controller'
 import {ServiceNfi} from '../services/ServiceNfi'
-import {koboTransformerNfiMpcaMyko} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaMyko'
-import {koboTransformerNfiMcpaNaa} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
+import {koboTransformerNfiMpcaMyko} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaMyko'
+import {koboTransformerNfiMcpaNaa} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
 import {Arr} from '@alexandreannic/ts-utils'
-import {koboFormsId} from '../../conf/KoboFormsId'
+import {koboFormsId} from '../../core/conf/KoboFormsId'
 
 export class ControllerNfiMpca extends Controller {
 

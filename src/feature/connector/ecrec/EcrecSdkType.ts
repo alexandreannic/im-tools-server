@@ -1,4 +1,4 @@
-import {StandardEnum} from '../../utils/Common'
+import {StandardEnum} from '../../../utils/Common'
 
 export interface EcrecGetDataResponse<T> {
   totalCount: number

@@ -1,7 +1,7 @@
 import {ServiceEcrec} from './ServiceEcrec'
 import {ServiceLegalAid} from './ServiceLegalAid'
 import {ServiceNfi} from './ServiceNfi'
-import {nfisTranslations} from '../../connector/kobo/KoboFormTransformer/KoboNfiMcpa'
+import {nfisTranslations} from '../../feature/connector/kobo/KoboFormTransformer/KoboNfiMcpa'
 import {Cache} from '@alexandreannic/ts-utils'
 
 export interface StatsFilters {

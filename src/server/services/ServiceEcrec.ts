@@ -1,5 +1,5 @@
-import {EcrecGetDataFilters} from '../../connector/ecrec/EcrecSdkType'
-import {EcrecSdk} from '../../connector/ecrec/EcrecSdk'
+import {EcrecGetDataFilters} from '../../feature/connector/ecrec/EcrecSdkType'
+import {EcrecSdk} from '../../feature/connector/ecrec/EcrecSdk'
 import {StatsFilters} from './ServiceStats'
 
 export class ServiceEcrec {

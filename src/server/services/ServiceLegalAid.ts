@@ -1,4 +1,4 @@
-import {LegalaidSdk} from '../../connector/legalaid/LegalaidSdk'
+import {LegalaidSdk} from '../../feature/connector/legalaid/LegalaidSdk'
 import {Arr} from '@alexandreannic/ts-utils'
 
 interface Filters {

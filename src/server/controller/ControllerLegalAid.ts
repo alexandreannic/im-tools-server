@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
 import {Client} from 'pg'
 import {Logger} from '../../utils/Logger'
-import {LegalaidSdk} from '../../connector/legalaid/LegalaidSdk'
+import {LegalaidSdk} from '../../feature/connector/legalaid/LegalaidSdk'
 import {Controller} from './Controller'
 
 

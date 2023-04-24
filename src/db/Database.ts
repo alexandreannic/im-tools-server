@@ -1,4 +1,4 @@
-import {AppConf} from '../conf/AppConf'
+import {AppConf} from '../core/conf/AppConf'
 import {Client} from 'pg'
 
 export class Database {

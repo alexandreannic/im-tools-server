@@ -1,20 +1,24 @@
-import {ApiClient} from './client/ApiClient'
-import {KoboSdk} from './connector/kobo/KoboClient/KoboSdk'
-import {appConf} from './conf/AppConf'
+import {ApiClient} from './core/client/ApiClient'
+import {KoboSdk} from './feature/connector/kobo/KoboClient/KoboSdk'
+import {appConf} from './core/conf/AppConf'
 import {Server} from './server/Server'
 import {Database} from './db/Database'
 import {logger} from './utils/Logger'
-import {EcrecClient} from './connector/ecrec/EcrecClient'
-import {EcrecSdk} from './connector/ecrec/EcrecSdk'
-import {LegalaidSdk} from './connector/legalaid/LegalaidSdk'
+import {EcrecClient} from './feature/connector/ecrec/EcrecClient'
+import {EcrecSdk} from './feature/connector/ecrec/EcrecSdk'
+import {LegalaidSdk} from './feature/connector/legalaid/LegalaidSdk'
 import {ServiceEcrec} from './server/services/ServiceEcrec'
 import {ServiceLegalAid} from './server/services/ServiceLegalAid'
 import {ServiceNfi} from './server/services/ServiceNfi'
 import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
-import {ActivityInfoSdk} from './connector/activity-info/ActivityInfoSdk'
-import {KoboService} from './feature/KoboService'
+import {ActivityInfoSdk} from './feature/connector/activity-info/ActivityInfoSdk'
+import {KoboApiService} from './feature/kobo/KoboApiService'
+import {ProtHHS_2_1_fields} from './feature/kobo/formInterface/ProtHHS_2_1_fields'
+import {ProtHHS_2_1} from './feature/kobo/formInterface/ProtHHS_2_1'
+import {ProtHHS_2_1Options} from './feature/kobo/formInterface/ProtHHS_2_1Options'
+import {koboMigrateHHS2} from './script/KoboMigrateHHS2'
 
 const initServices = (
   koboClient: KoboSdk,
@@ -37,7 +41,7 @@ const initServices = (
   }
 }
 
-(async () => {
+const startApp = async () => {
   const conf = appConf
   const pgClient = new Database(conf).client
   const prisma = new PrismaClient()
@@ -64,11 +68,9 @@ const initServices = (
     legalAidSdk,
   )
 
-  const koboSync = new KoboService(
-    koboSdk,
+  const koboSync = new KoboApiService(
     prisma,
   )
-  await koboSync.syncImportAnswers('aFU8x6tHksveU2c3hK7RUG')
   // logger.info(`Connecting to ${conf.db.database}...`)
   // await pgClient.connect()
   // logger.info(`Applying evolutions...`)
@@ -82,4 +84,18 @@ const initServices = (
     services,
     logger,
   ).start()
+}
+
+// startApp()
+
+(async () => {
+  const conf = appConf
+  const koboSdk = new KoboSdk(new ApiClient({
+      baseUrl: conf.kobo.url + '/api',
+      headers: {
+        Authorization: KoboSdk.makeAuthorizationHeader(conf.kobo.token),
+      }
+    })
+  )
+  koboMigrateHHS2(koboSdk)
 })()

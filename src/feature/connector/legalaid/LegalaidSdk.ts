@@ -1,5 +1,5 @@
-import {UUID} from '../../core/Type'
-import {ApiClient} from '../../client/ApiClient'
+import {UUID} from '../../../core/Type'
+import {ApiClient} from '../../../core/client/ApiClient'
 import {Legalaid} from './Legalaid'
 import {Arr, Cache, duration, Enum, throwIf} from '@alexandreannic/ts-utils'
 import Poll = Legalaid.Poll
@@ -9,7 +9,7 @@ import Beneficiary = Legalaid.Beneficiary
 import Config = Legalaid.Config
 import BeneficiaryGroup = Legalaid.BeneficiaryGroup
 import Gender = Legalaid.Gender
-import {toYYYYMMDD} from '../../utils/Common'
+import {toYYYYMMDD} from '../../../utils/Common'
 
 export enum PollType {
   Group,

@@ -1,4 +1,4 @@
-import {ApiPaginate, UUID} from '../../../../core/Type'
+import {ApiPaginate, UUID} from '../../../../../core/Type'
 
 export interface KoboAnswerParams {
   start?: Date
@@ -109,3 +109,10 @@ export class KoboAnswerUtils {
   // }
 }
 
+export interface KoboApiVersion {
+  uid: string
+  url: string
+  content_hash: string
+  date_deployed: Date
+  date_modified: Date
+}

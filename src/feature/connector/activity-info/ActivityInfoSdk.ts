@@ -1,6 +1,6 @@
 import {AIID, Database, Form, FormDescs} from './ActivityInfo'
-import {makeid} from '../../utils/Common'
-import {appConf} from '../../conf/AppConf'
+import {makeid} from '../../../utils/Common'
+import {appConf} from '../../../core/conf/AppConf'
 import {AiProtectionHhs} from './activity/AiProtectionHhs'
 
 interface ActicityInfoBody {

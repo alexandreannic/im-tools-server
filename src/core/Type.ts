@@ -1,4 +1,4 @@
-import {KoboApiList} from '../connector/kobo/KoboClient/type/KoboAnswer'
+import {KoboApiList} from '../feature/connector/kobo/KoboClient/type/KoboAnswer'
 
 export interface ApiPaginate<T> {
   total: number

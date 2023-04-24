@@ -1,7 +1,7 @@
 import {lazy} from '@alexandreannic/ts-utils'
-import {UUID} from '../core/Type'
+import {UUID} from '../../core/Type'
 import {KoboSdk} from '../connector/kobo/KoboClient/KoboSdk'
-import {ApiClient} from '../client/ApiClient'
+import {ApiClient} from '../../core/client/ApiClient'
 import {PrismaClient} from '@prisma/client'
 
 export class KoboSdkGenerator {

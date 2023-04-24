@@ -1,7 +1,7 @@
-import {MappedColumn, pipe, renameObjectProperties} from '../../../utils/Common'
+import {MappedColumn, pipe, renameObjectProperties} from '../../../../utils/Common'
 import {KoboSdk} from '../KoboClient/KoboSdk'
 import {KoboAnswer, KoboAnswerMetaData, KoboAnswerParams} from '../KoboClient/type/KoboAnswer'
-import {ApiPaginate} from '../../../core/Type'
+import {ApiPaginate} from '../../../../core/Type'
 
 type Transformer<F> = (_: MappedColumn<F, any>) => F
 

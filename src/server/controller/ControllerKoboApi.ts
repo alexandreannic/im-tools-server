@@ -1,15 +1,15 @@
 import {NextFunction, Request, Response} from 'express'
-import {KoboSdk} from '../../connector/kobo/KoboClient/KoboSdk'
+import {KoboSdk} from '../../feature/connector/kobo/KoboClient/KoboSdk'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
-import {ApiClient} from '../../client/ApiClient'
+import {ApiClient} from '../../core/client/ApiClient'
 import {UUID} from '../../core/Type'
 import {lazy} from '@alexandreannic/ts-utils'
-import {getCsv} from '../../connector/kobo/cleanKoboDb/CleadedKoboDbLoader'
+import {getCsv} from '../../feature/connector/kobo/cleanKoboDb/CleadedKoboDbLoader'
 import {format} from 'date-fns'
-import {KoboService} from '../../feature/KoboService'
-import {KoboSdkGenerator} from '../../feature/KoboSdkGenerator'
-import {KoboApiService} from '../../feature/KoboApiService'
+import {KoboService} from '../../feature/kobo/KoboService'
+import {KoboSdkGenerator} from '../../feature/kobo/KoboSdkGenerator'
+import {KoboApiService} from '../../feature/kobo/KoboApiService'
 
 interface AnswersFilters {
   start?: Date

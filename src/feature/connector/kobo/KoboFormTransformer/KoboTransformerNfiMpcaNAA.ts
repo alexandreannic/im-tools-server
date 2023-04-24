@@ -1,9 +1,9 @@
-import {koboFormsId} from '../../../conf/KoboFormsId'
 import {KoboTransformer} from './KoboTransformer'
+import {koboFormsId} from '../../../../core/conf/KoboFormsId'
 import {KoboNfiMcpa, mapNfisCount, Program} from './KoboNfiMcpa'
 
-export const koboTransformerNfiMpcaMyko = new KoboTransformer<KoboNfiMcpa>(
-  koboFormsId.prod.fcrmMpcaMyko, 
+export const koboTransformerNfiMcpaNaa = new KoboTransformer<KoboNfiMcpa>(
+  koboFormsId.prod.fcrmMpcaNAA,
   {
     houseHoldSize: 'module_eligibility_screening/group_kj9wg97/Total_Family',
     kits: {
@@ -21,12 +21,12 @@ export const koboTransformerNfiMpcaMyko = new KoboTransformer<KoboNfiMcpa>(
     },
   },
   _ => {
-    return ({
+    return {
       ..._,
-      oblast: 'Mykolaivska',
       program: [Program.NFI],
       houseHoldSize: Number(_.houseHoldSize ?? 0),
       kits: mapNfisCount(_.kits),
-    })
+    }
   }
 )
+

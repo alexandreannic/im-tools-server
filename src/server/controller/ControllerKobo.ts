@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
-import {KoboService} from '../../feature/KoboService'
+import {KoboService} from '../../feature/kobo/KoboService'
 
 interface AnswersFilters {
   start?: Date

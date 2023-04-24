@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
 import {ServiceStats} from '../services/ServiceStats'
-import {ActivityInfoSdk} from '../../connector/activity-info/ActivityInfoSdk'
-import {AiProtectionHhs} from '../../connector/activity-info/activity/AiProtectionHhs'
+import {ActivityInfoSdk} from '../../feature/connector/activity-info/ActivityInfoSdk'
+import {AiProtectionHhs} from '../../feature/connector/activity-info/activity/AiProtectionHhs'
 import FormParams = AiProtectionHhs.FormParams
 
 export class ControllerActivityInfo {

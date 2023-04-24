@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
-import {KoboSdk} from '../../connector/kobo/KoboClient/KoboSdk'
+import {KoboSdk} from '../../feature/connector/kobo/KoboClient/KoboSdk'
 import {Client} from 'pg'
-import {koboFormsId} from '../../conf/KoboFormsId'
+import {koboFormsId} from '../../core/conf/KoboFormsId'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 

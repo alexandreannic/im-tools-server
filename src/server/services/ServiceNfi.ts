@@ -1,9 +1,9 @@
-import {babyKits, KoboNfiMcpa, koboTransformerNfiMcpa, NFIs, nfis, Program, winterizationKits} from '../../connector/kobo/KoboFormTransformer/KoboNfiMcpa'
+import {babyKits, KoboNfiMcpa, koboTransformerNfiMcpa, NFIs, nfis, Program, winterizationKits} from '../../feature/connector/kobo/KoboFormTransformer/KoboNfiMcpa'
 import {Arr, Enum} from '@alexandreannic/ts-utils'
-import {koboTransformerNfiMpcaMyko} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaMyko'
-import {koboTransformerNfiMcpaNaa} from '../../connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
-import {KoboTransformClient} from '../../connector/kobo/KoboFormTransformer/KoboTransformer'
-import {KoboSdk} from '../../connector/kobo/KoboClient/KoboSdk'
+import {koboTransformerNfiMpcaMyko} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaMyko'
+import {koboTransformerNfiMcpaNaa} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
+import {KoboTransformClient} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformer'
+import {KoboSdk} from '../../feature/connector/kobo/KoboClient/KoboSdk'
 import {StatsFilters} from './ServiceStats'
 
 export interface NfiaMpcaStats extends NFIs<number> {

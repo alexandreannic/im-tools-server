@@ -1,4 +1,4 @@
-import {makeid} from '../../../utils/Common'
+import {makeid} from '../../../../utils/Common'
 import {oblasts} from '../location/oblasts'
 import {raions} from '../location/raions'
 import {hromada} from '../location/hromada'
