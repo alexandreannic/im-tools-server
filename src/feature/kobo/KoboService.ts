@@ -1,5 +1,6 @@
 import {KoboSdk} from '../connector/kobo/KoboClient/KoboSdk'
 import {Prisma, PrismaClient} from '@prisma/client'
+import {ApiPagination, defaultPagination, toApiPaginate} from '../../core/Type'
 
 export interface Period {
   start: Date
@@ -16,12 +17,14 @@ export class KoboService {
 
   readonly fetchForms = async () => {
     const z = this.prisma.koboAnswers.findMany({
-      distinct:'formId'
+      distinct: 'formId'
     })
   }
 
-  readonly fetchAnswers = (formId: string, filters: Partial<Period>) => {
+  readonly fetchAnswers = (formId: string, filters: Partial<Period>, paginate: ApiPagination = defaultPagination) => {
     return this.prisma.koboAnswers.findMany({
+      take: paginate.limit,
+      skip: paginate.offset,
       where: {
         formId,
         // end: {
@@ -29,7 +32,7 @@ export class KoboService {
         //   lte: filters.end,
         // }
       }
-    })
+    }).then(toApiPaginate)
   }
 }
 

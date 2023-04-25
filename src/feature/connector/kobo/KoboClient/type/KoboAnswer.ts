@@ -1,4 +1,5 @@
 import {ApiPaginate, UUID} from '../../../../../core/Type'
+import {Arr} from '@alexandreannic/ts-utils'
 
 export interface KoboAnswerParams {
   start?: Date
@@ -101,6 +102,10 @@ export class KoboAnswerUtils {
     }
   }
 
+  // static readonly groupAnswer = (answer: Record<string, any>): Record<string, any> => {
+  //   const grouped = Arr(Object.keys(answer)).map(k => k.split('/')).groupBy(([group, question]) => group)
+  // }
+
   // static readonly mapAnswerMetaData = (k: Record<keyof KoboAnswerMetaData, any>): KoboAnswerMetaData => {
   //   return {
   //     ...k,
@@ -118,3 +123,5 @@ export interface KoboApiVersion {
   date_deployed: Date
   date_modified: Date
 }
+
+// git remote add azure https://drc-imaa-ukr-tools-api.scm.azurewebsites.net/drc-imaa-ukr-tools-api.git

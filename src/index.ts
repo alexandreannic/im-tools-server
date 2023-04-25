@@ -50,19 +50,19 @@ const startApp = async () => {
       }
     })
   )
-  await generateForms(
-    koboSdk,
-    '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/koboInterface',
-  )
+  // await generateForms(
+  //   koboSdk,
+  //   '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/koboInterface',
+  // )
 
   await initializeDatabase(prisma)
-  await KoboMigrateHHS2({
-    prisma,
-    serverId: koboServerId.prod,
-    oldFormId: koboFormsId.prod.protectionHh_2,
-    newFormId: koboFormsId.prod.protectionHh_2_1,
-  }).run()
-  await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
+  // await KoboMigrateHHS2({
+  //   prisma,
+  //   serverId: koboServerId.prod,
+  //   oldFormId: koboFormsId.prod.protectionHh_2,
+  //   newFormId: koboFormsId.prod.protectionHh_2_1,
+  // }).run()
+  // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
   const activityInfoSdk = new ActivityInfoSdk()
   const ecrecAppSdk = new EcrecSdk(new EcrecClient(appConf.ecrecApp))
   const legalAidSdk = new LegalaidSdk(new ApiClient({

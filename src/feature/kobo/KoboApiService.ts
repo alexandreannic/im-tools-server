@@ -1,4 +1,4 @@
-import {Prisma, PrismaClient} from '@prisma/client'
+import {KoboForm, Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {KoboAnswerParams} from '../connector/kobo/KoboClient/type/KoboAnswer'
 import {logger, Logger} from '../../utils/Logger'
@@ -14,7 +14,7 @@ export class KoboApiService {
 
   readonly constructSdk = (serverId: string): Promise<KoboSdk> => this.koboSdkGenerator.construct(serverId)
 
-  readonly saveApiFormToDb = async (serverId: string, formId: string) => {
+  readonly saveApiFormToDb = async (serverId: string, formId: string): Promise<KoboForm> => {
     const maybeSavedForm = await this.prisma.koboForm.findFirst({where: {id: formId}})
     if (maybeSavedForm) return maybeSavedForm
     const sdk = await this.koboSdkGenerator.construct(serverId)

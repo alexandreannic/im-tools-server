@@ -2,6 +2,7 @@ import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {KoboService} from '../../feature/kobo/KoboService'
+import {validateApiPaginate} from '../../core/Type'
 
 interface AnswersFilters {
   start?: Date
@@ -31,7 +32,8 @@ export class ControllerKobo {
   readonly getAnswers = async (req: Request, res: Response, next: NextFunction) => {
     const {formId} = req.params
     const filters = await answersFiltersValidation.validate(req.query)
-    const answers = await this.koboService.fetchAnswers(formId, filters)
+    const paginate = await validateApiPaginate.validate(req.query)
+    const answers = await this.koboService.fetchAnswers(formId, filters, paginate)
     res.send(answers)
   }
 }
