@@ -88,24 +88,23 @@ export class KoboAnswerUtils {
       ...answers
     } = k
     return {
-      start: start,
-      end: end,
-      // start: new Date(start ?? _submission_time),
-      // end: new Date(end ?? _submission_time),
+      // start: start,
+      // end: end,
+      start: new Date(start ?? _submission_time),
+      end: new Date(end ?? _submission_time),
       submissionTime: new Date(_submission_time),
       version: __version__,
       id: '' + _id,
       validationStatus: _validation_status.uid,
       lastValidatedTimestamp: _validation_status.timestamp,
       validatedBy: _validation_status.by_whom,
-      answers,
+      answers: KoboAnswerUtils.removeGroup(answers),
     }
   }
 
-  // static readonly groupAnswer = (answer: Record<string, any>): Record<string, any> => {
-  //   const grouped = Arr(Object.keys(answer)).map(k => k.split('/')).groupBy(([group, question]) => group)
-  // }
-
+  static readonly removeGroup = <T>(answers: Record<string, T>): Record<string, T> => {
+    return Arr(Object.entries(answers)).reduceObject(([k, v]) => [k.replace(/^.*?\//, ''), v])
+  }
   // static readonly mapAnswerMetaData = (k: Record<keyof KoboAnswerMetaData, any>): KoboAnswerMetaData => {
   //   return {
   //     ...k,

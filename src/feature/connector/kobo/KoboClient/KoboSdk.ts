@@ -71,21 +71,6 @@ export class KoboSdk {
     return this.api.get<KoboApiForm>(`/v2/assets/${formId}/versions/${versionId}/data.json`)
   }
 
-  readonly getAnswersGrouped = Cache.request((form: UUID, params: KoboAnswerParams = {}): Promise<ApiPaginate<KoboAnswer>> => {
-    const start = map(params.start, _ => KoboSdk.makeDateFilter('start', 'gte', _))
-    const end = map(params.end, _ => KoboSdk.makeDateFilter('start', 'lte', _))
-    const query = start && end ? {'$and': [start, end]} : start ?? end
-    return this.api.get<KoboApiList<any>>(`/v2/assets/${form}/data`, {qs: {query: query ? JSON.stringify(query) : undefined}})
-      .then(res => {
-        return ({
-          ...res,
-          results: res.results.map(KoboAnswerUtils.mapAnswer).sort((a, b) => a.submissionTime.getTime() - b.submissionTime.getTime())
-        })
-      })
-      .then(koboToApiPaginate)
-  })
-
-  /** @deprecated */
   readonly getAnswers = Cache.request((form: UUID, params: KoboAnswerParams = {}): Promise<ApiPaginate<KoboAnswer>> => {
     const start = map(params.start, _ => KoboSdk.makeDateFilter('start', 'gte', _))
     const end = map(params.end, _ => KoboSdk.makeDateFilter('start', 'lte', _))
@@ -99,6 +84,10 @@ export class KoboSdk {
       })
       .then(koboToApiPaginate)
   })
+
+  private readonly removeGroup = () => {
+
+  }
 
   readonly getForms = () => {
     // return this.api.get(`/v2/assets/`)

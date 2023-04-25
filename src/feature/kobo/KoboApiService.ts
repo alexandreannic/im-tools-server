@@ -39,19 +39,13 @@ export class KoboApiService {
   }
 
   readonly saveApiAnswerToDb = async (serverId: string, formId: string) => {
-    const findLast = await this.prisma.koboAnswers.findFirst({
-      orderBy: [{
-        end: 'desc',
-      }]
+    const alreadyInsertedIds = await this.prisma.koboAnswers.findMany({select: {id: true}}).then(_ => {
+      return new Set(_.map(_ => _.id))
     })
     const sdk = await this.koboSdkGenerator.construct(serverId)
-    const answers = await sdk.getAnswers(formId)
-    if (answers.total === 0) {
-      this.log.info('No data to update since ' + findLast?.start)
-    } else {
-      this.log.info(`Insert ${answers.total} rows.`)
-    }
-    const inserts = answers.data.map(_ => {
+    const notInsertedAnswers = await sdk.getAnswers(formId).then(_ => _.data.filter(_ => !alreadyInsertedIds.has(_.id)))
+
+    const inserts = notInsertedAnswers.map(_ => {
       const res: Prisma.KoboAnswersUncheckedCreateInput = {
         formId,
         answers: _.answers,

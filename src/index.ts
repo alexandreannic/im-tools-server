@@ -12,12 +12,10 @@ import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
 import {ActivityInfoSdk} from './feature/connector/activity-info/ActivityInfoSdk'
-import {KoboApiService} from './feature/kobo/KoboApiService'
 import {initializeDatabase} from './db/Db'
 import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
 import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
-import {KoboFillMissingStartEndDate} from './script/KoboFillMissingStartEndDate'
-import {generateForms} from './script/KoboFormInterfaceGenerator'
+import {KoboApiService} from './feature/kobo/KoboApiService'
 
 const initServices = (
   koboClient: KoboSdk,
@@ -56,13 +54,13 @@ const startApp = async () => {
   // )
 
   await initializeDatabase(prisma)
-  // await KoboMigrateHHS2({
-  //   prisma,
-  //   serverId: koboServerId.prod,
-  //   oldFormId: koboFormsId.prod.protectionHh_2,
-  //   newFormId: koboFormsId.prod.protectionHh_2_1,
-  // }).run()
-  // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
+  await KoboMigrateHHS2({
+    prisma,
+    serverId: koboServerId.prod,
+    oldFormId: koboFormsId.prod.protectionHh_2,
+    newFormId: koboFormsId.prod.protectionHh_2_1,
+  }).run()
+  await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
   const activityInfoSdk = new ActivityInfoSdk()
   const ecrecAppSdk = new EcrecSdk(new EcrecClient(appConf.ecrecApp))
   const legalAidSdk = new LegalaidSdk(new ApiClient({

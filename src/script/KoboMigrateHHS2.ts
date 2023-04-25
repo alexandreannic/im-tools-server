@@ -1,6 +1,6 @@
-import {ProtHHS_2_1Options} from '../feature/kobo/formInterface/ProtHHS_2_1Options'
-import {ProtHHS_2_1} from '../feature/kobo/formInterface/ProtHHS_2_1'
-import {ProtHHS_2_1_fields} from '../feature/kobo/formInterface/ProtHHS_2_1_fields'
+import {ProtHHS_2_1Options} from '../db/koboInterface/ProtHHS_2_1Options'
+import {ProtHHS_2_1} from '../db/koboInterface/ProtHHS_2_1'
+import {protHHS_2_1Fields} from '../db/koboInterface/ProtHHS_2_1Fields'
 import {PrismaClient} from '@prisma/client'
 import {KoboApiService} from '../feature/kobo/KoboApiService'
 import {logger, Logger} from '../utils/Logger'
@@ -45,26 +45,26 @@ export const KoboMigrateHHS2 = ({
         wg_using_your_usual_language_have_difficulty_communicating_: 'wg_using_your_usual_language_have_difficulty_communicating',
         host_community_member: 'non_displaced',
         conflict_affected_person: 'non_displaced',
-        'host_communitys_local_authorities_supported_evacuation': 'government_supported_evacuation',
-        '_4_very_good': '_5_very_good',
-        '_3_good': '_4_good',
-        'collective_centre': 'urban_area',
-        'village_settlement': 'rural_area',
-        'private_housing': 'rural_area',
-        'borrowing_money_': 'borrowing_money',
-        'accommodations_condition_': 'accommodations_condition',
-        'fear_of_property_being_damaged_or_destroyed_by_armed_violence': 'fear_of_property_being_damaged_or_destroyedby_armed_violence',
-        'partially_damaged_': 'partially_damaged',
-        'accommodation_with_host_family_': 'accommodation_with_host_family',
-        'livelihood_support_vocational_training': 'livelihood_support vocational_training',
-        'collective_shelter_': 'collective_shelter',
-        'repaired_housing_compensation_for_destroyed_or_damaged_property': 'repaired_housing_compensation_for_destroyedor_damaged_property',
+        host_communitys_local_authorities_supported_evacuation: 'government_supported_evacuation',
+        _4_very_good: '_5_very_good',
+        _3_good: '_4_good',
+        collective_centre: 'urban_area',
+        village_settlement: 'rural_area',
+        private_housing: 'rural_area',
+        borrowing_money_: 'borrowing_money',
+        accommodations_condition_: 'accommodations_condition',
+        fear_of_property_being_damaged_or_destroyed_by_armed_violence: 'fear_of_property_being_damaged_or_destroyedby_armed_violence',
+        partially_damaged_: 'partially_damaged',
+        accommodation_with_host_family_: 'accommodation_with_host_family',
+        livelihood_support_vocational_training: 'livelihood_support vocational_training',
+        collective_shelter_: 'collective_shelter',
+        repaired_housing_compensation_for_destroyed_or_damaged_property: 'repaired_housing_compensation_for_destroyedor_damaged_property',
       }
       return values.split(' ').map(_ => optionsMapping[_] ?? _).join(' ')
     }
 
     const newData = res.data.map(row => {
-      const answersArr = Object.entries(row.answers).map(([questionName, value]) => [questionName.split('/')[1], value]) as [string, any][]
+      const answersArr = Object.entries(row.answers).map(([questionName, value]) => [questionName/*.split('/')[1]*/, value]) as [string, any][]
       const answers = {} as ProtHHS_2_1
       answersArr.forEach(([questionName, value], index) => {
         value = fixOptions(value)
@@ -74,7 +74,7 @@ export const KoboMigrateHHS2 = ({
         if (questionName === 'type_of_site' && value === 'other_specify') {
           value = ''
         }
-        if (ProtHHS_2_1_fields.find(_ => _ === questionName)) {
+        if (protHHS_2_1Fields.find(_ => _ === questionName)) {
           answers[questionName] = value
         } else if (/^please_specify[a-z0-9_]{5}$/.test(questionName)) {
           const previousQuestionName = answersArr[index - 1][0]
