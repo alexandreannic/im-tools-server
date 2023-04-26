@@ -4,12 +4,13 @@ import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {ApiClient} from '../../core/client/ApiClient'
 import {UUID} from '../../core/Type'
-import {lazy} from '@alexandreannic/ts-utils'
+import {Arr, lazy} from '@alexandreannic/ts-utils'
 import {getCsv} from '../../feature/connector/kobo/cleanKoboDb/CleadedKoboDbLoader'
 import {format} from 'date-fns'
 import {KoboService} from '../../feature/kobo/KoboService'
 import {KoboSdkGenerator} from '../../feature/kobo/KoboSdkGenerator'
 import {KoboApiService} from '../../feature/kobo/KoboApiService'
+import {KoboAnswerUtils} from '../../feature/connector/kobo/KoboClient/type/KoboAnswer'
 
 interface AnswersFilters {
   start?: Date
@@ -75,6 +76,11 @@ export class ControllerKoboApi {
     const {id, formId} = await this.extractParams(req)
     const filters = await answersFiltersValidation.validate(req.query)
     const answers = await this.service.fetchAnswers(id, formId, filters)
+    console.log('get')
+    // .then(res => ({
+    // ...res,
+    // data: res.data.map(answers => KoboAnswerUtils.removeGroup(answers))
+    // }))
     res.send(answers)
   }
 

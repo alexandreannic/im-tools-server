@@ -10,6 +10,7 @@ export const generateForms = async (koboSdk: KoboSdk, outDir: string) => {
     {name: 'MPCA_NFI', id: 'a4Sx3PrFMDAMZEGsyzgJJg'},
     {name: 'MPCA_NFI_NAA', id: 'aBGVXW2N26DaLehmKneuyB'},
     {name: 'MPCA_NFI_Myko', id: 'a8WAWB9Yxu2jkgk4Ei8GTk'},
+    {name: 'MPCA_NFI_Old', id: 'a3h8Ykmp2C8NFiw5DDGBLz'},
     // {name: 'ProtHHS_2_0', id: 'aRHsewShwZhXiy8jrBj9zf'},
   ]
   return Promise.all(forms.map(f => new KoboFormInterfaceGenerator(koboSdk, {
@@ -88,7 +89,7 @@ class KoboFormInterfaceGenerator {
         'text': 'string',
         'date': 'Date',
       }, () => 'string')
-      return `${x.name}: ${type} | undefined,`
+      return `${x.name ?? x.$autoname}: ${type} | undefined,`
     })
     return `import {${this.options.formName}Options} from './${this.options.formName}Options'\n\n`
       + `type Opt<T extends keyof typeof ${this.options.formName}Options> = keyof (typeof ${this.options.formName}Options)[T]\n\n`

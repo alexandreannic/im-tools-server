@@ -14,7 +14,7 @@ export interface KoboApiForm {
     schema: string
     settings: {version: string, default_language: string}
     survey: {
-      $autoname: string
+      $autoname?: string
       $kuid: string
       $qpath: string
       label?: string[]

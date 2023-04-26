@@ -17,6 +17,7 @@ export type KoboAnswerNotes = any
 
 export type KoboAnswerMetaData = Pick<ApiKoboAnswerMetaData, 'start' | 'end'> & {
   version: ApiKoboAnswerMetaData['__version__']
+  geolocation: ApiKoboAnswerMetaData['_geolocation']
   submissionTime: ApiKoboAnswerMetaData['_submission_time']
   id: ApiKoboAnswerMetaData['_id']
   validationStatus?: 'validation_status_approved'
@@ -90,6 +91,7 @@ export class KoboAnswerUtils {
     return {
       // start: start,
       // end: end,
+      geolocation: _geolocation,
       start: new Date(start ?? _submission_time),
       end: new Date(end ?? _submission_time),
       submissionTime: new Date(_submission_time),
@@ -103,7 +105,7 @@ export class KoboAnswerUtils {
   }
 
   static readonly removeGroup = <T>(answers: Record<string, T>): Record<string, T> => {
-    return Arr(Object.entries(answers)).reduceObject(([k, v]) => [k.replace(/^.*?\//, ''), v])
+    return Arr(Object.entries(answers)).reduceObject(([k, v]) => [k.replace(/^.*\//, ''), v])
   }
   // static readonly mapAnswerMetaData = (k: Record<keyof KoboAnswerMetaData, any>): KoboAnswerMetaData => {
   //   return {
