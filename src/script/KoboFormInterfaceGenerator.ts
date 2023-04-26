@@ -2,10 +2,14 @@ import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
 import {Arr, fnSwitch} from '@alexandreannic/ts-utils'
 import {KoboApiForm} from '../feature/connector/kobo/KoboClient/type/KoboApiForm'
 import * as fs from 'fs'
+import {Logger} from '../utils/Logger'
 
 export const generateForms = async (koboSdk: KoboSdk, outDir: string) => {
   const forms: {name: string, id: string}[] = [
     {name: 'ProtHHS_2_1', id: 'aQDZ2xhPUnNd43XzuQucVR'},
+    {name: 'MPCA_NFI', id: 'a4Sx3PrFMDAMZEGsyzgJJg'},
+    {name: 'MPCA_NFI_NAA', id: 'aBGVXW2N26DaLehmKneuyB'},
+    {name: 'MPCA_NFI_Myko', id: 'a8WAWB9Yxu2jkgk4Ei8GTk'},
     // {name: 'ProtHHS_2_0', id: 'aRHsewShwZhXiy8jrBj9zf'},
   ]
   return Promise.all(forms.map(f => new KoboFormInterfaceGenerator(koboSdk, {
@@ -20,6 +24,8 @@ const ignoredQuestionTypes: KoboApiForm['content']['survey'][0]['type'][] = [
   'begin_group',
   'end_group',
   'note',
+  'end_repeat',
+  'begin_repeat'
 ]
 
 class KoboFormInterfaceGenerator {
@@ -103,7 +109,7 @@ class KoboFormInterfaceGenerator {
     return `export const ${this.options.formName}Options = {\n`
       + Object.entries(res).map(([k, v]) => `${k}: {\n` +
         Object.keys(v)
-          .map(sk => `\t${sk}: \`${v[sk]}\``)
+          .map(sk => `\t'${sk}': \`${v[sk]}\``)
           .join(',\n')
       ).join('\n},\n')
       + '\n}}'

@@ -17,9 +17,12 @@ export interface KoboApiForm {
       $autoname: string
       $kuid: string
       $qpath: string
+      label?: string[]
       $xpath: string
       name: string
       type:
+        'end_repeat' |
+        'begin_repeat' |
         'begin_group' |
         'select_one' |
         'note' |
