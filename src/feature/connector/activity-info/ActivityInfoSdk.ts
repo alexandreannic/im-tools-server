@@ -78,9 +78,9 @@ export class ActivityInfoSdk {
   }
 
   readonly publish = (params: any) => {
-    console.dir(ActivityInfoSdk.makeForm(params), {depth: null})
+    console.dir(params, {depth: null})
     return this.api.postNoJSON(`/resources/update`, {
-      body: ActivityInfoSdk.makeForm(params)
+      body: params
     })
   }
 

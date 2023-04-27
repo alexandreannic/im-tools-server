@@ -40,17 +40,22 @@ class KoboFormInterfaceGenerator {
     }) {
   }
 
+  readonly excludedQuestionNames = [
+    'start',
+    'end'
+  ]
+
   readonly generateInterface = async () => {
     const form = await this.sdk.getForm(this.options.formId)
-    form.content.survey.filter(_ => !ignoredQuestionTypes.includes(_.type)).map(x => {
-      const type = fnSwitch(x.type, {
-        'select_one': `GetType<'${x.name}'>`,
-        'select_multiple': `GetType<'${x.name}'>[]`,
-        'integer': 'number',
-        'text': 'string',
-      }, () => 'string')
-      return `${x.name}: ${type} | undefined,`
-    })
+    // form.content.survey.filter(_ => !ignoredQuestionTypes.includes(_.type) && !this.excludedQuestionNames.includes(_.name)).map(x => {
+    //   const type = fnSwitch(x.type, {
+    //     'select_one': `GetType<'${x.name}'>`,
+    //     'select_multiple': `GetType<'${x.name}'>[]`,
+    //     'integer': 'number',
+    //     'text': 'string',
+    //   }, () => 'string')
+    //   return `${x.name}: ${type} | undefined,`
+    // })
 
     const mainInterface = this.generateMainInterface(form.content.survey)
     const options = this.generateOptionsType(form.content)
