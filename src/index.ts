@@ -11,13 +11,7 @@ import {ServiceNfi} from './server/services/ServiceNfi'
 import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
-import {ActivityInfoSdk} from './feature/connector/activity-info/ActivityInfoSdk'
-import {initializeDatabase} from './db/Db'
-import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
-import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
-import {KoboApiService} from './feature/kobo/KoboApiService'
-import {generateForms} from './script/KoboFormInterfaceGenerator'
-import {runAI} from './feature/connector/activity-info'
+import {runAi} from './feature/connector/activity-info'
 
 const initServices = (
   koboClient: KoboSdk,
@@ -90,5 +84,5 @@ const startApp = async () => {
   ).start()
 }
 
+runAi.washAPM2()
 startApp()
-// runAI()

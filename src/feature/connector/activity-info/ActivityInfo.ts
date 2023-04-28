@@ -31,6 +31,7 @@ export type FormDesc = {
         formId?: AIID,
         cardinality?: 'single'
         range?: [{formId: AIID}]
+        values?: {id: string, label: string}[]
         // formula?: string
       }
     }[]

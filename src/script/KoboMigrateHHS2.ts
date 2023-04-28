@@ -1,5 +1,5 @@
-import {ProtHHS_2_1Options} from '../db/koboInterface/ProtHHS_2_1Options'
-import {ProtHHS_2_1} from '../db/koboInterface/ProtHHS_2_1'
+import {ProtHHS_2_1Options} from '../db/koboInterface/ProtHHS_2_1/ProtHHS_2_1Options'
+import {ProtHHS_2_1} from '../db/koboInterface/ProtHHS_2_1/ProtHHS_2_1'
 import {PrismaClient} from '@prisma/client'
 import {KoboApiService} from '../feature/kobo/KoboApiService'
 import {logger, Logger} from '../utils/Logger'

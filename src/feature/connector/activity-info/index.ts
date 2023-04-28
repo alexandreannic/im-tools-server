@@ -6,19 +6,26 @@ import columnsListMap = AiProtectionHhs.columnsListMap
 
 export const runAi = {
   washAPM2: () => runAI({
-    formId: activityInfoForms.washAPM2,
+    formId: activityInfoForms.washRMM,
     excludedQuestionPatternOptionsBecauseToLongOrIrrelevant: [
-      /Sub-Implementing Partner/,
-
-    ]
+      /Sub-Implementing Partner /,
+    ],
+    filterSpecificOptions: {
+      'Sub-Implementing Partner': _ => {
+        return _.includes('Danish Refugee Council')
+      }
+    }
   })
 }
-export const runAI = async ({
-  formId = activityInfoForms.washAPM2,
+
+const runAI = async ({
+  formId,
   excludedQuestionPatternOptionsBecauseToLongOrIrrelevant = [],
+  filterSpecificOptions = {}
 }: {
   formId: string,
-  excludedQuestionPatternOptionsBecauseToLongOrIrrelevant?: RegExp[]
+  excludedQuestionPatternOptionsBecauseToLongOrIrrelevant?: RegExp[],
+  filterSpecificOptions?: Record<string, (label: string) => boolean>
 }) => {
   const x = new ActivityInfoSdk()
   const dbId = await x.fetchDatabases().then(_ => _[0].databaseId)
@@ -44,7 +51,11 @@ export const runAI = async ({
     ]
   }
 
-  const getOptions = async (f: FormDescs, e: FormDesc['schema']['elements'][0]): Promise<{
+  const getOptions = async (
+    f: FormDescs,
+    e: FormDesc['schema']['elements'][0],
+    filter?: (_: string) => boolean
+  ): Promise<{
     formId: AIID,
     optionId: AIID,
     optionDefId: AIID,
@@ -60,22 +71,26 @@ export const runAI = async ({
       formId: e.id,
       optionId,
       optionDefId: optionDefId,
-      options,
+      options: filter ? options.filter(_ => filter(_.label)) : options.splice(0, 20),
     }
   }
 
   const print = async () => {
     const forms = getAllElements(formDesc, [formId])
-    const options = await Promise.all(forms.filter(_ => _.type === 'reference').map(f => getOptions(formDesc, f)))
+    const options = await Promise.all(forms
+      .filter(_ => _.type === 'reference')
+      .map(_ => getOptions(formDesc, _, filterSpecificOptions[_.label]))
+    )
     options.find(_ => _.formId === 'c19j8p9ldsv4qa3o')?.options.map(x => console.log(x, ','))
     // console.log(forms.map(_ => ['----', _.id, _.label, _.type]))
     return forms.map(q => {
       const o = options.find(_ => _.formId === q.id)
       return {
         id: q.id,
+        type: q.type,
         optionsId: o?.optionDefId,
         label: q.label,
-        options: o?.options.splice(0, 5),
+        options: o?.options ?? (q.type === 'enumerated' ? q.typeParameters.values : undefined),
         optionsLength: o?.options.length,
       }
     })
