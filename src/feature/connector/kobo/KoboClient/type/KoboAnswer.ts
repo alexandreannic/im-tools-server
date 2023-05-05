@@ -1,6 +1,8 @@
 import {ApiPaginate, UUID} from '../../../../../core/Type'
 import {Arr} from '@alexandreannic/ts-utils'
 
+export type KoboId = string
+
 export interface KoboAnswerParams {
   start?: Date
   end?: Date
@@ -34,7 +36,7 @@ interface ApiKoboAnswerMetaData {
   _uuid: UUID,
   _attachments: KoboAnswerAttachements[],
   _status: KoboAnswerStatus,
-  _geolocation: KoboAnswerGeolocation[],
+  _geolocation: KoboAnswerGeolocation,
   _submission_time: Date,
   _tags: KoboAnswerTags[],
   _notes: KoboAnswerNotes[],
@@ -53,11 +55,12 @@ interface ApiKoboAnswerMetaData {
 // }
 export type KoboAnswer = KoboAnswerMetaData & {answers: Record<string, any>}
 
+export type DBKoboAnswer = KoboAnswer & {formId: KoboId}
+
 export interface KoboApiList<T> {
   count: number,
   results: T[]
 }
-
 
 export class KoboAnswerUtils {
 

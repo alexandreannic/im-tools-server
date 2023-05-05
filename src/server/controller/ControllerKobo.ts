@@ -1,17 +1,26 @@
 import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
+import {ObjectSchema} from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {KoboService} from '../../feature/kobo/KoboService'
 import {validateApiPaginate} from '../../core/Type'
 
-interface AnswersFilters {
+export interface KoboAnswersFilters {
   start?: Date
   end?: Date
+  filterBy?: {
+    column: string
+    value: string
+  }[]
 }
 
-const answersFiltersValidation = yup.object({
+const answersFiltersValidation: ObjectSchema<KoboAnswersFilters> = yup.object({
   start: yup.date(),
   end: yup.date(),
+  filterBy: yup.array(yup.object({
+    column: yup.string().required(),
+    value: yup.string().required(),
+  }))
 })
 
 export class ControllerKobo {

@@ -1,5 +1,10 @@
 import {KoboApiList} from './KoboAnswer'
 import {ApiPaginate} from '../../../../../core/Type'
+import {KoboService} from '../../../../kobo/KoboService'
+
+export type KoboApiType = KoboApiForm['content']['survey'][0]['type']
+
+export type KoboApiQuestion = KoboApiForm['content']['survey'][0]
 
 export interface KoboApiForm {
   name: string
@@ -24,13 +29,15 @@ export interface KoboApiForm {
         'end_repeat' |
         'begin_repeat' |
         'begin_group' |
-        'select_one' |
         'note' |
         'end_group' |
         'text' |
         'calculate' |
         'integer' |
+        'select_one' |
         'select_multiple' |
+        'start' |
+        'end' |
         'date'
       select_from_list_name?: string
     }[]
@@ -39,29 +46,14 @@ export interface KoboApiForm {
   }
 }
 
-export enum KoboQuestionType {
-  SelectOne = 'select_one',
-  Text = 'text',
-}
+export const koboQuestionType: KoboApiType[] = [
+  'text',
+  'start',
+  'end',
+  'integer',
+  'select_one',
+  'select_multiple',
+  'date',
+]
 
-export type SelectFromListName = string
-
-export interface KoboQuestion {
-  name: string
-  type: KoboQuestionType
-  $kuid: string
-  label: string[],
-  $qpath: string,
-  $xpath: string,
-  required: boolean,
-  $autoname: string,
-  appearance: 'minimal' | 'horizontal',
-  select_from_list_name: SelectFromListName
-}
-
-export const koboToApiPaginate = <T>(_: KoboApiList<T>): ApiPaginate<T> => {
-  return {
-    total: _.count,
-    data: _.results,
-  }
-}
+export const filterKoboQuestionType = (_: KoboApiQuestion) => koboQuestionType.includes(_.type)

@@ -12,7 +12,7 @@ import {Services} from './services'
 import {PrismaClient} from '@prisma/client'
 import {ControllerKoboForm} from './controller/ControllerKoboForm'
 import {ControllerActivityInfo} from './controller/ControllerActivityInfo'
-import {ActivityInfoSdk} from '../feature/connector/activity-info/ActivityInfoSdk'
+import {ActivityInfoSdk} from '../feature/activityInfo/sdk/ActivityInfoSdk'
 import {ControllerKoboApi} from './controller/ControllerKoboApi'
 
 export const getRoutes = (
@@ -48,7 +48,7 @@ export const getRoutes = (
     router.get('/kobo/:formId/answers', kobo.getAnswers)
 
     router.get('/kobo-api/local-form', koboApi.getAnswersFromLocalCsv)
-    router.get('/kobo-api/:formId/sync', koboApi.synchronizeAnswersFromKoboServer)
+    router.post('/kobo-api/:id/:formId/sync', koboApi.synchronizeAnswersFromKoboServer)
     router.get('/kobo-api/:id', koboApi.getForms)
     router.get('/kobo-api/:id/:formId/answers', koboApi.getAnswers)
     router.get('/kobo-api/:id/:formId', koboApi.getForm)

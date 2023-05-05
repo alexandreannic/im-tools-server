@@ -60,7 +60,6 @@ class KoboFormInterfaceGenerator {
 
   readonly generate = async () => {
     const form = await this.sdk.getForm(this.options.formId)
-    console.log(form)
     const survey = this.fixDuplicateName(form.content.survey)
     const mainInterface = this.generateInterface(survey)
     const options = this.generateOptionsType(survey, form.content.choices)
@@ -69,9 +68,9 @@ class KoboFormInterfaceGenerator {
     if (!fs.existsSync(location)) {
       fs.mkdirSync(location)
     }
-    await fs.writeFileSync(location + '/' + this.options.formName + '.ts', mainInterface)
-    await fs.writeFileSync(location + '/' + this.options.formName + 'Options.ts', options)
-    await fs.writeFileSync(location + '/' + this.options.formName + 'Mapping.ts', mapping)
+    fs.writeFileSync(location + '/' + this.options.formName + '.ts', mainInterface)
+    fs.writeFileSync(location + '/' + this.options.formName + 'Options.ts', options)
+    fs.writeFileSync(location + '/' + this.options.formName + 'Mapping.ts', mapping)
   }
 
   readonly extractQuestionNameFromGroupFn = `

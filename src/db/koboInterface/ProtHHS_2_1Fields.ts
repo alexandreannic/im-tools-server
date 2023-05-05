@@ -1,4 +1,4 @@
-export interface protHHS_2_1Fields {
+export const protHHS_2_1Fields = [
   'start',
   'end',
   'deviceid',
@@ -248,4 +248,4 @@ export interface protHHS_2_1Fields {
   'additional_information_shared_by_respondent',
   'comments_observations_of_the_protection_monitor',
   'need_for_assistance',
-}
+]

@@ -3,6 +3,7 @@ import {ProtHHS_2_1} from '../db/koboInterface/ProtHHS_2_1/ProtHHS_2_1'
 import {PrismaClient} from '@prisma/client'
 import {KoboApiService} from '../feature/kobo/KoboApiService'
 import {logger, Logger} from '../utils/Logger'
+import {protHHS_2_1Fields} from '../db/koboInterface/ProtHHS_2_1Fields'
 
 interface Props {
   prisma: PrismaClient,
@@ -67,70 +68,77 @@ export const KoboMigrateHHS2 = ({
       const answers = {} as ProtHHS_2_1
       answersArr.forEach(([questionName, value], index) => {
         value = fixOptions(value)
+        if(questionName === 'where_are_you_current_living_hromada' && value === 'UA7410003') {
+          console.log(questionName, value)
+          value = 'UA7410011'
+        }
         if (/^where_is_your_[a-z]+$/.test(questionName) && value === 'stayed_to_keep_the_jobs') {
           value = value.replace('stayed_to_keep_the_jobs', 'remained_behind_in_the_area_of_origin')
         }
         if (questionName === 'type_of_site' && value === 'other_specify') {
           value = ''
         }
-        // if (protHHS_2_1Fields.find(_ => _ === questionName)) {
-        //   answers[questionName] = value
-        // } else if (/^please_specify[a-z0-9_]{5}$/.test(questionName)) {
-        //   const previousQuestionName = answersArr[index - 1][0]
-        //   answers['please_specify' + previousQuestionName] = value
-        // } else if (
-        //   /^what_type_of_incidents_took_place[a-z0-9_]{5}$/.test(questionName) ||
-        //   /^when_did_the_incidents_occur[a-z0-9_]{5}$/.test(questionName) ||
-        //   /^who_were_the_perpetrators_of_the_incident[a-z0-9_]{5}$/.test(questionName)
-        // ) {
-        //   let relatedParent
-        //   for (let i = index - 1; i === 0 || !relatedParent; i--) {
-        //     relatedParent = answersArr[i][0].match(/^(has_any_.*?)[a-z0-9_]{5}$/)?.[1]
-        //   }
-        //   answers[questionName.substring(0, questionName.length - 5) + relatedParent] = value
-        // } else if (questionName === 'how_many_individuals_including_the_respondent_are_in_the_household') {
-        //   answers.how_many_ind = value
-        // } else if (/^where_are_you_current_living_oblast/.test(questionName)) {
-        //   answers.where_are_you_current_living_oblast = value
-        // } else if (/^where_are_you_current_living_raion/.test(questionName)) {
-        //   answers.where_are_you_current_living_raion = value
-        // } else if (/^where_are_you_current_living_hromada/.test(questionName)) {
-        //   answers.where_are_you_current_living_hromada = value
-        // } else if (/^what_is_your_area_of_origin_oblast/.test(questionName)) {
-        //   answers.what_is_your_area_of_origin_oblast = value
-        // } else if (/^what_is_your_area_of_origin_raion/.test(questionName)) {
-        //   answers.what_is_your_area_of_origin_raion = value
-        // } else if (/^what_is_your_area_of_origin_hromada/.test(questionName)) {
-        //   answers.what_is_your_area_of_origin_hromada = value
-        // } else if (questionName === 'why_dont_they_have_stauts') {
-        //   answers.why_dont_they_have_status = value
-        // } else if (questionName === 'has_any_member_of_your_household_experienced_any_protectionright_violation_incident') {
-        //   answers.has_any_other_member_experienced_violence = value
-        // } else if (questionName === 'has_any_adult_female_member_of_your_household_experienced_any_protectionright_violation_incident') {
-        //   answers.has_any_adult_female_member_experienced_violence = value
-        // } else if (questionName === 'has_any_adult_male_member_of_your_household_experienced_any_form_of_violence_within_the_last_6_months') {
-        //   answers.has_any_adult_male_member_experienced_violence = value
-        // } else if (questionName === 'has_any_girl_member_of_your_household_experienced_any_protectionright_violation_incident') {
-        //   answers.has_any_girl_member_experienced_violence = value
-        // } else if (questionName === 'how_many_household_members_lack_personal_documentation') {
-        //   for (let i = 0; i < 12; i++) {
-        //     if (value >= i) {
-        //       answers[`does_${i}_lack_doc`] === 'other_specify'
-        //     }
-        //   }
-        // } else if (questionName.startsWith('hh_unregistered_sex_')) {
-        //   const hhIndex = questionName.match(/hh_unregistered_sex_(\d+)/)?.[1]
-        //   if (hhIndex && +hhIndex <= 12) {
-        //     answers[`is_member_${hhIndex}_registered`] = 'no'
-        //   }
-        // } else {
-        //   unhandledQuestionName.add(questionName)
-        // }
+        if (questionName === 'id') {
+          (answers as any).id = transformIdToAvoidCollision(value)
+        }
+        if (protHHS_2_1Fields.find(_ => _ === questionName)) {
+          answers[questionName] = value
+        } else if (/^please_specify[a-z0-9_]{5}$/.test(questionName)) {
+          const previousQuestionName = answersArr[index - 1][0]
+          answers['please_specify' + previousQuestionName] = value
+        } else if (
+          /^what_type_of_incidents_took_place[a-z0-9_]{5}$/.test(questionName) ||
+          /^when_did_the_incidents_occur[a-z0-9_]{5}$/.test(questionName) ||
+          /^who_were_the_perpetrators_of_the_incident[a-z0-9_]{5}$/.test(questionName)
+        ) {
+          let relatedParent
+          for (let i = index - 1; i === 0 || !relatedParent; i--) {
+            relatedParent = answersArr[i][0].match(/^(has_any_.*?)[a-z0-9_]{5}$/)?.[1]
+          }
+          answers[questionName.substring(0, questionName.length - 5) + relatedParent] = value
+        } else if (questionName === 'how_many_individuals_including_the_respondent_are_in_the_household') {
+          answers.how_many_ind = value
+        } else if (/^where_are_you_current_living_oblast/.test(questionName)) {
+          answers.where_are_you_current_living_oblast = value
+        } else if (/^where_are_you_current_living_raion/.test(questionName)) {
+          answers.where_are_you_current_living_raion = value
+        } else if (/^where_are_you_current_living_hromada/.test(questionName)) {
+          answers.where_are_you_current_living_hromada = value
+        } else if (/^what_is_your_area_of_origin_oblast/.test(questionName)) {
+          answers.what_is_your_area_of_origin_oblast = value
+        } else if (/^what_is_your_area_of_origin_raion/.test(questionName)) {
+          answers.what_is_your_area_of_origin_raion = value
+        } else if (/^what_is_your_area_of_origin_hromada/.test(questionName)) {
+          answers.what_is_your_area_of_origin_hromada = value
+        } else if (questionName === 'why_dont_they_have_stauts') {
+          answers.why_dont_they_have_status = value
+        } else if (questionName === 'has_any_member_of_your_household_experienced_any_protectionright_violation_incident') {
+          answers.has_any_other_member_experienced_violence = value
+        } else if (questionName === 'has_any_adult_female_member_of_your_household_experienced_any_protectionright_violation_incident') {
+          answers.has_any_adult_female_member_experienced_violence = value
+        } else if (questionName === 'has_any_adult_male_member_of_your_household_experienced_any_form_of_violence_within_the_last_6_months') {
+          answers.has_any_adult_male_member_experienced_violence = value
+        } else if (questionName === 'has_any_girl_member_of_your_household_experienced_any_protectionright_violation_incident') {
+          answers.has_any_girl_member_experienced_violence = value
+        } else if (questionName === 'how_many_household_members_lack_personal_documentation') {
+          for (let i = 0; i < 12; i++) {
+            if (value >= i) {
+              answers[`does_${i}_lack_doc`] === 'other_specify'
+            }
+          }
+        } else if (questionName.startsWith('hh_unregistered_sex_')) {
+          const hhIndex = questionName.match(/hh_unregistered_sex_(\d+)/)?.[1]
+          if (hhIndex && +hhIndex <= 12) {
+            answers[`is_member_${hhIndex}_registered`] = 'no'
+          }
+        } else {
+          unhandledQuestionName.add(questionName)
+        }
       })
       Object.entries(answers).forEach(([questionName, answer]) => {
         checkOptions(questionName, answer)
       })
-      return {...row, answers2: answers}
+      return {...row, answers}
     })
     console.error(unhandledOptions)
     console.warn(unhandledQuestionName)
@@ -140,27 +148,22 @@ export const KoboMigrateHHS2 = ({
   const transformIdToAvoidCollision = (koboId: string) => '2' + koboId
 
   const run = async () => {
+    const allInsertedIds = await prisma.koboForm.findMany({select: {id: true}}).then(_ => new Set(_.map(x => x.id)))
     const form = await prisma.koboForm.findFirst({where: {id: oldFormId}})
     if (form) {
       log.info(`Form ${oldFormId} already created.`)
       return
     }
     await service.saveApiFormToDb(serverId, newFormId)
-    const mappedAnswers = await mapAnswers()
-
-    const alreadyInserted = await prisma.koboAnswers.findFirst({
-      where: {
-        id: transformIdToAvoidCollision(mappedAnswers[0].id)
-      }
-    })
-    if (alreadyInserted) {
+    const newKoboApiAnswers = await mapAnswers().then(_ => _.filter(x => !allInsertedIds.has(x.id)))
+    if (newKoboApiAnswers.length === 0) {
       log?.info(`Data already inserted.`)
       return
     }
 
     await prisma.koboAnswers.createMany({
-      data: mappedAnswers.map(_ => ({
-        id: transformIdToAvoidCollision(_.id),
+      data: newKoboApiAnswers.map(_ => ({
+        id: _.id,
         formId: newFormId,
         start: _.start,
         end: _.end,
@@ -169,7 +172,7 @@ export const KoboMigrateHHS2 = ({
         validationStatus: _.validationStatus,
         validatedBy: _.validatedBy,
         lastValidatedTimestamp: _.lastValidatedTimestamp,
-        answers: _.answers,
+        answers: _.answers as any,
       }))
     })
   }

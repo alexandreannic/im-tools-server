@@ -26,7 +26,7 @@ export type FormDesc = {
       relevanceCondition: string,
       validationCondition: string,
       required: boolean,
-      type: 'subform' | 'reference' | 'enumerated' | 'calculated' | string,
+      type: 'subform' | 'reference' | 'enumerated' | 'calculated' | 'quantity' | 'FREE_TEXT' | 'month' | string,
       typeParameters: {
         formId?: AIID,
         cardinality?: 'single'

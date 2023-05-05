@@ -69,9 +69,11 @@ export const renameObjectProperties = <O>(propsMap: Partial<MappedColumn<O>>) =>
   }, {} as O)
 }
 
+export const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1)
+
 export const mapMultipleChoices = <T>(value: string | undefined, map: {[key: string]: T}, defaultValue: T[] = []): T[] => {
   const res: T[] = []
-  if(!value) {
+  if (!value) {
     return defaultValue
   }
   Object.keys(map).forEach(k => {
@@ -93,4 +95,9 @@ export const makeid = (length = 14) => {
   }
   return result
 
+}
+
+
+export const convertNumberIndexToLetter = (_: number) => {
+  return (_ + 9).toString(36).toUpperCase()
 }

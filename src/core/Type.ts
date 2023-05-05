@@ -21,7 +21,7 @@ export interface ApiPagination {
 
 export const defaultPagination = {
   offset: 0,
-  limit: 20,
+  limit: 200000,
 }
 
 export const validateApiPaginate = yup.object({

@@ -1,7 +1,7 @@
-import {makeid} from '../../../../utils/Common'
-import {oblasts} from '../location/oblasts'
-import {raions} from '../location/raions'
-import {hromada} from '../location/hromada'
+import {makeid} from '../../../utils/Common'
+import {aiOblasts} from '../location/aiOblasts'
+import {aiRaions} from '../location/aiRaions'
+import {aiHromada} from '../location/aiHromada'
 
 
 export namespace AiProtectionHhs {
@@ -107,9 +107,9 @@ export namespace AiProtectionHhs {
       'GP-DRC-00003': 'crsa7psleo7l08n4',
       'GP-DRC-00004': 'cxf2j7kleo7mstp5'
     },
-    Oblast: oblasts,
-    Raion: raions,
-    Hromada: hromada,
+    Oblast: aiOblasts,
+    Raion: aiRaions,
+    Hromada: aiHromada,
   }
 
   type GET<T extends keyof typeof inputsOptions> = keyof typeof inputsOptions[T]

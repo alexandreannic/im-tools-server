@@ -24,7 +24,7 @@ export interface MPCA_NFI {
   oblast: Opt<'oblast'>,
   // Select raion where registration is taking place
   raion: Opt<'raion'>,
-  // Select hromada where registration is taking place
+  // Select aiHromada where registration is taking place
   hromada: Opt<'hromada'>,
   // What is your surname name (as shown in personal ID)?
   patron: string | undefined,
@@ -59,7 +59,7 @@ export interface MPCA_NFI {
   // Indicate the total number of people in your household, including the HHH
   Total_Family: number | undefined,
   // HH members (excluding HHH)
-  group_in3fh72: {AgeHH: string | undefined,GenderHH: string | undefined}[],
+  group_in3fh72: {AgeHH: string | undefined, GenderHH: string | undefined}[],
   // Please indicate the AGE of HH member
   AgeHH: number | undefined,
   // Please indicate the GENDER of HH member
@@ -182,7 +182,7 @@ export interface MPCA_NFI {
   registration_address: string | undefined,
   // Confirm phone number of person receiving MPCA
   confirm_phone: string | undefined,
-  // What is your area of origin prior to displacement? (Select Oblast)
+  // What is your area of origin prior to displacement? (Select OblastIndex)
   area_of_origin: Opt<'area_of_origin'>,
   // What is your preferred payment method?
   What_is_your_preferred_payment: Opt<'What_is_your_preferred_payment'>,
