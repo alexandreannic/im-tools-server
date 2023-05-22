@@ -8,6 +8,7 @@ import columnsListMap = AiProtectionHhs.columnsListMap
 
 export const runAi = {
   washRMM: () => runAI({
+    optionsLimit: 200000,
     formId: activityInfoForms.washRMM,
     name: 'washRMM',
     ignoredQuestions: [
@@ -57,13 +58,15 @@ interface AIFormInformation {
 const runAI = async ({
   formId,
   name,
+  optionsLimit = 20,
   ignoredQuestions = [],
   pickSpecificOptionK2Id = {},
   excludedQuestionPatternOptionsBecauseToLongOrIrrelevant = [],
   filterSpecificOptions = {},
   skipQuestionsPattern = [],
-  outputDir = '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/feature/connector/activity-info/generatedModel',
+  outputDir = '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/feature/activityInfo/generatedModels',
 }: {
+  optionsLimit?: number
   ignoredQuestions?: string[]
   formId: string,
   name: string,
@@ -130,7 +133,7 @@ const runAI = async ({
       formId: e.id,
       optionId,
       optionDefId: optionId,
-      options: filter ? options.filter(_ => filter(_.label)) : options.splice(0, 20),
+      options: filter ? options.filter(_ => filter(_.label)) : options.splice(0, optionsLimit),
     }
   }
 
