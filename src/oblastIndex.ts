@@ -28,6 +28,7 @@ export const oblastByIso = {
   'UA18': 'Zhytomyrska',
   'UA43': 'Avtonomna Respublika Krym',
 }
+
 export const oblastISOByName = {
   'Cherkaska': 'UA71',
   'Chernihivska': 'UA74',

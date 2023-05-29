@@ -35,6 +35,10 @@ class Api {
     return this.request(path, {...init, method: 'POST'}).then(_ => _.json())
   }
 
+  readonly delete = (path: string, init?: ApiParams) => {
+    return this.request(path, {...init, method: 'DELETE'})
+  }
+
   readonly postNoJSON = (path: string, init?: ApiParams) => {
     return this.request(path, {...init, method: 'POST'}).then(_ => _.text())
   }
@@ -43,6 +47,18 @@ class Api {
 export class ActivityInfoSdk {
 
   constructor(private api = new Api()) {
+  }
+
+  readonly softDeleteRecord = (formId: string, recordId: string) => {
+    return this.api.postNoJSON(`/resources/update`, {
+      body: {
+        changes: [{
+          formId,
+          recordId,
+          deleted: true,
+        }]
+      }
+    })
   }
 
   readonly fetchDatabases = () => {

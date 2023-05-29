@@ -26,12 +26,3 @@ interface KoboForm {
   server: string
   groupName: string
 }
-
-// const x:  = [
-//   { server: 'prod', id: '', name: '', groupName: ''},
-//   { server: 'prod', id: '', name: 'global', groupName: ''},
-//   { server: 'prod', id: '', name: 'myko', groupName: ''},
-//   { server: 'prod', id: '', name: 'NAA', groupName: ''},
-//   { server: 'dev', id: '', name: 'NAA', groupName: ''},
-//   { server: 'dev', id: '', name: 'NAA', groupName: ''},
-//   { server: 'dev', id: '', name: 'NAA', groupName: ''},
