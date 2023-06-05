@@ -47,9 +47,12 @@ export const getRoutes = (
     router.get('/kobo', kobo.getServers)
     router.get('/kobo/:formId/answers', kobo.getAnswers)
 
+    router.post('/proxy', main.proxy)
+
     router.get('/kobo-api/local-form', koboApi.getAnswersFromLocalCsv)
     router.post('/kobo-api/:id/:formId/sync', koboApi.synchronizeAnswersFromKoboServer)
     router.get('/kobo-api/:id', koboApi.getForms)
+    router.get('/kobo-api/:id/attachment', koboApi.getAttachementsWithoutAuth)
     router.get('/kobo-api/:id/:formId/answers', koboApi.getAnswers)
     router.get('/kobo-api/:id/:formId', koboApi.getForm)
     // router.post('/kobo-api/:id/:formId', koboApi.importAnswers)

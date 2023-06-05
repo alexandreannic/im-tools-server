@@ -2,7 +2,6 @@ import {PrismaClient} from '@prisma/client'
 import {ApiPaginate, ApiPagination, defaultPagination, toApiPaginate} from '../../core/Type'
 import {KoboAnswersFilters} from '../../server/controller/ControllerKobo'
 import {DBKoboAnswer, KoboAnswerMetaData, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
-import {oblastISOByName} from '../../oblastIndex'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
 import XlsxPopulate from 'xlsx-populate'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
@@ -41,10 +40,10 @@ export class KoboService {
       take: paginate.limit,
       skip: paginate.offset,
       where: {
-        // end: {
-        //   gte: filters.start,
-        //   lt: filters.end,
-        // },
+        end: {
+          gte: filters.start,
+          lt: filters.end,
+        },
         formId,
         ...filters.filterBy?.reduce((acc, curr) => ({
           answers: {
@@ -61,6 +60,7 @@ export class KoboService {
       start: d.start,
       end: d.end,
       version: d.version,
+      attachments: d.attachments,
       geolocation: d.geolocation,
       submissionTime: d.submissionTime,
       id: d.id,
@@ -72,9 +72,8 @@ export class KoboService {
     }))).then(toApiPaginate)
   }
 
-  readonly generateXLSForHHS = async (start: Date, end: Date) => {
-    const period = format(start, 'yyyy-MM')
-    const filePattern = (oblast: string) => `drc.ua.prot.hh2.${period}.${oblast}`
+  readonly generateXLSForHHS = async ({start, end}: {start?: Date, end?: Date}) => {
+    const filePattern = (oblast: string) => `drc.ua.prot.hh2.${start ? format(start, 'yyyy-MM') + '.' : ''}${oblast}`
     const oblasts: (keyof typeof ProtHHS_2_1Options.staff_to_insert_their_DRC_office)[] = [
       'chernihiv',
       'lviv',
@@ -210,7 +209,7 @@ export class KoboService {
     const findColumnByName = (name: string) => convertNumberIndexToLetter(Object.keys(columns).indexOf(name))
 
     sheet.freezePanes(2, 1)
-    const ['start', 'end', 'su']
+    // const ['start', 'end', 'su']
     sheet.column('A').width(11)
     sheet.column('B').width(11)
     sheet.row(1).style({

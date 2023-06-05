@@ -35,6 +35,7 @@ export class KoboTransformer<F extends KoboAnswerMetaData> {
     validationStatus: 'validationStatus',
     id: 'id',
     geolocation: 'geolocation',
+    attachments: 'attachments',
   }
 
   readonly transformMetaProperties = (_: MappedColumn<F, any>): F => {

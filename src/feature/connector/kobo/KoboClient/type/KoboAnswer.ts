@@ -19,6 +19,7 @@ export type KoboAnswerNotes = any
 
 export type KoboAnswerMetaData = Pick<ApiKoboAnswerMetaData, 'start' | 'end'> & {
   version: ApiKoboAnswerMetaData['__version__']
+  attachments: KoboAnswerAttachements
   geolocation: ApiKoboAnswerMetaData['_geolocation']
   submissionTime: ApiKoboAnswerMetaData['_submission_time']
   id: ApiKoboAnswerMetaData['_id']
@@ -94,6 +95,7 @@ export class KoboAnswerUtils {
     return {
       // start: start,
       // end: end,
+      attachments: _attachments,
       geolocation: _geolocation,
       start: new Date(start ?? _submission_time),
       end: new Date(end ?? _submission_time),

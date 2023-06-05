@@ -57,6 +57,7 @@ export class KoboApiService {
         lastValidatedTimestamp: _.lastValidatedTimestamp,
         validatedBy: _.validatedBy,
         version: _.version,
+        attachments: _.attachments,
       }
       return res
     })

@@ -3,6 +3,8 @@ import {ApiClient} from '../../../../core/client/ApiClient'
 import {KoboAnswer, KoboAnswerParams, KoboAnswerUtils, KoboApiList, KoboApiVersion, KoboId} from './type/KoboAnswer'
 import {KoboApiForm} from './type/KoboApiForm'
 import {Cache, map} from '@alexandreannic/ts-utils'
+import axios, {AxiosError} from 'axios'
+import {appConf} from '../../../../core/conf/AppConf'
 
 const koboToApiPaginate = <T>(_: KoboApiList<T>): ApiPaginate<T> => {
   return {
@@ -100,5 +102,20 @@ export class KoboSdk {
   readonly getForms = () => {
     // return this.api.get(`/v2/assets/`)
     return this.api.get(`/v2/assets/?q=asset_type%3Asurvey&limit=200`)
+  }
+
+  readonly getAttachement = (path: string) => {
+    // TODO Use this.api
+    return axios.create().request({
+      url: appConf.kobo.url + '/api' + path,
+      method: 'GET',
+      headers: {
+        Authorization: KoboSdk.makeAuthorizationHeader(appConf.kobo.token),
+      },
+      responseType: 'arraybuffer',
+    }).then(_ => _.data)
+    // return this.api.get(path, {
+    //   responseType: 'arraybuffer',
+    // })
   }
 }

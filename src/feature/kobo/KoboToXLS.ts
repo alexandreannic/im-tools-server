@@ -47,7 +47,7 @@ export class KoboToXLS {
 
 
     sheet.freezePanes(2, 1)
-    const ['start', 'end', 'su']
+    // const ['start', 'end', 'su']
     sheet.column('A').width(11)
     sheet.column('B').width(11)
     sheet.row(1).style({

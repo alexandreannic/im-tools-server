@@ -11,6 +11,8 @@ import {KoboService} from '../../feature/kobo/KoboService'
 import {KoboSdkGenerator} from '../../feature/kobo/KoboSdkGenerator'
 import {KoboApiService} from '../../feature/kobo/KoboApiService'
 import {KoboAnswerUtils} from '../../feature/connector/kobo/KoboClient/type/KoboAnswer'
+import {koboFormsId, koboServerId} from '../../core/conf/KoboFormsId'
+import {ca} from 'date-fns/locale'
 
 interface AnswersFilters {
   start?: Date
@@ -68,7 +70,6 @@ export class ControllerKoboApi {
 
   readonly synchronizeAnswersFromKoboServer = async (req: Request, res: Response, next: NextFunction) => {
     const {id, formId} = await this.extractParams(req)
-    console.log(id, formId)
     await this.service.saveApiAnswerToDb(id, formId)
     res.send()
   }
@@ -77,7 +78,6 @@ export class ControllerKoboApi {
     const {id, formId} = await this.extractParams(req)
     const filters = await answersFiltersValidation.validate(req.query)
     const answers = await this.service.fetchAnswers(id, formId, filters)
-    console.log('get')
     // .then(res => ({
     // ...res,
     // data: res.data.map(answers => KoboAnswerUtils.removeGroup(answers))
@@ -90,5 +90,19 @@ export class ControllerKoboApi {
     const sdk = await this.koboSdkGenerator.construct(id)
     const form = await sdk.getForm(formId)
     res.send(form)
+  }
+
+  readonly getAttachementsWithoutAuth = async (req: Request, res: Response, next: NextFunction) => {
+    const {id} = await yup.object({id: yup.string().required()}).validate(req.params)
+    const {path} = await yup.object({path: yup.string().required()}).validate(req.query)
+    const sdk = await this.koboSdkGenerator.construct(id)
+    const img = await sdk.getAttachement(path)
+    try {
+      res.set('Content-Type', 'image/jpeg')
+      res.set('Content-Length', img.length)
+      res.send(img)
+    } catch (e) {
+      next(e)
+    }
   }
 }

@@ -11,12 +11,14 @@ import {ServiceNfi} from './server/services/ServiceNfi'
 import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
-import {WashRMM} from './feature/activityInfo/generatedModels/WashRMM'
 import {KoboService} from './feature/kobo/KoboService'
-import {ca} from 'date-fns/locale'
+import {runAi} from './feature/activityInfo/ActivityInfo'
+import fs from 'fs'
+import csv from 'csv-parser'
 import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
 import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
-import {KoboApiService} from './feature/kobo/KoboApiService'
+import {ActivityInfoSdk} from './feature/activityInfo/sdk/ActivityInfoSdk'
+import {generateForms} from './script/KoboFormInterfaceGenerator'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 
 const initServices = (
@@ -41,6 +43,7 @@ const initServices = (
 }
 
 const startApp = async () => {
+
   const conf = appConf
   const prisma = new PrismaClient()
   const koboSdk = new KoboSdk(new ApiClient({
@@ -50,7 +53,6 @@ const startApp = async () => {
       }
     })
   )
-
   // await KoboMigrateHHS2({
   //   prisma,
   //   serverId: koboServerId.prod,
@@ -58,15 +60,21 @@ const startApp = async () => {
   //   newFormId: koboFormsId.prod.protectionHh_2_1,
   // }).run()
   // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
-  try {
-    await new KoboService(prisma).generateXLSForHHS(new Date(2023, 3, 1), new Date(2023, 4, 1))
-  } catch (e) {
-    console.error(e)
-  }
+
+  // try {
+  //   await new KoboService(prisma).generateXLSForHHS({
+  //     // start: new Date(2023, 4, 1),
+  //     // end: new Date(2023, 5, 1),
+  //   })
+  // } catch (e) {
+  //   console.error(e)
+  // }
+
   // await generateForms(
   //   koboSdk,
   //   '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/koboInterface',
   // )
+
   // await initializeDatabase(prisma)
   // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
   const ecrecAppSdk = new EcrecSdk(new EcrecClient(appConf.ecrecApp))
@@ -76,7 +84,6 @@ const startApp = async () => {
       'x-auth-token': appConf.legalAid.apiToken,
     }
   }))
-
   const services = initServices(
     koboSdk,
     ecrecAppSdk,
@@ -84,6 +91,7 @@ const startApp = async () => {
   )
 
   // logger.info(`Connecting to ${conf.db.database}...`)
+
   // await pgClient.connect()
   // logger.info(`Applying evolutions...`)
   // await new EvolutionManager(pgClient).run()
@@ -96,34 +104,33 @@ const startApp = async () => {
     services,
   ).start()
 }
-
 // runAi.washRMM()
 startApp()
 
-const test: WashRMM = {
-  'Reporting Month': '2023-04',
-  'Organisation': 'Danish Refugee Council',
-  'Implementing Partner': 'Danish Refugee Council',
-  'Reporting Against a plan?': 'Yes',
-  'WASH - APM': 'DRC-00001', //TODO
-  'Oblast': 'Autonomous Republic of Crimea_Автономна Республіка Крим',
-  'Raion': 'Bakhchysaraiskyi_Бахчисарайський',
-  'Hormada': 'Aromatnenska_UA0102003',
-  'Settlement': 'Sevastopol_UA0102001',
-  'Location Type': 'Individuals/households',
-  'Other Institution': undefined,
-  'Activities & Indicators': '# of individuals benefiting from hygiene kit/items distribution (in-kind)', // TODO
-  'Disaggregation by population group, gender and age known?': 'Yes',
-  'Total Reached (No Disaggregation)': 1,
-  'Breakdown known?': 'Yes',
-  // 'Total Reached (All Population Groups)': '',
-  'Population Group': 'Overall (all groups)',
-  'Girls': 1,
-  'Boys': 2,
-  'Men': 3,
-  'Women': 4,
-  'Elderly Men': 5,
-  'Elderly Women': 6,
-  'People with disability': 7,
-  'Comments': undefined,
-}
+// const test: WashRMM = {
+//   'Reporting Month': '2023-04',
+//   'Organisation': 'Danish Refugee Council',
+//   'Implementing Partner': 'Danish Refugee Council',
+//   'Reporting Against a plan?': 'Yes',
+//   'WASH - APM': 'DRC-00001', //TODO
+//   'Oblast': 'Autonomous Republic of Crimea_Автономна Республіка Крим',
+//   'Raion': 'Bakhchysaraiskyi_Бахчисарайський',
+//   'Hormada': 'Aromatnenska_UA0102003',
+//   'Settlement': 'Sevastopol_UA0102001',
+//   'Location Type': 'Individuals/households',
+//   'Other Institution': undefined,
+//   'Activities & Indicators': '# of individuals benefiting from hygiene kit/items distribution (in-kind)', // TODO
+//   'Disaggregation by population group, gender and age known?': 'Yes',
+//   'Total Reached (No Disaggregation)': 1,
+//   'Breakdown known?': 'Yes',
+//   // 'Total Reached (All Population Groups)': '',
+//   'Population Group': 'Overall (all groups)',
+//   'Girls': 1,
+//   'Boys': 2,
+//   'Men': 3,
+//   'Women': 4,
+//   'Elderly Men': 5,
+//   'Elderly Women': 6,
+//   'People with disability': 7,
+//   'Comments': undefined,
+// }

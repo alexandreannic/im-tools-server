@@ -69,7 +69,6 @@ export const KoboMigrateHHS2 = ({
       answersArr.forEach(([questionName, value], index) => {
         value = fixOptions(value)
         if(questionName === 'where_are_you_current_living_hromada' && value === 'UA7410003') {
-          console.log(questionName, value)
           value = 'UA7410011'
         }
         if (/^where_is_your_[a-z]+$/.test(questionName) && value === 'stayed_to_keep_the_jobs') {
