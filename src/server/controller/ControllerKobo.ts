@@ -4,10 +4,12 @@ import {ObjectSchema} from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {KoboService} from '../../feature/kobo/KoboService'
 import {validateApiPaginate} from '../../core/Type'
+import {KoboId} from '../../feature/connector/kobo/KoboClient/type/KoboAnswer'
 
 export interface KoboAnswersFilters {
   start?: Date
   end?: Date
+  ids?: KoboId[]
   filterBy?: {
     column: string
     value: string
@@ -17,6 +19,7 @@ export interface KoboAnswersFilters {
 const answersFiltersValidation: ObjectSchema<KoboAnswersFilters> = yup.object({
   start: yup.date(),
   end: yup.date(),
+  ids: yup.array().of(yup.string().required()).optional(),
   filterBy: yup.array(yup.object({
     column: yup.string().required(),
     value: yup.string().required(),
@@ -25,12 +28,10 @@ const answersFiltersValidation: ObjectSchema<KoboAnswersFilters> = yup.object({
 
 export class ControllerKobo {
 
-
   constructor(
     private pgClient: PrismaClient,
     private koboService = new KoboService(pgClient)
   ) {
-
   }
 
   readonly getServers = async (req: Request, res: Response, next: NextFunction) => {

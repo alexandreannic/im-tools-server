@@ -14,9 +14,20 @@ model KoboServer {
   KoboForm KoboForm[]
 }
 
+model KoboForm {
+  id          String        @id @default(uuid())
+  name        String
+  server      KoboServer    @relation(fields: [serverId], references: [id])
+  serverId    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now())
+  uploadedBy  String?
+  KoboAnswers KoboAnswers[]
+}
+
 model KoboAnswers {
-  id                     String   @id
-  form                   KoboForm @relation(fields: [formId], references: [id])
+  id                     String                   @id
+  form                   KoboForm                 @relation(fields: [formId], references: [id])
   formId                 String
   start                  DateTime
   end                    DateTime
@@ -27,15 +38,32 @@ model KoboAnswers {
   lastValidatedTimestamp Int?
   geolocation            String?
   answers                Json
+  attachments            Json[]
+  mpcaPaymentTools       MpcaPaymentToolAnswers[]
 }
 
-model KoboForm {
-  id          String        @id
-  name        String
-  server      KoboServer    @relation(fields: [serverId], references: [id])
-  serverId    String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @default(now())
-  uploadedBy  String?
-  KoboAnswers KoboAnswers[]
+model MpcaPaymentTool {
+  id                String                   @id @default(uuid())
+  name              String?
+  index             Int                      @unique() @default(autoincrement())
+  budgetLineMPCA    String?
+  budgetLineCFR     String?
+  budgetLineStartUp String?
+  headOfOperation String?
+  cashAndVoucherAssistanceAssistant String?
+  financeAndAdministrationOfficer String?
+  city              String?
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @default(now())
+  answers           MpcaPaymentToolAnswers[]
+}
+
+model MpcaPaymentToolAnswers {
+  koboAnswers       KoboAnswers     @relation(fields: [koboAnswersId], references: [id])
+  koboAnswersId     String
+  mpcaPaymentTool   MpcaPaymentTool @relation(fields: [mpcaPaymentToolId], references: [id])
+  mpcaPaymentToolId String
+  createdAt         DateTime        @default(now())
+
+  @@id([koboAnswersId, mpcaPaymentToolId])
 }

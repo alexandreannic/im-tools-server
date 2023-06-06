@@ -14,6 +14,7 @@ import {ControllerKoboForm} from './controller/ControllerKoboForm'
 import {ControllerActivityInfo} from './controller/ControllerActivityInfo'
 import {ActivityInfoSdk} from '../feature/activityInfo/sdk/ActivityInfoSdk'
 import {ControllerKoboApi} from './controller/ControllerKoboApi'
+import {ControllerMpcaPayment} from './controller/ControllerMpcaPayment'
 
 export const getRoutes = (
   pgClient: PrismaClient,
@@ -36,6 +37,9 @@ export const getRoutes = (
     legalAidSdk,
     logger,
   )
+  const mpcaPayment = new ControllerMpcaPayment(
+    services.mpcaPayment
+  )
   const main = new ControllerMain(services.stats)
   const kobo = new ControllerKobo(pgClient)
   const koboApi = new ControllerKoboApi(pgClient)
@@ -56,6 +60,11 @@ export const getRoutes = (
     router.get('/kobo-api/:id/:formId/answers', koboApi.getAnswers)
     router.get('/kobo-api/:id/:formId', koboApi.getForm)
     // router.post('/kobo-api/:id/:formId', koboApi.importAnswers)
+
+    router.put('/mpca-payment', mpcaPayment.create)
+    router.post('/mpca-payment/:id', mpcaPayment.update)
+    router.get('/mpca-payment', mpcaPayment.getAll)
+    router.get('/mpca-payment/:id', mpcaPayment.get)
 
     router.get('/legalaid', legalaid.index)
     router.get('/nfi/raw', nfi.raw)

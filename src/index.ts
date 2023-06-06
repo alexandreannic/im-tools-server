@@ -11,24 +11,19 @@ import {ServiceNfi} from './server/services/ServiceNfi'
 import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
-import {KoboService} from './feature/kobo/KoboService'
-import {runAi} from './feature/activityInfo/ActivityInfo'
-import fs from 'fs'
-import csv from 'csv-parser'
-import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
-import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
-import {ActivityInfoSdk} from './feature/activityInfo/sdk/ActivityInfoSdk'
-import {generateForms} from './script/KoboFormInterfaceGenerator'
+import {MpcaPaymentService} from './feature/mpcaPayment/MpcaPaymentService'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 
 const initServices = (
   koboClient: KoboSdk,
   ecrecSdk: EcrecSdk,
   legalaidSdk: LegalaidSdk,
+  prisma: PrismaClient
 ): Services => {
   const ecrec = new ServiceEcrec(ecrecSdk)
   const legalAid = new ServiceLegalAid(legalaidSdk)
   const nfi = new ServiceNfi(koboClient)
+  const mpcaPayment = new MpcaPaymentService(prisma)
   const stats = new ServiceStats(
     ecrec,
     legalAid,
@@ -39,6 +34,7 @@ const initServices = (
     legalAid,
     nfi,
     stats,
+    mpcaPayment,
   }
 }
 
@@ -88,6 +84,7 @@ const startApp = async () => {
     koboSdk,
     ecrecAppSdk,
     legalAidSdk,
+    prisma,
   )
 
   // logger.info(`Connecting to ${conf.db.database}...`)
