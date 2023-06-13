@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/index.ts",
+    "start": "node lib/index.js",
+    "dev": "nodemon src/index.ts",
     "start-once": "ts-node src/index.ts",
     "debug": "npm run build && node --inspect-brk lib/index.js",
     "migration": "npx prisma migrate dev",
