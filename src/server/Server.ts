@@ -12,7 +12,7 @@ import {Services} from './services'
 import {PrismaClient} from '@prisma/client'
 
 export class Server {
-  
+
   constructor(
     private conf: AppConf,
     private pgClient: PrismaClient,

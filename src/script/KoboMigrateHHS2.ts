@@ -4,6 +4,7 @@ import {PrismaClient} from '@prisma/client'
 import {KoboApiService} from '../feature/kobo/KoboApiService'
 import {logger, Logger} from '../utils/Logger'
 import {protHHS_2_1Fields} from '../db/koboInterface/ProtHHS_2_1Fields'
+import {KoboAnswer, KoboAnswer2, koboAnswerMetaData} from '../feature/connector/kobo/KoboClient/type/KoboAnswer'
 
 interface Props {
   prisma: PrismaClient,
@@ -64,11 +65,12 @@ export const KoboMigrateHHS2 = ({
     }
 
     const newData = res.data.map(row => {
+      row.id = transformIdToAvoidCollision(row.id)
       const answersArr = Object.entries(row.answers).map(([questionName, value]) => [questionName/*.split('/')[1]*/, value]) as [string, any][]
       const answers = {} as ProtHHS_2_1
       answersArr.forEach(([questionName, value], index) => {
         value = fixOptions(value)
-        if(questionName === 'where_are_you_current_living_hromada' && value === 'UA7410003') {
+        if (questionName === 'where_are_you_current_living_hromada' && value === 'UA7410003') {
           value = 'UA7410011'
         }
         if (/^where_is_your_[a-z]+$/.test(questionName) && value === 'stayed_to_keep_the_jobs') {
@@ -76,9 +78,6 @@ export const KoboMigrateHHS2 = ({
         }
         if (questionName === 'type_of_site' && value === 'other_specify') {
           value = ''
-        }
-        if (questionName === 'id') {
-          (answers as any).id = transformIdToAvoidCollision(value)
         }
         if (protHHS_2_1Fields.find(_ => _ === questionName)) {
           answers[questionName] = value

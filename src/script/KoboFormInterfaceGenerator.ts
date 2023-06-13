@@ -3,22 +3,55 @@ import {Arr, fnSwitch, lazy} from '@alexandreannic/ts-utils'
 import {KoboApiForm} from '../feature/connector/kobo/KoboClient/type/KoboApiForm'
 import * as fs from 'fs'
 import {Logger} from '../utils/Logger'
+import {tryCach} from '../utils/Common'
 
-export const generateForms = async (koboSdk: KoboSdk, outDir: string) => {
-  const forms: {name: string, id: string}[] = [
-    {name: 'Shelter', id: 'aL8oHMzJJ9soPepvK6YU9E'},
-    // {name: 'BNRE', id: 'aKgX4MNs6gCemDQKPeXxY8'},
-    // {name: 'ProtHHS_2_1', id: 'aQDZ2xhPUnNd43XzuQucVR'},
-    // {name: 'MPCA_NFI', id: 'a4Sx3PrFMDAMZEGsyzgJJg'},
-    // {name: 'MPCA_NFI_NAA', id: 'aBGVXW2N26DaLehmKneuyB'},
-    // {name: 'MPCA_NFI_Myko', id: 'a8WAWB9Yxu2jkgk4Ei8GTk'},
-    // {name: 'MPCA_NFI_Old', id: 'a3h8Ykmp2C8NFiw5DDGBLz'},
-    // {name: 'ProtHHS_2_0', id: 'aRHsewShwZhXiy8jrBj9zf'},
+interface KoboInterfaceGeneratorParams {
+  outDir: string,
+  formName: string,
+  formId: string,
+  overrideOptionsByQuestion?: Record<string, Record<string, string[]>>
+  overrideAllOptions?: Record<string, string[]>
+}
+
+export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) => {
+  const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
+    // {formName: 'Shelter', formId: 'aL8oHMzJJ9soPepvK6YU9E'},
+    // {formName: 'BNRE', formId: 'aKgX4MNs6gCemDQKPeXxY8'},
+    {
+      formName: 'ProtHHS_2_1',
+      formId: 'aQDZ2xhPUnNd43XzuQucVR',
+      overrideAllOptions: {
+        other_specify: ['Other'],
+      },
+      overrideOptionsByQuestion: {
+        what_are_your_main_concerns_regarding_your_accommodation: {
+          'risk_of_eviction': [`Risk of eviction`],
+          'accommodations_condition': [`Accommodation’s condition`],
+          'overcrowded_lack_of_privacy': [`Overcrowded/Lack of privacy`],
+          'lack_of_functioning_utilities': [`Lack of functioning utilities`],
+          'lack_of_connectivity': [`Lack of connectivity`],
+          'security_and_safety_risks': [`Security and safety risks`],
+          'lack_of_financial_compensation_or_rehabilitation_for_damage_or_destruction_of_housing': [`Lack of support for damaged housing`],
+        },
+        what_is_the_type_of_your_household: {
+          'one_person_household': [`One person household`],
+          'couple_without_children': [`Couple without children`],
+          'couple_with_children': [`Couple with children`],
+          'mother_with_children': [`Mother with children`],
+          'father_with_children': [`Father with children`],
+          'extended_family': [`Extended family`],
+        }
+      }
+    },
+    // {formName: 'MPCA_NFI', formId: 'a4Sx3PrFMDAMZEGsyzgJJg'},
+    // {formName: 'MPCA_NFI_NAA', formId: 'aBGVXW2N26DaLehmKneuyB'},
+    // {formName: 'MPCA_NFI_Myko', formId: 'a8WAWB9Yxu2jkgk4Ei8GTk'},
+    // {formName: 'MPCA_NFI_Old', formId: 'a3h8Ykmp2C8NFiw5DDGBLz'},
+    // {formName: 'ProtHHS_2_0', formId: 'aRHsewShwZhXiy8jrBj9zf'},
   ]
-  return Promise.all(forms.map(f => new KoboFormInterfaceGenerator(koboSdk, {
+  return Promise.all(forms.map(f => new KoboInterfaceGenerator(koboSdk, {
     outDir,
-    formName: f.name,
-    formId: f.id,
+    ...f,
   }).generate()))
 }
 
@@ -30,15 +63,11 @@ const ignoredQuestionTypes: KoboApiForm['content']['survey'][0]['type'][] = [
   'end_repeat',
 ]
 
-class KoboFormInterfaceGenerator {
+class KoboInterfaceGenerator {
+
   constructor(
     private sdk: KoboSdk,
-    private options: {
-      outDir: string,
-      formName: string,
-      formId: string
-      // overrideOptionType: Record<string, string>
-    }) {
+    private options: KoboInterfaceGeneratorParams) {
   }
 
   readonly excludedQuestionNames = [
@@ -159,8 +188,14 @@ const extractQuestionName = (_: Record<string, any>) => {
       if (!res[questionName]) {
         res[questionName] = {}
       }
-      res[questionName][_.name] = _.label[0]
-
+      res[questionName][_.name] = (() => {
+        try {
+          console.log(this.options.overrideOptionsByQuestion?.[questionName][_.name][0], this.options.overrideAllOptions?.[_.name][0], _.label[0])
+          return this.options.overrideOptionsByQuestion?.[questionName][_.name][0] ?? this.options.overrideAllOptions?.[_.name][0] ?? _.label[0]
+        } catch (e: any) {
+          return _.label[0]
+        }
+      })()
     })
     return `export const ${this.options.formName}Options = {\n`
       + Object.entries(res).map(([k, v]) => `${k}: {\n` +

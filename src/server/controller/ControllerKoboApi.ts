@@ -44,18 +44,13 @@ export class ControllerKoboApi {
   }
 
   readonly getForms = async (req: Request, res: Response, next: NextFunction) => {
-    const {id} = await this.extractParams(req.params)
+    const {id} = await yup.object({
+      id: yup.string().required(),
+    }).validate(req.params)
     const sdk = await this.koboSdkGenerator.construct(id)
     const forms = await sdk.getForms()
     res.send(forms)
   }
-
-  // readonly importAnswers = async (req: Request, res: Response, next: NextFunction) => {
-  //   const {id, formId} = await this.extractParams(req)
-  //   const sdk = await this.koboSdkGenerator.construct(id)
-  //   const answers = await sdk.getAnswers(formId).then(_ => _.data)
-  //   res.status(200).json(answers)
-  // }
 
   readonly getAnswersFromLocalCsv = async (req: Request, res: Response, next: NextFunction) => {
     const filters = await answersFiltersValidation.validate(req.query)
@@ -70,7 +65,7 @@ export class ControllerKoboApi {
 
   readonly synchronizeAnswersFromKoboServer = async (req: Request, res: Response, next: NextFunction) => {
     const {id, formId} = await this.extractParams(req)
-    await this.service.saveApiAnswerToDb(id, formId)
+    await this.service.syncApiAnswerToDb(id, formId)
     res.send()
   }
 

@@ -40,6 +40,7 @@ export class KoboService {
       take: paginate.limit,
       skip: paginate.offset,
       where: {
+        deletedAt: null,
         end: {
           gte: filters.start,
           lt: filters.end,
@@ -73,6 +74,7 @@ export class KoboService {
   }
 
   readonly generateXLSForHHS = async ({start, end}: {start?: Date, end?: Date}) => {
+    console.log('generate')
     const filePattern = (oblast: string) => `drc.ua.prot.hh2.${start ? format(start, 'yyyy-MM') + '.' : ''}${oblast}`
     const oblasts: (keyof typeof ProtHHS_2_1Options.staff_to_insert_their_DRC_office)[] = [
       'chernihiv',
@@ -89,7 +91,12 @@ export class KoboService {
         value: oblast
       }]
     }))
-    await Promise.all(requests).then(_ => _.map(_ => _.data)).then(([
+    const requestAll = this.fetchAnswers(koboFormsId.prod.protectionHh_2_1, {
+      start: start,
+      end: end,
+    })
+    await Promise.all([requestAll, ...requests]).then(_ => _.map(_ => _.data)).then(([
+      all,
       chernihiv,
       lviv,
       kharkiv,
@@ -98,39 +105,45 @@ export class KoboService {
     ]) => {
       return [
         this.generateXLSFromAnswers({
+          fileName: filePattern('all'),
+          formId: koboFormsId.prod.protectionHh_2_1,
+          langIndex: 0,
+          data: all,
+        }),
+        this.generateXLSFromAnswers({
           fileName: filePattern('chernihivska'),
           formId: koboFormsId.prod.protectionHh_2_1,
           langIndex: 0,
           data: chernihiv,
-          password: 'HHDataCEJ$!',
+          password: 'HHDataCEJ$!', //113
         }),
         this.generateXLSFromAnswers({
           fileName: filePattern('lvivska'),
           formId: koboFormsId.prod.protectionHh_2_1,
           langIndex: 0,
           data: lviv,
-          password: 'YW!(78',
+          password: 'YW!(78', // 143
         }),
         this.generateXLSFromAnswers({
           fileName: filePattern('kharkivska'),
           formId: koboFormsId.prod.protectionHh_2_1,
           langIndex: 0,
           data: kharkiv,
-          password: 'ZK38^&',
+          password: 'ZK38^&', // 59
         }),
         this.generateXLSFromAnswers({
           fileName: filePattern('mykolaivska'),
           formId: koboFormsId.prod.protectionHh_2_1,
           langIndex: 0,
           data: mykolaiv,
-          password: 'b53d',
+          password: 'b53d', // 104
         }),
         this.generateXLSFromAnswers({
           fileName: filePattern('dnipropetrovska'),
           formId: koboFormsId.prod.protectionHh_2_1,
           langIndex: 0,
           data: dnipro,
-          password: 'PL09!@',
+          password: 'PL09!@', // 47
         }),
       ]
     })
@@ -222,3 +235,21 @@ export class KoboService {
   }
 }
 
+// IPTHELP
+// all - 113
+// chernihivska - 143
+// lvivska - 59
+// kharkivska - 104
+// mykolaivska - 47
+// = 466
+
+// myko - 265
+// lviv - 397
+// khv - 158
+// dni - 95
+// chv - 276
+// 265 + 397 + 158 + 95 + 276 = 1191
+
+//V2.1  461 / 834
+//V2    22 / 51
+//      483 / 885

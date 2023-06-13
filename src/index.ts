@@ -12,6 +12,12 @@ import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
 import {MpcaPaymentService} from './feature/mpcaPayment/MpcaPaymentService'
+import {KoboService} from './feature/kobo/KoboService'
+import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
+import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
+import {KoboApiService} from './feature/kobo/KoboApiService'
+import {printKoboFormsAsCSV} from './script/koboformlistexport'
+import {generateKoboInterface} from './script/KoboFormInterfaceGenerator'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 
 const initServices = (
@@ -59,17 +65,17 @@ const startApp = async () => {
 
   // try {
   //   await new KoboService(prisma).generateXLSForHHS({
-  //     // start: new Date(2023, 4, 1),
-  //     // end: new Date(2023, 5, 1),
+  //     start: new Date(2023, 4, 1),
+  //     end: new Date(2023, 5, 1),
   //   })
   // } catch (e) {
   //   console.error(e)
   // }
 
-  // await generateForms(
-  //   koboSdk,
-  //   '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/koboInterface',
-  // )
+  await generateKoboInterface(
+    koboSdk,
+    '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/koboInterface',
+  )
 
   // await initializeDatabase(prisma)
   // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)

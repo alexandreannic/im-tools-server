@@ -1,5 +1,6 @@
 import {v4} from 'uuid'
 import {format} from 'date-fns'
+import {ca} from 'date-fns/locale'
 
 export type StandardEnum<T> = {
   [id: string]: T | string
@@ -100,4 +101,12 @@ export const makeid = (length = 14) => {
 
 export const convertNumberIndexToLetter = (_: number) => {
   return (_ + 9).toString(36).toUpperCase()
+}
+
+export const tryCach = <T>(tryFn: () => T, catchFn: () => T): T => {
+  try {
+    return tryFn()
+  } catch {
+    return catchFn()
+  }
 }

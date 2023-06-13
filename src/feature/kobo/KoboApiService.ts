@@ -1,8 +1,9 @@
 import {KoboForm, Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
-import {KoboAnswerParams} from '../connector/kobo/KoboClient/type/KoboAnswer'
+import {KoboAnswerParams, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
 import {logger, Logger} from '../../utils/Logger'
 import {KoboSdk} from '../connector/kobo/KoboClient/KoboSdk'
+import {UUID} from '../../core/Type'
 
 export class KoboApiService {
   constructor(
@@ -38,11 +39,32 @@ export class KoboApiService {
     return sdk.getAnswers(formId, params)
   }
 
-  readonly saveApiAnswerToDb = async (serverId: string, formId: string) => {
+  private readonly softDelete = (serverId: UUID, formId: KoboId, ids: UUID[]) => {
+    return this.prisma.koboAnswers.findMany({where: {id: {notIn: ids}}}).then(res => {
+      Promise.all(res.map(_ => {
+        return this.prisma.koboAnswers.updateMany({
+          where: {
+            id: _.id,
+            formId,
+            source: serverId
+          },
+          data: {
+            deletedAt: new Date(),
+            deletedBy: 'Server sync',
+          }
+        })
+      }))
+    })
+
+  }
+  readonly syncApiAnswerToDb = async (serverId: string, formId: string) => {
+    const sdk = await this.koboSdkGenerator.construct(serverId)
+    const koboAnswers = await sdk.getAnswers(formId).then(_ => _.data)
+
+    await this.softDelete(serverId, formId, koboAnswers.map(_ => _.id))
     const alreadyInsertedIds = await this.prisma.koboAnswers.findMany({select: {id: true}}).then(_ => {
       return new Set(_.map(_ => _.id))
     })
-    const sdk = await this.koboSdkGenerator.construct(serverId)
     const notInsertedAnswers = await sdk.getAnswers(formId).then(_ => _.data.filter(_ => !alreadyInsertedIds.has(_.id)))
 
     const inserts = notInsertedAnswers.map(_ => {
@@ -57,6 +79,7 @@ export class KoboApiService {
         lastValidatedTimestamp: _.lastValidatedTimestamp,
         validatedBy: _.validatedBy,
         version: _.version,
+        source: serverId,
         attachments: _.attachments,
       }
       return res

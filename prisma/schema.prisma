@@ -40,22 +40,25 @@ model KoboAnswers {
   answers                Json
   attachments            Json[]
   mpcaPaymentTools       MpcaPaymentToolAnswers[]
+  source                 String?
+  deletedAt              DateTime?
+  deletedBy              String?
 }
 
 model MpcaPaymentTool {
-  id                String                   @id @default(uuid())
-  name              String?
-  index             Int                      @unique() @default(autoincrement())
-  budgetLineMPCA    String?
-  budgetLineCFR     String?
-  budgetLineStartUp String?
-  headOfOperation String?
+  id                                String                   @id @default(uuid())
+  name                              String?
+  index                             Int                      @unique() @default(autoincrement())
+  budgetLineMPCA                    String?
+  budgetLineCFR                     String?
+  budgetLineStartUp                 String?
+  headOfOperation                   String?
   cashAndVoucherAssistanceAssistant String?
-  financeAndAdministrationOfficer String?
-  city              String?
-  createdAt         DateTime                 @default(now())
-  updatedAt         DateTime                 @default(now())
-  answers           MpcaPaymentToolAnswers[]
+  financeAndAdministrationOfficer   String?
+  city                              String?
+  createdAt                         DateTime                 @default(now())
+  updatedAt                         DateTime                 @default(now())
+  answers                           MpcaPaymentToolAnswers[]
 }
 
 model MpcaPaymentToolAnswers {

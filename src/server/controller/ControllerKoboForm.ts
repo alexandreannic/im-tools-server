@@ -24,13 +24,6 @@ export class ControllerKoboForm {
 
   }
 
-  readonly importAnswers = async (req: Request, res: Response, next: NextFunction) => {
-    const {id} = req.body
-    const answers = await this.koboClient.getAnswers(id)
-      .then(_ => _.data)
-    res.status(200).json(answers)
-  }
-
   readonly getAnswers = async (req: Request, res: Response, next: NextFunction) => {
     const filters = await answersFiltersValidation.validate(req.query)
     const formId = req.params.id

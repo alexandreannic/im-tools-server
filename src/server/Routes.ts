@@ -1,4 +1,4 @@
-import express from 'express'
+import express, {NextFunction, Request, Response} from 'express'
 import {ControllerNfiMpca} from './controller/ControllerNfiMpca'
 import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
 import {ControllerKobo} from './controller/ControllerKobo'
@@ -15,6 +15,18 @@ import {ControllerActivityInfo} from './controller/ControllerActivityInfo'
 import {ActivityInfoSdk} from '../feature/activityInfo/sdk/ActivityInfoSdk'
 import {ControllerKoboApi} from './controller/ControllerKoboApi'
 import {ControllerMpcaPayment} from './controller/ControllerMpcaPayment'
+
+const errorCatcher = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      console.log('TRY')
+      return handler(req, res, next)
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({error: 'Something went wrong.'})
+    }
+  }
+}
 
 export const getRoutes = (
   pgClient: PrismaClient,
@@ -45,7 +57,7 @@ export const getRoutes = (
   const koboApi = new ControllerKoboApi(pgClient)
   const activityInfo = new ControllerActivityInfo()
   try {
-    router.get('/', main.htmlStats)
+    router.get('/', errorCatcher(main.htmlStats))
     router.post('/activity-info/activity', activityInfo.submitActivity)
 
     router.get('/kobo', kobo.getServers)
@@ -55,11 +67,10 @@ export const getRoutes = (
 
     router.get('/kobo-api/local-form', koboApi.getAnswersFromLocalCsv)
     router.post('/kobo-api/:id/:formId/sync', koboApi.synchronizeAnswersFromKoboServer)
-    router.get('/kobo-api/:id', koboApi.getForms)
     router.get('/kobo-api/:id/attachment', koboApi.getAttachementsWithoutAuth)
     router.get('/kobo-api/:id/:formId/answers', koboApi.getAnswers)
+    router.get('/kobo-api/:id', koboApi.getForms)
     router.get('/kobo-api/:id/:formId', koboApi.getForm)
-    // router.post('/kobo-api/:id/:formId', koboApi.importAnswers)
 
     router.put('/mpca-payment', mpcaPayment.create)
     router.post('/mpca-payment/:id', mpcaPayment.update)

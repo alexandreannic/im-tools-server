@@ -16,7 +16,7 @@ export interface ProtHHS_2_1 {
   present_yourself: Opt<'present_yourself'>,
   // 1.4.1. Have you filled out this form before?
   have_you_filled_out_this_form_before: Opt<'have_you_filled_out_this_form_before'>,
-  // <span style="font-size:.875em;font-weight:normal">   2.2. OblastIndex</span>
+  // <span style="font-size:.875em;font-weight:normal">   2.2. Oblast</span>
   where_are_you_current_living_oblast: Opt<'what_is_your_area_of_origin_oblast'>,
   // <span style="font-size:.875em;font-weight:normal">   2.3. Raion</span>
   where_are_you_current_living_raion: Opt<'what_is_your_area_of_origin_raion'>,
@@ -172,7 +172,7 @@ export interface ProtHHS_2_1 {
   do_you_identify_as_any_of_the_following: Opt<'do_you_identify_as_any_of_the_following'>,
   // 5.1.1. Are you:
   are_you: Opt<'are_you'>,
-  // <span style="font-size:.875em;font-weight:normal">   5.1.3. OblastIndex</span>
+  // <span style="font-size:.875em;font-weight:normal">   5.1.3. Oblast</span>
   what_is_your_area_of_origin_oblast: Opt<'what_is_your_area_of_origin_oblast'>,
   // <span style="font-size:.875em;font-weight:normal">   5.1.4. Raion</span>
   what_is_your_area_of_origin_raion: Opt<'what_is_your_area_of_origin_raion'>,

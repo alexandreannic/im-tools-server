@@ -25,8 +25,21 @@ export type KoboAnswerMetaData = Pick<ApiKoboAnswerMetaData, 'start' | 'end'> & 
   id: ApiKoboAnswerMetaData['_id']
   validationStatus?: 'validation_status_approved'
   validatedBy?: string
+  submittedBy?: string
   lastValidatedTimestamp?: number
+  source?: string
 }
+
+export const koboAnswerMetaData: (keyof KoboAnswerMetaData)[] = [
+  'version',
+  'attachments',
+  'geolocation',
+  'submissionTime',
+  'id',
+  'validationStatus',
+  'validatedBy',
+  'lastValidatedTimestamp',
+]
 
 interface ApiKoboAnswerMetaData {
   _id: string,
@@ -55,6 +68,8 @@ interface ApiKoboAnswerMetaData {
 //   [key: string]: string
 // }
 export type KoboAnswer = KoboAnswerMetaData & {answers: Record<string, any>}
+
+export type KoboAnswer2<T extends Record<string, any> = Record<string, string | undefined>> = (KoboAnswerMetaData & T)
 
 export type DBKoboAnswer = KoboAnswer & {formId: KoboId}
 
@@ -102,6 +117,7 @@ export class KoboAnswerUtils {
       submissionTime: new Date(_submission_time),
       version: __version__,
       id: '' + _id,
+      submittedBy: _submitted_by,
       validationStatus: _validation_status.uid,
       lastValidatedTimestamp: _validation_status.timestamp,
       validatedBy: _validation_status.by_whom,
@@ -129,5 +145,3 @@ export interface KoboApiVersion {
   date_deployed: Date
   date_modified: Date
 }
-
-// git remote add azure https://drc-imaa-ukr-tools-api.scm.azurewebsites.net/drc-imaa-ukr-tools-api.git
