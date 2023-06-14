@@ -72,10 +72,10 @@ const startApp = async () => {
   //   console.error(e)
   // }
 
-  await generateKoboInterface(
-    koboSdk,
-    '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/koboInterface',
-  )
+  // await generateKoboInterface(
+  //   koboSdk,
+  //   '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/koboInterface',
+  // )
 
   // await initializeDatabase(prisma)
   // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
