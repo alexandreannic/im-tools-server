@@ -40,11 +40,11 @@ export class ControllerMain {
   }
 
   readonly htmlStats = async (req: Request, res: Response, next: NextFunction) => {
-    const html = await this.stats.getAll({
-      start: new Date(2022, 11, 1),
-      end: new Date(2023, 2, 1)
-    })
-    res.send(html)
+    // const html = await this.stats.getAll({
+    //   start: new Date(2022, 11, 1),
+    //   end: new Date(2023, 2, 1)
+    // })
+    res.send('Running.')
     // res.send('Hello.')
   }
 }
