@@ -1,7 +1,7 @@
 import {DBKoboAnswer, KoboAnswerMetaData, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
 import {filterKoboQuestionType} from '../connector/kobo/KoboClient/type/KoboApiForm'
 import XlsxPopulate from 'xlsx-populate'
-import {convertNumberIndexToLetter} from '../../utils/Common'
+import {convertNumberIndexToLetter} from '../../helper/Utils'
 import {PrismaClient} from '@prisma/client'
 import {KoboService} from './KoboService'
 

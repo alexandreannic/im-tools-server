@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express'
 import {ActivityInfoSdk} from '../../feature/activityInfo/sdk/ActivityInfoSdk'
-import {logger, Logger} from '../../utils/Logger'
+import {logger, Logger} from '../../helper/Logger'
 
 export class ControllerActivityInfo {
 

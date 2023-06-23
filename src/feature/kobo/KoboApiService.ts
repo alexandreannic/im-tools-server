@@ -1,7 +1,7 @@
 import {KoboForm, Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {KoboAnswerParams, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
-import {logger, Logger} from '../../utils/Logger'
+import {logger, Logger} from '../../helper/Logger'
 import {KoboSdk} from '../connector/kobo/KoboClient/KoboSdk'
 import {UUID} from '../../core/Type'
 

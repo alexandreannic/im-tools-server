@@ -1,5 +1,5 @@
 import {AIID, Database, Form, FormDescs} from '../model/ActivityInfo'
-import {makeid} from '../../../utils/Common'
+import {makeid} from '../../../helper/Utils'
 import {appConf} from '../../../core/conf/AppConf'
 import {AiProtectionHhs} from '../playground/AiProtectionHhs'
 

@@ -1,11 +1,14 @@
 import {v4} from 'uuid'
 import {format} from 'date-fns'
 import {ca} from 'date-fns/locale'
+import * as _yup from 'yup'
 
 export type StandardEnum<T> = {
   [id: string]: T | string
   [nu: number]: string
 }
+
+export const yup = _yup
 
 export const genUUID = v4
 

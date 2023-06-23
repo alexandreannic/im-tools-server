@@ -2,7 +2,7 @@ import {ProtHHS_2_1Options} from '../db/koboInterface/ProtHHS_2_1/ProtHHS_2_1Opt
 import {ProtHHS_2_1} from '../db/koboInterface/ProtHHS_2_1/ProtHHS_2_1'
 import {PrismaClient} from '@prisma/client'
 import {KoboApiService} from '../feature/kobo/KoboApiService'
-import {logger, Logger} from '../utils/Logger'
+import {logger, Logger} from '../helper/Logger'
 import {protHHS_2_1Fields} from '../db/koboInterface/ProtHHS_2_1Fields'
 import {KoboAnswer, KoboAnswer2, koboAnswerMetaData} from '../feature/connector/kobo/KoboClient/type/KoboAnswer'
 

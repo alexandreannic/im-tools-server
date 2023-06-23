@@ -16,7 +16,19 @@
     "strict": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/typings"
+    ]
   },
-  "include": ["src"],
-  "exclude": ["./lib", "./node_modules"]
+  "ts-node": {
+    "files": true
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "./lib"
+    //    "./node_modules"
+  ]
 }

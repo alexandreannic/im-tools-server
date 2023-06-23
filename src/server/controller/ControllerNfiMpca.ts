@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
 import {KoboSdk} from '../../feature/connector/kobo/KoboClient/KoboSdk'
 import {Client} from 'pg'
-import {Logger} from '../../utils/Logger'
+import {Logger} from '../../helper/Logger'
 import {KoboTransformClient} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformer'
 import {sub} from 'date-fns'
 import {koboTransformerNfiMcpa} from '../../feature/connector/kobo/KoboFormTransformer/KoboNfiMcpa'

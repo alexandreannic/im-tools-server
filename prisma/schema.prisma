@@ -70,3 +70,10 @@ model MpcaPaymentToolAnswers {
 
   @@id([koboAnswersId, mpcaPaymentToolId])
 }
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  createdAt     DateTime  @default(now())
+  lastConnectedAt DateTime?
+}

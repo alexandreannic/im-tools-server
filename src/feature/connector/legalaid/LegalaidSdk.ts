@@ -9,7 +9,7 @@ import Beneficiary = Legalaid.Beneficiary
 import Config = Legalaid.Config
 import BeneficiaryGroup = Legalaid.BeneficiaryGroup
 import Gender = Legalaid.Gender
-import {toYYYYMMDD} from '../../../utils/Common'
+import {toYYYYMMDD} from '../../../helper/Utils'
 
 export enum PollType {
   Group,

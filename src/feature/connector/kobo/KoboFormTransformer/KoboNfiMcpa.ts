@@ -1,4 +1,4 @@
-import {mapMultipleChoices} from '../../../../utils/Common'
+import {mapMultipleChoices} from '../../../../helper/Utils'
 import {KoboTransformer} from './KoboTransformer'
 import {koboFormsId} from '../../../../core/conf/KoboFormsId'
 import {KoboAnswer, KoboAnswerMetaData} from '../KoboClient/type/KoboAnswer'

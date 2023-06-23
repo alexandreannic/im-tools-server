@@ -10,4 +10,5 @@ export interface Services {
   nfi: ServiceNfi
   stats: ServiceStats
   mpcaPayment: MpcaPaymentService
+
 }

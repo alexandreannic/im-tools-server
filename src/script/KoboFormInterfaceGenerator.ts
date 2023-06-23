@@ -2,8 +2,8 @@ import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
 import {Arr, fnSwitch, lazy} from '@alexandreannic/ts-utils'
 import {KoboApiForm} from '../feature/connector/kobo/KoboClient/type/KoboApiForm'
 import * as fs from 'fs'
-import {Logger} from '../utils/Logger'
-import {tryCach} from '../utils/Common'
+import {Logger} from '../helper/Logger'
+import {tryCach} from '../helper/Utils'
 
 interface KoboInterfaceGeneratorParams {
   outDir: string,
@@ -24,6 +24,9 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
         other_specify: ['Other'],
       },
       overrideOptionsByQuestion: {
+        what_are_the_barriers_to_accessing_health_services: {
+          safety_risks_associated_with_access_to_presence_at_health_facility: ['Safety risks associated with access to/presence at health facility'],
+        },
         what_are_your_main_concerns_regarding_your_accommodation: {
           'risk_of_eviction': [`Risk of eviction`],
           'accommodations_condition': [`Accommodation’s condition`],

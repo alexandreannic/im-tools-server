@@ -1,6 +1,5 @@
-import {PrismaClient} from '@prisma/client'
+import {KoboForm, PrismaClient} from '@prisma/client'
 import {ApiPaginate, ApiPagination, defaultPagination, toApiPaginate} from '../../core/Type'
-import {KoboAnswersFilters} from '../../server/controller/ControllerKobo'
 import {DBKoboAnswer, KoboAnswerMetaData, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
 import XlsxPopulate from 'xlsx-populate'
@@ -9,7 +8,8 @@ import {filterKoboQuestionType, KoboApiQuestion} from '../connector/kobo/KoboCli
 import {Arr, Enum, fnSwitch} from '@alexandreannic/ts-utils'
 import {format} from 'date-fns'
 import {ProtHHS_2_1Options} from '../../db/koboInterface/ProtHHS_2_1/ProtHHS_2_1Options'
-import {convertNumberIndexToLetter} from '../../utils/Common'
+import {convertNumberIndexToLetter} from '../../helper/Utils'
+import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAnswer'
 
 export interface Period {
   start: Date
@@ -25,10 +25,8 @@ export class KoboService {
 
   }
 
-  readonly fetchForms = async () => {
-    const z = this.prisma.koboAnswers.findMany({
-      distinct: 'formId'
-    })
+  readonly getForms = async (): Promise<KoboForm[]> => {
+    return this.prisma.koboForm.findMany()
   }
 
   readonly fetchAnswers = (

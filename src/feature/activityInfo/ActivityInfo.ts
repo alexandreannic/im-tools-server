@@ -3,7 +3,7 @@ import {ActivityInfoSdk} from './sdk/ActivityInfoSdk'
 import {activityInfoForms, AIID, FormDesc, FormDescs} from './model/ActivityInfo'
 import {Arr, fnSwitch} from '@alexandreannic/ts-utils'
 import fs from 'fs'
-import {capitalizeFirstLetter} from '../../utils/Common'
+import {capitalizeFirstLetter} from '../../helper/Utils'
 import columnsListMap = AiProtectionHhs.columnsListMap
 
 export const runAi = {

@@ -1,8 +1,7 @@
 import express, {NextFunction, Request, Response} from 'express'
 import {ControllerNfiMpca} from './controller/ControllerNfiMpca'
 import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
-import {ControllerKobo} from './controller/ControllerKobo'
-import {Logger} from '../utils/Logger'
+import {Logger} from '../helper/Logger'
 import {EcrecSdk} from '../feature/connector/ecrec/EcrecSdk'
 import {LegalaidSdk} from '../feature/connector/legalaid/LegalaidSdk'
 import {ControllerLegalAid} from './controller/ControllerLegalAid'
@@ -10,20 +9,20 @@ import {ControllerMain} from './controller/ControllerMain'
 import {ControllerEcrec} from './controller/ControllerEcrec'
 import {Services} from './services'
 import {PrismaClient} from '@prisma/client'
-import {ControllerKoboForm} from './controller/ControllerKoboForm'
 import {ControllerActivityInfo} from './controller/ControllerActivityInfo'
-import {ActivityInfoSdk} from '../feature/activityInfo/sdk/ActivityInfoSdk'
-import {ControllerKoboApi} from './controller/ControllerKoboApi'
+import {ControllerKoboApi} from './controller/kobo/ControllerKoboApi'
 import {ControllerMpcaPayment} from './controller/ControllerMpcaPayment'
+import {ControllerSession} from './controller/ControllerSession'
+import {ControllerKoboForm} from './controller/kobo/ControllerKoboForm'
+import {ControllerKoboServer} from './controller/kobo/ControllerKoboServer'
+import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer'
 
-const errorCatcher = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
+export const errorCatcher = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      console.log('TRY')
-      return handler(req, res, next)
+      await handler(req, res, next)
     } catch (err) {
-      console.error(err)
-      res.status(500).json({error: 'Something went wrong.'})
+      next(err)
     }
   }
 }
@@ -53,34 +52,45 @@ export const getRoutes = (
     services.mpcaPayment
   )
   const main = new ControllerMain(services.stats)
-  const kobo = new ControllerKobo(pgClient)
+  const koboForm = new ControllerKoboForm(pgClient)
+  const koboServer = new ControllerKoboServer(pgClient)
+  const koboAnswer = new ControllerKoboAnswer(pgClient)
   const koboApi = new ControllerKoboApi(pgClient)
   const activityInfo = new ControllerActivityInfo()
+  const session = new ControllerSession(pgClient)
   try {
     router.get('/', errorCatcher(main.htmlStats))
-    router.post('/activity-info/activity', activityInfo.submitActivity)
+    router.post('/session/login', errorCatcher(session.login))
+    router.delete('/session', errorCatcher(session.logout))
+    router.get('/session', errorCatcher(session.get))
 
-    router.get('/kobo', kobo.getServers)
-    router.get('/kobo/:formId/answers', kobo.getAnswers)
+    router.post('/activity-info/activity', errorCatcher(activityInfo.submitActivity))
 
-    router.post('/proxy', main.proxy)
+    router.get('/kobo/server', errorCatcher(koboServer.getServers))
+    router.get('/kobo/form', errorCatcher(koboForm.getAll))
+    router.get('/kobo/form/:id', errorCatcher(koboForm.get))
+    router.put('/kobo/form', errorCatcher(koboForm.create))
+    router.get('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
 
-    router.get('/kobo-api/local-form', koboApi.getAnswersFromLocalCsv)
-    router.post('/kobo-api/:id/:formId/sync', koboApi.synchronizeAnswersFromKoboServer)
-    router.get('/kobo-api/:id/attachment', koboApi.getAttachementsWithoutAuth)
-    router.get('/kobo-api/:id/:formId/answers', koboApi.getAnswers)
-    router.get('/kobo-api/:id', koboApi.getForms)
-    router.get('/kobo-api/:id/:formId', koboApi.getForm)
+    router.post('/proxy', errorCatcher(main.proxy))
 
-    router.put('/mpca-payment', mpcaPayment.create)
-    router.post('/mpca-payment/:id', mpcaPayment.update)
-    router.get('/mpca-payment', mpcaPayment.getAll)
-    router.get('/mpca-payment/:id', mpcaPayment.get)
+    router.get('/kobo-api/local-form', errorCatcher(koboApi.getAnswersFromLocalCsv))
+    router.post('/kobo-api/:id/:formId/sync', errorCatcher(koboApi.synchronizeAnswersFromKoboServer))
+    router.get('/kobo-api/:id/attachment', errorCatcher(koboApi.getAttachementsWithoutAuth))
+    router.get('/kobo-api/:id/:formId/answers', errorCatcher(koboApi.getAnswers))
+    router.get('/kobo-api/:id', errorCatcher(koboApi.getForms))
+    router.get('/kobo-api/:id/:formId', errorCatcher(koboApi.getForm))
 
-    router.get('/legalaid', legalaid.index)
-    router.get('/nfi/raw', nfi.raw)
-    router.get('/nfi', nfi.index)
-    router.get('/ecrec', ecrec.index)
+    router.put('/mpca-payment', errorCatcher(mpcaPayment.create))
+    router.post('/mpca-payment/:id', errorCatcher(mpcaPayment.update))
+    router.get('/mpca-payment', errorCatcher(mpcaPayment.getAll))
+    router.get('/mpca-payment/:id', errorCatcher(mpcaPayment.get))
+
+    router.get('/legalaid', errorCatcher(legalaid.index))
+    router.get('/nfi/raw', errorCatcher(nfi.raw))
+    router.get('/nfi', errorCatcher(nfi.index))
+    router.get('/ecrec', errorCatcher(ecrec.index))
+    router.get('/*', errorCatcher(ecrec.index))
   } catch (e) {
     console.error('ROUTES CAUGHT!!!')
   }

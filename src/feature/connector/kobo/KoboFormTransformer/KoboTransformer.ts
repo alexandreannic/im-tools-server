@@ -1,4 +1,4 @@
-import {MappedColumn, pipe, renameObjectProperties} from '../../../../utils/Common'
+import {MappedColumn, pipe, renameObjectProperties} from '../../../../helper/Utils'
 import {KoboSdk} from '../KoboClient/KoboSdk'
 import {KoboAnswer, KoboAnswerMetaData, KoboAnswerParams} from '../KoboClient/type/KoboAnswer'
 import {ApiPaginate} from '../../../../core/Type'

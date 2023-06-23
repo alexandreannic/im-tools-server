@@ -14,6 +14,8 @@ import {PrismaClient} from '@prisma/client'
 import {MpcaPaymentService} from './feature/mpcaPayment/MpcaPaymentService'
 import {KoboService} from './feature/kobo/KoboService'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
+import {Client} from '@microsoft/microsoft-graph-client'
+import {TokenCredentialAuthenticationProvider} from '@microsoft/microsoft-graph-client/lib/src/authentication/azureTokenCredentials/TokenCredentialAuthenticationProvider'
 
 const initServices = (
   koboClient: KoboSdk,
