@@ -3,12 +3,13 @@ import * as fs from 'fs'
 
 const config = {
   mainBranch: 'master',
-  gitServer: 'drc-imaa-ukr-tools-api.scm.azurewebsites.net:443/drc-imaa-ukr-tools-api.git',
+  gitServer: 'https://drc-imaa-ukr-tools-api.scm.azurewebsites.net:443/drc-imaa-ukr-tools-api.git',
   username: '$drc-imaa-ukr-tools-api',
   password: 'R8LSo8wxpat8lplxosjzn6WaYjDoT59MJx6xseixPwkJeuk6hhj8PaobAdWX',
 }
 
-const run = (cl: string) => {
+const run = (cl) => {
+  console.log(cl)
   return new Promise((resolve, reject) => {
     const _ = exec(cl)
     _.stdout?.on('data', console.log)
@@ -23,23 +24,23 @@ const run = (cl: string) => {
     })
   })
 }
+
 const gitWorkspaceIsEmpty = () => execSync(`git status --porcelain`).toString() === ''
 
-const newversion = process.argv[2] ?? 'patch' as 'patch' | 'minor' | 'major'
+const newversion = process.argv[2] ?? 'patch' //as 'patch' | 'minor' | 'major'
 
 const getPackageVersion = () => JSON.parse(fs.readFileSync('package.json', 'utf8')).version
 
 const isOnMainBranch = () => new RegExp(`${config.mainBranch}\s*\n*`).test(execSync('git branch --show-current').toString())
 
 ;(async () => {
-  if (!isOnMainBranch()) {
-    console.error(`You must be on branch ${config.mainBranch} to publish.`)
-  }
-  // else if (!gitWorkspaceIsEmpty()) {
+  // if (!isOnMainBranch()) {
+  //   console.error(`You must be on branch ${config.mainBranch} to publish.`)
+  // } else if (!gitWorkspaceIsEmpty()) {
   //   console.error(`Your git status must be clean before to publish.`)
   // } else {
-  // await run(`npm run build`)
-  await run(`git remote add azure https://drc-imaa-ukr-tools-api.scm.azurewebsites.net:443/drc-imaa-ukr-tools-api.git`)
+  await run(`git remote remove azure`).catch(console.error)
+  await run(`git remote add azure ${config.gitServer}`)
   await run(`git push -f azure ${config.mainBranch}`)
   await run(`git remote remove azure`)
   // await run(`git commit -m "Release ${getPackageVersion()}"`)
@@ -47,6 +48,3 @@ const isOnMainBranch = () => new RegExp(`${config.mainBranch}\s*\n*`).test(execS
   console.log(`Successfully deployed!`)
   // }
 })()
-
-
-
