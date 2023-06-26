@@ -14,8 +14,6 @@ import {PrismaClient} from '@prisma/client'
 import {MpcaPaymentService} from './feature/mpcaPayment/MpcaPaymentService'
 import {initializeDatabase} from './db/Db'
 import {logger} from './helper/Logger'
-import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
-import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 
 const initServices = (
@@ -58,12 +56,12 @@ const startApp = async () => {
       }
     })
   )
-  await KoboMigrateHHS2({
-    prisma,
-    serverId: koboServerId.prod,
-    oldFormId: koboFormsId.prod.protectionHh_2,
-    newFormId: koboFormsId.prod.protectionHh_2_1,
-  }).run()
+  // await KoboMigrateHHS2({
+  //   prisma,
+  //   serverId: koboServerId.prod,
+  //   oldFormId: koboFormsId.prod.protectionHh_2,
+  //   newFormId: koboFormsId.prod.protectionHh_2_1,
+  // }).run()
   // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
 
   // try {
