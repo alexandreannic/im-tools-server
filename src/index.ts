@@ -12,10 +12,11 @@ import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
 import {MpcaPaymentService} from './feature/mpcaPayment/MpcaPaymentService'
-import {KoboService} from './feature/kobo/KoboService'
+import {initializeDatabase} from './db/Db'
+import {logger} from './helper/Logger'
+import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
+import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
-import {Client} from '@microsoft/microsoft-graph-client'
-import {TokenCredentialAuthenticationProvider} from '@microsoft/microsoft-graph-client/lib/src/authentication/azureTokenCredentials/TokenCredentialAuthenticationProvider'
 
 const initServices = (
   koboClient: KoboSdk,
@@ -43,8 +44,13 @@ const initServices = (
 
 const startApp = async () => {
 
+  const log = logger('')
   const conf = appConf
+
   const prisma = new PrismaClient()
+  log.info(`Connecting to ${conf.db.url.split('@')[1]}...`)
+  await initializeDatabase({prisma, conf})
+
   const koboSdk = new KoboSdk(new ApiClient({
       baseUrl: conf.kobo.url + '/api',
       headers: {
@@ -52,12 +58,12 @@ const startApp = async () => {
       }
     })
   )
-  // await KoboMigrateHHS2({
-  //   prisma,
-  //   serverId: koboServerId.prod,
-  //   oldFormId: koboFormsId.prod.protectionHh_2,
-  //   newFormId: koboFormsId.prod.protectionHh_2_1,
-  // }).run()
+  await KoboMigrateHHS2({
+    prisma,
+    serverId: koboServerId.prod,
+    oldFormId: koboFormsId.prod.protectionHh_2,
+    newFormId: koboFormsId.prod.protectionHh_2_1,
+  }).run()
   // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
 
   // try {
@@ -90,11 +96,6 @@ const startApp = async () => {
     prisma,
   )
 
-  // logger.info(`Connecting to ${conf.db.database}...`)
-
-  // await pgClient.connect()
-  // logger.info(`Applying evolutions...`)
-  // await new EvolutionManager(pgClient).run()
   new Server(
     conf,
     prisma,
@@ -104,33 +105,12 @@ const startApp = async () => {
     services,
   ).start()
 }
+
+
+// new WfpBuildingBlockClient({
+//   login: appConf.buildingBlockWfp.login,
+//   password: appConf.buildingBlockWfp.password,
+//   otpUrl: appConf.buildingBlockWfp.otpURL,
+// }).getApiToken().then(console.log)
 // runAi.washRMM()
 startApp()
-
-// const test: WashRMM = {
-//   'Reporting Month': '2023-04',
-//   'Organisation': 'Danish Refugee Council',
-//   'Implementing Partner': 'Danish Refugee Council',
-//   'Reporting Against a plan?': 'Yes',
-//   'WASH - APM': 'DRC-00001', //TODO
-//   'Oblast': 'Autonomous Republic of Crimea_Автономна Республіка Крим',
-//   'Raion': 'Bakhchysaraiskyi_Бахчисарайський',
-//   'Hormada': 'Aromatnenska_UA0102003',
-//   'Settlement': 'Sevastopol_UA0102001',
-//   'Location Type': 'Individuals/households',
-//   'Other Institution': undefined,
-//   'Activities & Indicators': '# of individuals benefiting from hygiene kit/items distribution (in-kind)', // TODO
-//   'Disaggregation by population group, gender and age known?': 'Yes',
-//   'Total Reached (No Disaggregation)': 1,
-//   'Breakdown known?': 'Yes',
-//   // 'Total Reached (All Population Groups)': '',
-//   'Population Group': 'Overall (all groups)',
-//   'Girls': 1,
-//   'Boys': 2,
-//   'Men': 3,
-//   'Women': 4,
-//   'Elderly Men': 5,
-//   'Elderly Women': 6,
-//   'People with disability': 7,
-//   'Comments': undefined,
-// }

@@ -4,7 +4,9 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://alexandreac:sieges78@localhost:5432/im-tools"
+  url      = env("DATABASE_URL")
+  // provider = "postgresql"
+  // url      = "postgresql://alexandreac:sieges78@localhost:5432/im-tools"
 }
 
 model KoboServer {

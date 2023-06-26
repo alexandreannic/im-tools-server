@@ -1,11 +1,14 @@
 import {exec, execSync} from 'child_process'
 import * as fs from 'fs'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 const config = {
   mainBranch: 'master',
-  gitServer: 'https://drc-imaa-ukr-tools-api.scm.azurewebsites.net:443/drc-imaa-ukr-tools-api.git',
-  username: '$drc-imaa-ukr-tools-api',
-  password: 'R8LSo8wxpat8lplxosjzn6WaYjDoT59MJx6xseixPwkJeuk6hhj8PaobAdWX',
+  gitServer: process.env.DEPLOY_URL,
+  username: process.env.DEPLOY_USER,
+  password: process.env.DEPLOY_PWD,
 }
 
 const run = (cl) => {
@@ -48,3 +51,4 @@ const isOnMainBranch = () => new RegExp(`${config.mainBranch}\s*\n*`).test(execS
   console.log(`Successfully deployed!`)
   // }
 })()
+// toggle 2
