@@ -8,6 +8,9 @@ const e = env(process.env)
 export const appConf = {
   port: e(int, defaultValue(80))('PORT'),
   owner: e(defaultValue('alexandre.annic@drc.ngo'))('OWNER_NAME'),
+  cors: {
+    allowOrigin: e(defaultValue(`http://localhost:3000`))('CORS_ALLOW_ORIGIN'),
+  },
   buildingBlockWfp: {
     otpURL: e(required)('BUILDINGBLOCK_WFP_OTP_URL'),
     login: e(required)('BUILDINGBLOCK_WFP_LOGIN'),

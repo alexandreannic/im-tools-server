@@ -11,8 +11,10 @@ import {HttpError} from './controller/Controller'
 import {Services} from './services'
 import {PrismaClient} from '@prisma/client'
 import session from 'express-session'
-import {NotFoundError} from '../helper/Errors'
 import {duration} from '@alexandreannic/ts-utils'
+import {WFPBuildingBlockSdk} from '../feature/connector/wfpBuildingBlock/WfpBuildingBlockSdk'
+import multer from 'multer'
+import {AppError} from '../helper/Errors'
 
 export class Server {
 
@@ -22,32 +24,34 @@ export class Server {
     private koboClient: KoboSdk,
     private ecrecSdk: EcrecSdk,
     private legalaidSdk: LegalaidSdk,
+    private wfpSdk: WFPBuildingBlockSdk,
     private services: Services,
     private log = logger('Server'),
   ) {
   }
 
+  static readonly upload = multer({dest: 'uploads/'})
+
   readonly errorHandler = (err: HttpError, req: Request, res: Response, next: (err?: any) => void) => {
+    console.log('errorHandler')
     const errorId = genUUID()
-    console.log('caught errorHandler')
-    if (err instanceof NotFoundError) {
-      console.log('errorHandler CAUGHT NO FOUND!!!')
+    if (err instanceof AppError.NotFound) {
       res.status(404).json({
         data: err.message,
         errorId,
       })
     }
-
     this.log.error(`[${errorId}] Error ${err.code}: ${err.message}\n${err.stack}`)
     console.error(err.error)
-    res.status(err.code).json({
+    console.log({data: err.code === 500 ? 'Something went wrong.' : err.message, errorId})
+    res.status(err.code ?? 500).json({
       data: err.code === 500 ? 'Something went wrong.' : err.message,
       errorId
     })
   }
 
-  static readonly corsHeader = (req: Request, res: Response, next: NextFunction) => {
-    res.header('Access-Control-Allow-Origin', 'https://infoportal-ua.drc.ngo')
+  readonly corsHeader = (req: Request, res: Response, next: NextFunction) => {
+    res.header('Access-Control-Allow-Origin', this.conf.cors.allowOrigin)
     res.header('Access-Control-Allow-Headers', 'Authorization, Origin, X-Requested-With, Content-Type, Accept')
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
     res.header('Access-Control-Allow-Credentials', 'true')
@@ -56,7 +60,7 @@ export class Server {
 
   readonly start = () => {
     const app = express()
-    app.use(Server.corsHeader)
+    app.use(this.corsHeader)
     app.use(session({
       secret: '669d73f2-fc68-4b75-88ac-c2da4af60aa3',
       name: 'session',
@@ -76,6 +80,7 @@ export class Server {
       this.koboClient,
       this.ecrecSdk,
       this.legalaidSdk,
+      this.wfpSdk,
       this.services,
       this.log,
     ))

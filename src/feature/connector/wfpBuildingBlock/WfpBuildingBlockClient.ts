@@ -42,7 +42,7 @@ export class WfpBuildingBlockClient {
     }).then(_ => _.json()).then(_ => _.apiToken)
   }
 
-  private generate = async () => {
+  generate = async () => {
     const token = await this.getApiToken()
     return new ApiClient({
       baseUrl: this.params.baseURL!,

@@ -12,8 +12,13 @@ import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
 import {MpcaPaymentService} from './feature/mpcaPayment/MpcaPaymentService'
-import {initializeDatabase} from './db/Db'
+import {DatabaseHelper} from './db/DatabaseHelper'
 import {logger} from './helper/Logger'
+import {WfpBuildingBlockClient} from './feature/connector/wfpBuildingBlock/WfpBuildingBlockClient'
+import {WFPBuildingBlockSdk} from './feature/connector/wfpBuildingBlock/WfpBuildingBlockSdk'
+import {WfpDeduplicationUpload} from './feature/wfpDeduplication/WfpDeduplicationUpload'
+import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
+import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 
 const initServices = (
@@ -47,7 +52,7 @@ const startApp = async () => {
 
   const prisma = new PrismaClient()
   log.info(`Connecting to ${conf.db.url.split('@')[1]}...`)
-  await initializeDatabase({prisma, conf})
+  await DatabaseHelper.initializeDatabase({prisma, conf})
 
   const koboSdk = new KoboSdk(new ApiClient({
       baseUrl: conf.kobo.url + '/api',
@@ -62,7 +67,6 @@ const startApp = async () => {
   //   oldFormId: koboFormsId.prod.protectionHh_2,
   //   newFormId: koboFormsId.prod.protectionHh_2_1,
   // }).run()
-  // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
 
   // try {
   //   await new KoboService(prisma).generateXLSForHHS({
@@ -77,6 +81,15 @@ const startApp = async () => {
   //   koboSdk,
   //   '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/koboInterface',
   // )
+
+
+  const wfpSdk = new WFPBuildingBlockSdk(await new WfpBuildingBlockClient({
+    login: appConf.buildingBlockWfp.login,
+    password: appConf.buildingBlockWfp.password,
+    otpUrl: appConf.buildingBlockWfp.otpURL,
+  }).generate())
+
+  await new WfpDeduplicationUpload(prisma, wfpSdk).saveAll()
 
   // await initializeDatabase(prisma)
   // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
@@ -100,15 +113,10 @@ const startApp = async () => {
     koboSdk,
     ecrecAppSdk,
     legalAidSdk,
+    wfpSdk,
     services,
   ).start()
 }
 
-
-// new WfpBuildingBlockClient({
-//   login: appConf.buildingBlockWfp.login,
-//   password: appConf.buildingBlockWfp.password,
-//   otpUrl: appConf.buildingBlockWfp.otpURL,
-// }).getApiToken().then(console.log)
 // runAi.washRMM()
 startApp()

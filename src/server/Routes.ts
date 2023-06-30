@@ -16,12 +16,16 @@ import {ControllerSession} from './controller/ControllerSession'
 import {ControllerKoboForm} from './controller/kobo/ControllerKoboForm'
 import {ControllerKoboServer} from './controller/kobo/ControllerKoboServer'
 import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer'
+import {WFPBuildingBlockSdk} from '../feature/connector/wfpBuildingBlock/WfpBuildingBlockSdk'
+import {ControllerWfp} from './controller/ControllerWfp'
+import {Server} from './Server'
 
 export const errorCatcher = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       await handler(req, res, next)
     } catch (err) {
+      console.log('CATCH FUCK')
       next(err)
     }
   }
@@ -32,6 +36,7 @@ export const getRoutes = (
   koboSdk: KoboSdk,
   ecrecSdk: EcrecSdk,
   legalAidSdk: LegalaidSdk,
+  wfpSdk: WFPBuildingBlockSdk,
   services: Services,
   logger: Logger,
 ) => {
@@ -58,6 +63,8 @@ export const getRoutes = (
   const koboApi = new ControllerKoboApi(pgClient)
   const activityInfo = new ControllerActivityInfo()
   const session = new ControllerSession(pgClient)
+  const wfp = new ControllerWfp(pgClient, wfpSdk)
+
   try {
     router.get('/', errorCatcher(main.htmlStats))
     router.post('/session/login', errorCatcher(session.login))
@@ -85,6 +92,8 @@ export const getRoutes = (
     router.post('/mpca-payment/:id', errorCatcher(mpcaPayment.update))
     router.get('/mpca-payment', errorCatcher(mpcaPayment.getAll))
     router.get('/mpca-payment/:id', errorCatcher(mpcaPayment.get))
+    router.post('/wfp-deduplication/search', errorCatcher(wfp.search))
+    router.post('/wfp-deduplication/upload-taxid', Server.upload.single('aa-file'), errorCatcher(wfp.uploadTaxIdMapping))
 
     router.get('/legalaid', errorCatcher(legalaid.index))
     router.get('/nfi/raw', errorCatcher(nfi.raw))

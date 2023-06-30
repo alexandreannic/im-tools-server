@@ -11,7 +11,6 @@ export const printKoboFormsAsCSV = () => {
       _.deployment__active,
     ].map(_ => `"${_}"`).join(','))
     .join('\n')
-  console.log(res)
 }
 
 

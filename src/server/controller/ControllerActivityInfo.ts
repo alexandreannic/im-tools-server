@@ -18,7 +18,7 @@ export class ControllerActivityInfo {
     } catch (e) {
       console.error(activities)
       this.log.error(`Failed to insert ${activities.length} activities`)
-      console.log(e)
+      console.error(e)
       throw e
     }
   }

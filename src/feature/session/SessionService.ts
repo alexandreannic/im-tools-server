@@ -1,8 +1,8 @@
 import {PrismaClient} from '@prisma/client'
 import {logger, Logger} from '../../helper/Logger'
 import {throwIf} from '@alexandreannic/ts-utils'
-import {throwError} from '../../helper/Errors'
 import {SessionError} from './SessionErrors'
+import {AppError} from '../../helper/Errors'
 
 export class SessionService {
 
@@ -15,7 +15,7 @@ export class SessionService {
 
   readonly updateLastConnectedAt = async (email: string) => {
     await this.prisma.user.findFirstOrThrow({where: {email}})
-      .catch(throwError(SessionError.UserNotFound))
+      .catch(AppError.throwError(SessionError.UserNotFound))
     await this.prisma.user.update({
       where: {email},
       data: {

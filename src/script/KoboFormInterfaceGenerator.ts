@@ -193,7 +193,6 @@ const extractQuestionName = (_: Record<string, any>) => {
       }
       res[questionName][_.name] = (() => {
         try {
-          console.log(this.options.overrideOptionsByQuestion?.[questionName][_.name][0], this.options.overrideAllOptions?.[_.name][0], _.label[0])
           return this.options.overrideOptionsByQuestion?.[questionName][_.name][0] ?? this.options.overrideAllOptions?.[_.name][0] ?? _.label[0]
         } catch (e: any) {
           return _.label[0]

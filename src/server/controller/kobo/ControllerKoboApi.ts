@@ -5,6 +5,7 @@ import {getCsv} from '../../../feature/connector/kobo/cleanKoboDb/CleadedKoboDbL
 import {format} from 'date-fns'
 import {KoboSdkGenerator} from '../../../feature/kobo/KoboSdkGenerator'
 import {KoboApiService} from '../../../feature/kobo/KoboApiService'
+import {ca} from 'date-fns/locale'
 
 interface AnswersFilters {
   start?: Date
@@ -35,12 +36,17 @@ export class ControllerKoboApi {
   }
 
   readonly getForms = async (req: Request, res: Response, next: NextFunction) => {
-    const {id} = await yup.object({
-      id: yup.string().required(),
-    }).validate(req.params)
-    const sdk = await this.koboSdkGenerator.construct(id)
-    const forms = await sdk.getForms()
-    res.send(forms)
+    try {
+      const {id} = await yup.object({
+        id: yup.string().required(),
+      }).validate(req.params)
+      const sdk = await this.koboSdkGenerator.construct(id)
+      const forms = await sdk.getForms()
+      res.send(forms)
+    } catch (e) {
+      console.log('CAUGHT')
+      next(e)
+    }
   }
 
   readonly getAnswersFromLocalCsv = async (req: Request, res: Response, next: NextFunction) => {

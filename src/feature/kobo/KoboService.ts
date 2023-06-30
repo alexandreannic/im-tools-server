@@ -72,7 +72,6 @@ export class KoboService {
   }
 
   readonly generateXLSForHHS = async ({start, end}: {start?: Date, end?: Date}) => {
-    console.log('generate')
     const filePattern = (oblast: string) => `drc.ua.prot.hh2.${start ? format(start, 'yyyy-MM') + '.' : ''}${oblast}`
     const oblasts: (keyof typeof ProtHHS_2_1Options.staff_to_insert_their_DRC_office)[] = [
       'chernihiv',

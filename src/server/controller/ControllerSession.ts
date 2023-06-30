@@ -6,7 +6,6 @@ import {SessionService} from '../../feature/session/SessionService'
 import {Client} from '@microsoft/microsoft-graph-client'
 import {AuthenticationProvider} from '@microsoft/microsoft-graph-client/src/IAuthenticationProvider'
 import {AuthenticationProviderOptions} from '@microsoft/microsoft-graph-client/src/IAuthenticationProviderOptions'
-import {sleep} from '@alexandreannic/ts-utils'
 
 export class ControllerSession extends Controller {
 

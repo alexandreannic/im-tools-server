@@ -74,8 +74,36 @@ model MpcaPaymentToolAnswers {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  createdAt     DateTime  @default(now())
+  id              String    @id @default(uuid())
+  email           String    @unique
+  createdAt       DateTime  @default(now())
   lastConnectedAt DateTime?
+}
+
+model MpcaWfpDeduplicationIdMapping {
+  beneficiaryId String                 @id
+  taxId         String?                @unique
+  deduplication MpcaWfpDeduplication[]
+
+  @@unique([beneficiaryId, taxId])
+}
+
+model MpcaWfpDeduplication {
+  id             String                         @id @default(uuid())
+  office         String?
+  fileName       String?
+  fileUpload     DateTime?
+  amount         Int
+  wfpId          Int                            @unique
+  createdAt      DateTime
+  validFrom      DateTime
+  expiry         DateTime
+  beneficiaryId  String
+  beneficiary    MpcaWfpDeduplicationIdMapping? @relation(fields: [beneficiaryId], references: [beneficiaryId])
+  message        String?
+  status         String
+  existingOrga   String?
+  existingStart  DateTime?
+  existingEnd    DateTime?
+  existingAmount Int?
 }
