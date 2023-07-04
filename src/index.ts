@@ -80,11 +80,11 @@ const startApp = async () => {
   // )
 
 
-  const wfpSdk = new WFPBuildingBlockSdk(await new WfpBuildingBlockClient({
-    login: appConf.buildingBlockWfp.login,
-    password: appConf.buildingBlockWfp.password,
-    otpUrl: appConf.buildingBlockWfp.otpURL,
-  }).generate())
+  // const wfpSdk = new WFPBuildingBlockSdk(await new WfpBuildingBlockClient({
+  //   login: appConf.buildingBlockWfp.login,
+  //   password: appConf.buildingBlockWfp.password,
+  //   otpUrl: appConf.buildingBlockWfp.otpURL,
+  // }).generate())
   // await new WfpDeduplicationUpload(prisma, wfpSdk).saveAll()
 
   // await initializeDatabase(prisma)
@@ -109,7 +109,6 @@ const startApp = async () => {
     koboSdk,
     ecrecAppSdk,
     legalAidSdk,
-    wfpSdk,
     services,
   ).start()
 }

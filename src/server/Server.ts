@@ -12,7 +12,6 @@ import {Services} from './services'
 import {PrismaClient} from '@prisma/client'
 import session from 'express-session'
 import {duration} from '@alexandreannic/ts-utils'
-import {WFPBuildingBlockSdk} from '../feature/connector/wfpBuildingBlock/WfpBuildingBlockSdk'
 import multer from 'multer'
 import {AppError} from '../helper/Errors'
 
@@ -24,7 +23,6 @@ export class Server {
     private koboClient: KoboSdk,
     private ecrecSdk: EcrecSdk,
     private legalaidSdk: LegalaidSdk,
-    private wfpSdk: WFPBuildingBlockSdk,
     private services: Services,
     private log = logger('Server'),
   ) {
@@ -87,7 +85,6 @@ export class Server {
       this.koboClient,
       this.ecrecSdk,
       this.legalaidSdk,
-      this.wfpSdk,
       this.services,
       this.log,
     ))

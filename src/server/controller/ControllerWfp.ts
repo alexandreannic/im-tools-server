@@ -1,18 +1,17 @@
-import {WFPBuildingBlockSdk} from '../../feature/connector/wfpBuildingBlock/WfpBuildingBlockSdk'
 import {NextFunction, Request, Response} from 'express'
 import {yup} from '../../helper/Utils'
 import {PrismaClient} from '@prisma/client'
 import {WfpDeduplicationService} from '../../feature/wfpDeduplication/WfpDeduplicationService'
 import {WfPDeduplicationError} from '../../feature/wfpDeduplication/WfpDeduplicationError'
 import {WfpDeduplicationUpload} from '../../feature/wfpDeduplication/WfpDeduplicationUpload'
+import {appConf} from '../../core/conf/AppConf'
 
 export class ControllerWfp {
 
   constructor(
     private prisma: PrismaClient,
-    private wfpSdk: WFPBuildingBlockSdk,
     private service = new WfpDeduplicationService(prisma),
-    private upload = new WfpDeduplicationUpload(prisma, wfpSdk),
+    private conf = appConf,
   ) {
   }
 
@@ -20,12 +19,13 @@ export class ControllerWfp {
     if (!req.file) {
       throw new WfPDeduplicationError.NoFileUploaded()
     }
-    await this.upload.uploadTaxId(req.file.path)
+    await this.service.uploadTaxId(req.file.path)
     res.send({})
   }
 
   readonly refresh = async (req: Request, res: Response, next: NextFunction) => {
-    await this.upload.saveAll()
+    const upload = await WfpDeduplicationUpload.construct(this.conf, this.prisma)
+    await upload.saveAll()
     res.send()
   }
 

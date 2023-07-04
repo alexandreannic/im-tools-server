@@ -37,7 +37,6 @@ export const getRoutes = (
   koboSdk: KoboSdk,
   ecrecSdk: EcrecSdk,
   legalAidSdk: LegalaidSdk,
-  wfpSdk: WFPBuildingBlockSdk,
   services: Services,
   logger: Logger,
 ) => {
@@ -64,7 +63,7 @@ export const getRoutes = (
   const koboApi = new ControllerKoboApi(pgClient)
   const activityInfo = new ControllerActivityInfo()
   const session = new ControllerSession(pgClient)
-  const wfp = new ControllerWfp(pgClient, wfpSdk)
+  const wfp = new ControllerWfp(pgClient)
   const access = new ControllerAccess(pgClient)
 
   try {

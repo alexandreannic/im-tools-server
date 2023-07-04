@@ -6,26 +6,25 @@ import {addMinutes, parse, subMinutes} from 'date-fns'
 import XlsxPopulate from 'xlsx-populate'
 import {ApiPaginate} from '../../core/Type'
 import {WfpDeduplicationOffice} from './WfpDeduplicationType'
+import {appConf, AppConf} from '../../core/conf/AppConf'
+import {WfpBuildingBlockClient} from '../connector/wfpBuildingBlock/WfpBuildingBlockClient'
 
 export class WfpDeduplicationUpload {
 
-  constructor(
+  private constructor(
     private prisma: PrismaClient,
     private wfpSdk: WFPBuildingBlockSdk
   ) {
+
   }
 
-  readonly uploadTaxId = async (filePath: string) => {
-    const xls = await XlsxPopulate.fromFileAsync(filePath)
-    await Promise.all(xls.activeSheet()._rows
-      .splice(1)
-      .map(_ => ({beneficiaryId: _.cell(1).value() as string, taxId: '' + _.cell(2).value() as string}))
-      .map(_ => this.prisma.mpcaWfpDeduplicationIdMapping.upsert({
-        update: _,
-        where: {beneficiaryId: _.beneficiaryId},
-        create: _,
-      }))
-    )
+  static readonly construct = async (conf: AppConf, prisma: PrismaClient) => {
+    const wfpSdk = new WFPBuildingBlockSdk(await new WfpBuildingBlockClient({
+      login: appConf.buildingBlockWfp.login,
+      password: appConf.buildingBlockWfp.password,
+      otpUrl: appConf.buildingBlockWfp.otpURL,
+    }).generate())
+    return new WfpDeduplicationUpload(prisma, wfpSdk)
   }
 
   readonly saveAll = async () => {
