@@ -7,7 +7,7 @@ const e = env(process.env)
 
 export const appConf = {
   port: e(int, defaultValue(80))('PORT'),
-  owner: e(defaultValue('alexandre.annic@drc.ngo'))('OWNER_NAME'),
+  ownerEmail: e(defaultValue('alexandre.annic@drc.ngo'))('OWNER_EMAIL'),
   cors: {
     allowOrigin: e(defaultValue(`http://localhost:3000`))('CORS_ALLOW_ORIGIN'),
   },

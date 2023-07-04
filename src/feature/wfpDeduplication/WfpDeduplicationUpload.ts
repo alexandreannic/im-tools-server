@@ -5,6 +5,7 @@ import {WfpDeduplicationStatus} from '../../db/models/WfpDeduplicationStatus'
 import {addMinutes, parse, subMinutes} from 'date-fns'
 import XlsxPopulate from 'xlsx-populate'
 import {ApiPaginate} from '../../core/Type'
+import {WfpDeduplicationOffice} from './WfpDeduplicationType'
 
 export class WfpDeduplicationUpload {
 
@@ -29,7 +30,6 @@ export class WfpDeduplicationUpload {
 
   readonly saveAll = async () => {
     await this.setOblast()
-    return
     await this.prisma.mpcaWfpDeduplication.deleteMany()
     await Promise.all([
       this.runOnAll({
@@ -148,15 +148,15 @@ export class WfpDeduplicationUpload {
 
   private setOblast = async () => {
     const possibleOffices = ['HRK', 'NLV', 'CEJ', 'DNK', 'CWC', 'NLK', 'LWO', 'CHJ']
-    const officeMapping = {
-      'HRK': 'Kharkiv',
-      'NLV': 'Mykloaiv',
-      'CEJ': 'Chernihiv',
-      'DNK': 'Dnipro',
-      'CWC': 'Lviv',
-      'NLK': 'Mykloaiv',
-      'LWO': 'Lviv',
-      'CHJ': 'Chernihiv',
+    const officeMapping: Record<string, WfpDeduplicationOffice> = {
+      'HRK': WfpDeduplicationOffice.Kharkiv,
+      'NLV': WfpDeduplicationOffice.Mykloaiv,
+      'CEJ': WfpDeduplicationOffice.Chernihiv,
+      'DNK': WfpDeduplicationOffice.Dnipro,
+      'CWC': WfpDeduplicationOffice.Lviv,
+      'NLK': WfpDeduplicationOffice.Mykloaiv,
+      'LWO': WfpDeduplicationOffice.Lviv,
+      'CHJ': WfpDeduplicationOffice.Chernihiv,
     }
     await this.runOnAll({
       req: this.wfpSdk.getImportFiles, fn: async (imports) => {

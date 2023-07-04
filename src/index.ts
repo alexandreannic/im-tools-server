@@ -19,6 +19,7 @@ import {WFPBuildingBlockSdk} from './feature/connector/wfpBuildingBlock/WfpBuild
 import {WfpDeduplicationUpload} from './feature/wfpDeduplication/WfpDeduplicationUpload'
 import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
 import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
+import {KoboService} from './feature/kobo/KoboService'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 
 const initServices = (
@@ -70,8 +71,8 @@ const startApp = async () => {
 
   // try {
   //   await new KoboService(prisma).generateXLSForHHS({
-  //     start: new Date(2023, 4, 1),
-  //     end: new Date(2023, 5, 1),
+  //     // start: new Date(2023, 5, 1),
+  //     // end: new Date(2023, 6, 1),
   // })
   // } catch (e) {
   //   console.error(e)
@@ -88,8 +89,7 @@ const startApp = async () => {
     password: appConf.buildingBlockWfp.password,
     otpUrl: appConf.buildingBlockWfp.otpURL,
   }).generate())
-
-  await new WfpDeduplicationUpload(prisma, wfpSdk).saveAll()
+  // await new WfpDeduplicationUpload(prisma, wfpSdk).saveAll()
 
   // await initializeDatabase(prisma)
   // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)

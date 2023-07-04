@@ -33,21 +33,28 @@ export class Server {
   static readonly upload = multer({dest: 'uploads/'})
 
   readonly errorHandler = (err: HttpError, req: Request, res: Response, next: (err?: any) => void) => {
-    console.log('errorHandler')
     const errorId = genUUID()
-    if (err instanceof AppError.NotFound) {
-      res.status(404).json({
-        data: err.message,
+    try {
+      console.log('errorHandler')
+      if (err instanceof AppError.NotFound) {
+        res.status(404).json({
+          data: err.message,
+          errorId,
+        })
+      }
+      console.error('LOG ERROR:', err)
+      this.log.error(`[${errorId}] Error ${err.code}: ${err.message}\n${err.stack}`)
+      console.log({data: err.code === 500 ? 'Something went wrong.' : err.message, errorId})
+      res.status(err.code ?? 500).json({
+        data: err.code === 500 ? 'Something went wrong.' : err.message,
+        errorId
+      })
+    } catch (e) {
+      res.send(500).json({
+        data: 'Something went wrong.',
         errorId,
       })
     }
-    this.log.error(`[${errorId}] Error ${err.code}: ${err.message}\n${err.stack}`)
-    console.error(err.error)
-    console.log({data: err.code === 500 ? 'Something went wrong.' : err.message, errorId})
-    res.status(err.code ?? 500).json({
-      data: err.code === 500 ? 'Something went wrong.' : err.message,
-      errorId
-    })
   }
 
   readonly corsHeader = (req: Request, res: Response, next: NextFunction) => {

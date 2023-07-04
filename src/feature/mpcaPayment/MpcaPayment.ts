@@ -12,7 +12,7 @@ export interface MpcaPaymentEntity {
   financeAndAdministrationOfficer?: string
   city?: string
   createdAt: Date
-  updatedAt: Date
+  updatedAt?: Date
   answers: KoboId[]
 }
 

@@ -1,7 +1,8 @@
 import {PrismaClient} from '@prisma/client'
-import {koboServerId} from '../core/conf/KoboFormsId'
-import {AppConf} from '../core/conf/AppConf'
+import {koboFormsId, koboServerId} from '../core/conf/KoboFormsId'
+import {appConf, AppConf} from '../core/conf/AppConf'
 import {ApiPaginate} from '../core/Type'
+import {AppFeature, DatabaseFeatureParams} from '../feature/access/AccessType'
 
 export class DatabaseHelper {
 
@@ -45,18 +46,58 @@ export class DatabaseHelper {
     }
 
     const createOwner = async () => {
-      if (!await prisma.user.findFirst({where: {email: conf.owner}})) {
+      if (!await prisma.user.findFirst({where: {email: conf.ownerEmail}})) {
         await prisma.user.create({
           data: {
-            email: conf.owner,
+            email: conf.ownerEmail,
           }
         })
       }
     }
 
+    const createAccess = async () => {
+      if (await prisma.featureAccess.count() === 0) {
+        await Promise.all([
+          prisma.featureAccess.create({
+            data: {
+              email: 'romane.breton@drc.ngo',
+              featureId: AppFeature.DATABASE,
+              level: 'ADMIN',
+              params: DatabaseFeatureParams.create({
+                koboFormId: koboFormsId.prod.protectionHh_2_1,
+              }),
+            }
+          }),
+          prisma.featureAccess.create({
+            data: {
+              email: 'niamh.foley@drc.ngo',
+              featureId: AppFeature.DATABASE,
+              level: 'ADMIN',
+              params: DatabaseFeatureParams.create({
+                koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
+                filters: {
+
+                }
+              }),
+            }
+          }),
+          prisma.featureAccess.create({
+            data: {
+              email: appConf.ownerEmail,
+              featureId: AppFeature.WFP_DEDUPLICATION,
+              level: 'ADMIN',
+              updatedAt: new Date(),
+            }
+          })
+        ])
+      }
+
+    }
+
     await Promise.all([
       createOwner(),
-      createServer()
+      createServer(),
+      createAccess(),
     ])
   }
 }

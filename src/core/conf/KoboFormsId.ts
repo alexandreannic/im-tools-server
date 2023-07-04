@@ -6,6 +6,7 @@ export const koboServerId = {
 
 export const koboFormsId = {
   prod: {
+    mpcaEmergencyRegistration: 'aMJL9DG8qEcULqTZTKQbrq',
     protectionHh_2_1: 'aQDZ2xhPUnNd43XzuQucVR',
     protectionHh_2: 'aRHsewShwZhXiy8jrBj9zf',
     protectionHh: 'aFU8x6tHksveU2c3hK7RUG',

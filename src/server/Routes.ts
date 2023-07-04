@@ -19,6 +19,7 @@ import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer'
 import {WFPBuildingBlockSdk} from '../feature/connector/wfpBuildingBlock/WfpBuildingBlockSdk'
 import {ControllerWfp} from './controller/ControllerWfp'
 import {Server} from './Server'
+import {ControllerAccess} from './controller/ControllerAccess'
 
 export const errorCatcher = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -64,12 +65,14 @@ export const getRoutes = (
   const activityInfo = new ControllerActivityInfo()
   const session = new ControllerSession(pgClient)
   const wfp = new ControllerWfp(pgClient, wfpSdk)
+  const access = new ControllerAccess(pgClient)
 
   try {
     router.get('/', errorCatcher(main.htmlStats))
     router.post('/session/login', errorCatcher(session.login))
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session', errorCatcher(session.get))
+    router.get('/access', errorCatcher(access.search))
 
     router.post('/activity-info/activity', errorCatcher(activityInfo.submitActivity))
 
@@ -92,6 +95,7 @@ export const getRoutes = (
     router.post('/mpca-payment/:id', errorCatcher(mpcaPayment.update))
     router.get('/mpca-payment', errorCatcher(mpcaPayment.getAll))
     router.get('/mpca-payment/:id', errorCatcher(mpcaPayment.get))
+    router.post('/wfp-deduplication/refresh', errorCatcher(wfp.refresh))
     router.post('/wfp-deduplication/search', errorCatcher(wfp.search))
     router.post('/wfp-deduplication/upload-taxid', Server.upload.single('aa-file'), errorCatcher(wfp.uploadTaxIdMapping))
 

@@ -24,6 +24,11 @@ export class ControllerWfp {
     res.send({})
   }
 
+  readonly refresh = async (req: Request, res: Response, next: NextFunction) => {
+    await this.upload.saveAll()
+    res.send()
+  }
+
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
     const schema = yup.object({
       limit: yup.number().optional(),
