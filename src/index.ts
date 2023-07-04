@@ -16,10 +16,6 @@ import {DatabaseHelper} from './db/DatabaseHelper'
 import {logger} from './helper/Logger'
 import {WfpBuildingBlockClient} from './feature/connector/wfpBuildingBlock/WfpBuildingBlockClient'
 import {WFPBuildingBlockSdk} from './feature/connector/wfpBuildingBlock/WfpBuildingBlockSdk'
-import {WfpDeduplicationUpload} from './feature/wfpDeduplication/WfpDeduplicationUpload'
-import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
-import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
-import {KoboService} from './feature/kobo/KoboService'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 
 const initServices = (
@@ -53,7 +49,7 @@ const startApp = async () => {
 
   const prisma = new PrismaClient()
   log.info(`Connecting to ${conf.db.url.split('@')[1]}...`)
-  await DatabaseHelper.initializeDatabase({prisma, conf})
+  await new DatabaseHelper(conf, prisma).initializeDatabase()
 
   const koboSdk = new KoboSdk(new ApiClient({
       baseUrl: conf.kobo.url + '/api',

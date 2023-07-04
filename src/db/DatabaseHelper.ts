@@ -1,12 +1,17 @@
-import {PrismaClient} from '@prisma/client'
+import {FeatureAccess, PrismaClient} from '@prisma/client'
 import {koboFormsId, koboServerId} from '../core/conf/KoboFormsId'
 import {appConf, AppConf} from '../core/conf/AppConf'
 import {ApiPaginate} from '../core/Type'
 import {AppFeature, DatabaseFeatureParams} from '../feature/access/AccessType'
+import {Enum} from '@alexandreannic/ts-utils'
+import {KoboId} from '../feature/connector/kobo/KoboClient/type/KoboAnswer'
 
 export class DatabaseHelper {
 
-  constructor() {
+  constructor(
+    private conf: AppConf,
+    private prisma: PrismaClient
+  ) {
   }
 
   static toPaginate = (totalSize: number) => <T>(data: T[]): ApiPaginate<T> => {
@@ -16,25 +21,19 @@ export class DatabaseHelper {
     }
   }
 
-  static readonly initializeDatabase = async ({
-    prisma,
-    conf,
-  }: {
-    conf: AppConf,
-    prisma: PrismaClient
-  }) => {
+  readonly initializeDatabase = async () => {
     const createServer = async () => {
-      const serversCount = await prisma.koboServer.count()
+      const serversCount = await this.prisma.koboServer.count()
       if (serversCount === 0) {
         return Promise.all([
-          prisma.koboServer.create({
+          this.prisma.koboServer.create({
             data: {
               id: koboServerId.prod,
               url: 'https://kobo.humanitarianresponse.info',
               token: 'TODO',
             }
           }),
-          prisma.koboServer.create({
+          this.prisma.koboServer.create({
             data: {
               id: koboServerId.dev,
               url: 'https://kf.kobotoolbox.org',
@@ -46,52 +45,53 @@ export class DatabaseHelper {
     }
 
     const createOwner = async () => {
-      if (!await prisma.user.findFirst({where: {email: conf.ownerEmail}})) {
-        await prisma.user.create({
+      if (!await this.prisma.user.findFirst({where: {email: this.conf.ownerEmail}})) {
+        await this.prisma.user.create({
           data: {
-            email: conf.ownerEmail,
+            email: this.conf.ownerEmail,
           }
         })
       }
     }
 
     const createAccess = async () => {
-      if (await prisma.featureAccess.count() === 0) {
-        await Promise.all([
-          prisma.featureAccess.create({
+      const createdBySystem = 'system'
+      await this.prisma.featureAccess.deleteMany({where: {createdBy: createdBySystem}})
+      await Promise.all([
+        this.prisma.featureAccess.create({
+          data: {
+            createdBy: createdBySystem,
+            email: 'romane.breton@drc.ngo',
+            featureId: AppFeature.database,
+            level: 'ADMIN',
+            params: DatabaseFeatureParams.create({
+              koboFormId: koboFormsId.prod.protectionHh_2_1,
+            }),
+          }
+        }),
+        this.prisma.featureAccess.create({
+          data: {
+            createdBy: createdBySystem,
+            email: 'niamh.foley@drc.ngo',
+            featureId: AppFeature.database,
+            level: 'ADMIN',
+            params: DatabaseFeatureParams.create({
+              koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
+              filters: {}
+            }),
+          }
+        }),
+        ...Enum.values(AppFeature).map(featureId =>
+          this.prisma.featureAccess.create({
             data: {
-              email: 'romane.breton@drc.ngo',
-              featureId: AppFeature.DATABASE,
-              level: 'ADMIN',
-              params: DatabaseFeatureParams.create({
-                koboFormId: koboFormsId.prod.protectionHh_2_1,
-              }),
-            }
-          }),
-          prisma.featureAccess.create({
-            data: {
-              email: 'niamh.foley@drc.ngo',
-              featureId: AppFeature.DATABASE,
-              level: 'ADMIN',
-              params: DatabaseFeatureParams.create({
-                koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
-                filters: {
-
-                }
-              }),
-            }
-          }),
-          prisma.featureAccess.create({
-            data: {
+              createdBy: createdBySystem,
               email: appConf.ownerEmail,
-              featureId: AppFeature.WFP_DEDUPLICATION,
+              featureId,
               level: 'ADMIN',
-              updatedAt: new Date(),
             }
           })
-        ])
-      }
-
+        )
+      ])
     }
 
     await Promise.all([

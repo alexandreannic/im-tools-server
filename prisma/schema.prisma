@@ -126,6 +126,7 @@ enum FeatureAccessLevel {
 
 model FeatureAccess {
   id        String             @id @default(uuid())
+  createdBy String?
   featureId String?
   params    Json?
   level     FeatureAccessLevel
