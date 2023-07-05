@@ -113,3 +113,5 @@ export const tryCach = <T>(tryFn: () => T, catchFn: () => T): T => {
     return catchFn()
   }
 }
+
+export const removeHtml = (_?: string) => _?.replace(/(<([^>]+)>)/gi, '')

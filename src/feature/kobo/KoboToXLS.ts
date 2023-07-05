@@ -5,6 +5,7 @@ import {convertNumberIndexToLetter} from '../../helper/Utils'
 import {PrismaClient} from '@prisma/client'
 import {KoboService} from './KoboService'
 
+/** @deprecated??*/
 export class KoboToXLS {
 
   constructor(

@@ -16,6 +16,7 @@ import {DatabaseHelper} from './db/DatabaseHelper'
 import {logger} from './helper/Logger'
 import {WfpBuildingBlockClient} from './feature/connector/wfpBuildingBlock/WfpBuildingBlockClient'
 import {WFPBuildingBlockSdk} from './feature/connector/wfpBuildingBlock/WfpBuildingBlockSdk'
+import {generateKoboInterface} from './script/KoboFormInterfaceGenerator'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 
 const initServices = (
@@ -74,10 +75,10 @@ const startApp = async () => {
   //   console.error(e)
   // }
 
-  // await generateKoboInterface(
-  //   koboSdk,
-  //   '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/koboInterface',
-  // )
+  await generateKoboInterface(
+    koboSdk,
+    '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/koboInterface',
+  )
 
 
   // const wfpSdk = new WFPBuildingBlockSdk(await new WfpBuildingBlockClient({

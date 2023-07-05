@@ -8,7 +8,7 @@ import {filterKoboQuestionType, KoboApiQuestion} from '../connector/kobo/KoboCli
 import {Arr, Enum, fnSwitch} from '@alexandreannic/ts-utils'
 import {format} from 'date-fns'
 import {ProtHHS_2_1Options} from '../../db/koboInterface/ProtHHS_2_1/ProtHHS_2_1Options'
-import {convertNumberIndexToLetter} from '../../helper/Utils'
+import {convertNumberIndexToLetter, removeHtml} from '../../helper/Utils'
 import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAnswer'
 
 export interface Period {
@@ -205,7 +205,7 @@ export class KoboService {
       const metaColumns: (keyof KoboAnswerMetaData)[] = ['id', 'submissionTime', 'version']
       const schemaColumns = koboFormDetails.content.survey.filter(filterKoboQuestionType)
         .map(_ => langIndex !== undefined && _.label
-          ? _.label[langIndex]?.replace(/(<([^>]+)>)/gi, '') ?? _.name
+          ? removeHtml(_.label[langIndex]) ?? _.name
           : _.name)
       return [...metaColumns, ...schemaColumns]
     })()
