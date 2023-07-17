@@ -12,11 +12,11 @@ import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
 import {MpcaPaymentService} from './feature/mpcaPayment/MpcaPaymentService'
-import {DatabaseHelper} from './db/DatabaseHelper'
+import {DbInit} from './db/DbInit'
 import {logger} from './helper/Logger'
-import {WfpBuildingBlockClient} from './feature/connector/wfpBuildingBlock/WfpBuildingBlockClient'
-import {WFPBuildingBlockSdk} from './feature/connector/wfpBuildingBlock/WfpBuildingBlockSdk'
 import {generateKoboInterface} from './script/KoboFormInterfaceGenerator'
+import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
+import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 
 const initServices = (
@@ -50,7 +50,7 @@ const startApp = async () => {
 
   const prisma = new PrismaClient()
   log.info(`Connecting to ${conf.db.url.split('@')[1]}...`)
-  await new DatabaseHelper(conf, prisma).initializeDatabase()
+  await new DbInit(conf, prisma).initializeDatabase()
 
   const koboSdk = new KoboSdk(new ApiClient({
       baseUrl: conf.kobo.url + '/api',
@@ -75,10 +75,10 @@ const startApp = async () => {
   //   console.error(e)
   // }
 
-  // await generateKoboInterface(
-  //   koboSdk,
-  //   '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/koboInterface',
-  // )
+  await generateKoboInterface(
+    koboSdk,
+    '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/generatedKoboInterface',
+  )
 
   // const wfpSdk = new WFPBuildingBlockSdk(await new WfpBuildingBlockClient({
   //   login: appConf.buildingBlockWfp.login,
@@ -87,8 +87,6 @@ const startApp = async () => {
   // }).generate())
   // await new WfpDeduplicationUpload(prisma, wfpSdk).saveAll()
 
-  // await initializeDatabase(prisma)
-  // await new KoboApiService(prisma).saveApiAnswerToDb(koboServerId.prod, koboFormsId.prod.protectionHh_2_1)
   const ecrecAppSdk = new EcrecSdk(new EcrecClient(appConf.ecrecApp))
   const legalAidSdk = new LegalaidSdk(new ApiClient({
     baseUrl: 'https://api.lau-crm.org.ua',

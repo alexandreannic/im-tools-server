@@ -17,7 +17,6 @@ export class AccessService {
   }
 
   readonly search = (search: AccessSearchParams) => {
-    console.log(search)
     return this.prisma.featureAccess.findMany({where: search})
   }
 }

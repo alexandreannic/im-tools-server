@@ -1,4 +1,4 @@
-import {DBKoboAnswer, KoboAnswerMetaData, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
+import {DbKoboAnswer, KoboAnswerMetaData, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
 import {filterKoboQuestionType} from '../connector/kobo/KoboClient/type/KoboApiForm'
 import XlsxPopulate from 'xlsx-populate'
 import {convertNumberIndexToLetter} from '../../helper/Utils'
@@ -24,7 +24,7 @@ export class KoboToXLS {
   }: {
     fileName: string
     formId: KoboId,
-    data: DBKoboAnswer[],
+    data: DbKoboAnswer[],
     langIndex?: number
     password?: string
   }) => {

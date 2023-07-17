@@ -20,6 +20,7 @@ import {WFPBuildingBlockSdk} from '../feature/connector/wfpBuildingBlock/WfpBuil
 import {ControllerWfp} from './controller/ControllerWfp'
 import {Server} from './Server'
 import {ControllerAccess} from './controller/ControllerAccess'
+import {UserController} from './controller/UserController'
 
 export const errorCatcher = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -65,6 +66,7 @@ export const getRoutes = (
   const session = new ControllerSession(pgClient)
   const wfp = new ControllerWfp(pgClient)
   const access = new ControllerAccess(pgClient)
+  const user = new UserController(pgClient)
 
   try {
     router.get('/', errorCatcher(main.htmlStats))
@@ -72,6 +74,8 @@ export const getRoutes = (
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session', errorCatcher(session.get))
     router.get('/access', errorCatcher(access.search))
+
+    router.post('/user/me', errorCatcher(user.updateMe))
 
     router.post('/activity-info/activity', errorCatcher(activityInfo.submitActivity))
 

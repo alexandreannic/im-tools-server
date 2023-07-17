@@ -1,10 +1,9 @@
-import {ProtHHS_2_1Options} from '../db/koboInterface/ProtHHS_2_1/ProtHHS_2_1Options'
-import {ProtHHS_2_1} from '../db/koboInterface/ProtHHS_2_1/ProtHHS_2_1'
+import {ProtHHS_2_1Options} from '../db/generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1Options'
+import {ProtHHS_2_1} from '../db/generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1'
 import {PrismaClient} from '@prisma/client'
 import {KoboApiService} from '../feature/kobo/KoboApiService'
 import {logger, Logger} from '../helper/Logger'
-import {protHHS_2_1Fields} from '../db/koboInterface/ProtHHS_2_1Fields'
-import {KoboAnswer, KoboAnswer2, koboAnswerMetaData} from '../feature/connector/kobo/KoboClient/type/KoboAnswer'
+import {protHHS_2_1Fields} from '../db/generatedKoboInterface/ProtHHS_2_1Fields'
 
 interface Props {
   prisma: PrismaClient,
@@ -162,6 +161,7 @@ export const KoboMigrateHHS2 = ({
     await prisma.koboAnswers.createMany({
       data: newKoboApiAnswers.map(_ => ({
         id: _.id,
+        uuid: _.uuid,
         formId: newFormId,
         start: _.start,
         end: _.end,

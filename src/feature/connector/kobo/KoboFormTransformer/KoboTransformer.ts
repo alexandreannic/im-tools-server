@@ -34,6 +34,7 @@ export class KoboTransformer<F extends KoboAnswerMetaData> {
     submissionTime: 'submissionTime',
     validationStatus: 'validationStatus',
     id: 'id',
+    uuid: 'uuid',
     geolocation: 'geolocation',
     attachments: 'attachments',
   }

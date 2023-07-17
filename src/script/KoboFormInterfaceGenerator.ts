@@ -2,9 +2,6 @@ import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
 import {Arr, fnSwitch, lazy} from '@alexandreannic/ts-utils'
 import {KoboApiForm} from '../feature/connector/kobo/KoboClient/type/KoboApiForm'
 import * as fs from 'fs'
-import {Logger} from '../helper/Logger'
-import {tryCach} from '../helper/Utils'
-import {koboFormsId} from '../core/conf/KoboFormsId'
 
 interface KoboInterfaceGeneratorParams {
   outDir: string,
@@ -18,38 +15,36 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
   const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
     // {formName: 'Shelter', formId: 'aL8oHMzJJ9soPepvK6YU9E'},
     // {formName: 'BNRE', formId: 'aKgX4MNs6gCemDQKPeXxY8'},
+    // {formName: 'MealVisitMonitoring', formId: koboFormsId.prod.mealVisitMonitoring,},
     {
-      formName: 'MealVisitMonitoring', formId: koboFormsId.prod.mealVisitMonitoring,
+      formName: 'ProtHHS_2_1',
+      formId: 'aQDZ2xhPUnNd43XzuQucVR',
+      overrideAllOptions: {
+        other_specify: ['Other'],
+      },
+      overrideOptionsByQuestion: {
+        what_are_the_barriers_to_accessing_health_services: {
+          safety_risks_associated_with_access_to_presence_at_health_facility: ['Safety risks associated with access to/presence at health facility'],
+        },
+        what_are_your_main_concerns_regarding_your_accommodation: {
+          'risk_of_eviction': [`Risk of eviction`],
+          'accommodations_condition': [`Accommodation’s condition`],
+          'overcrowded_lack_of_privacy': [`Overcrowded/Lack of privacy`],
+          'lack_of_functioning_utilities': [`Lack of functioning utilities`],
+          'lack_of_connectivity': [`Lack of connectivity`],
+          'security_and_safety_risks': [`Security and safety risks`],
+          'lack_of_financial_compensation_or_rehabilitation_for_damage_or_destruction_of_housing': [`Lack of support for damaged housing`],
+        },
+        what_is_the_type_of_your_household: {
+          'one_person_household': [`One person household`],
+          'couple_without_children': [`Couple without children`],
+          'couple_with_children': [`Couple with children`],
+          'mother_with_children': [`Mother with children`],
+          'father_with_children': [`Father with children`],
+          'extended_family': [`Extended family`],
+        }
+      }
     },
-    // {
-    //   formName: 'ProtHHS_2_1',
-    //   formId: 'aQDZ2xhPUnNd43XzuQucVR',
-    //   overrideAllOptions: {
-    //     other_specify: ['Other'],
-    //   },
-    //   overrideOptionsByQuestion: {
-    //     what_are_the_barriers_to_accessing_health_services: {
-    //       safety_risks_associated_with_access_to_presence_at_health_facility: ['Safety risks associated with access to/presence at health facility'],
-    //     },
-    //     what_are_your_main_concerns_regarding_your_accommodation: {
-    //       'risk_of_eviction': [`Risk of eviction`],
-    //       'accommodations_condition': [`Accommodation’s condition`],
-    //       'overcrowded_lack_of_privacy': [`Overcrowded/Lack of privacy`],
-    //       'lack_of_functioning_utilities': [`Lack of functioning utilities`],
-    //       'lack_of_connectivity': [`Lack of connectivity`],
-    //       'security_and_safety_risks': [`Security and safety risks`],
-    //       'lack_of_financial_compensation_or_rehabilitation_for_damage_or_destruction_of_housing': [`Lack of support for damaged housing`],
-    //     },
-    //     what_is_the_type_of_your_household: {
-    //       'one_person_household': [`One person household`],
-    //       'couple_without_children': [`Couple without children`],
-    //       'couple_with_children': [`Couple with children`],
-    //       'mother_with_children': [`Mother with children`],
-    //       'father_with_children': [`Father with children`],
-    //       'extended_family': [`Extended family`],
-    //     }
-    //   }
-    // },
     // {formName: 'MPCA_NFI', formId: 'a4Sx3PrFMDAMZEGsyzgJJg'},
     // {formName: 'MPCA_NFI_NAA', formId: 'aBGVXW2N26DaLehmKneuyB'},
     // {formName: 'MPCA_NFI_Myko', formId: 'a8WAWB9Yxu2jkgk4Ei8GTk'},
@@ -123,9 +118,12 @@ const extractQuestionName = (_: Record<string, any>) => {
 }`
 
   readonly generateFunctionMapping = (survey: KoboApiForm['content']['survey']) => {
-    const repeatsGroup = this.getBeginRepeatQuestion(survey)
+    const repeatItems = this.getBeginRepeatQuestion(survey)
     const fnMappings = survey
-      .filter(this.skipQuestionInBeginRepeat(survey))
+      .filter(_ => !ignoredQuestionTypes.includes(_.type))
+      .filter(_ => repeatItems.every(r => {
+        return !_.$qpath.includes(r.name + '-')
+      }))
       .map(x => {
         const name = x.name ?? x.$autoname
         return [
@@ -134,7 +132,7 @@ const extractQuestionName = (_: Record<string, any>) => {
             integer: `_.${name} ? +_.${name} : undefined`,
             date: `_.${name} ? new Date(_.${name}) : undefined`,
             select_multiple: `_.${name}?.split(' ')`,
-            begin_repeat: `_.${name}.map(extractQuestionName)`
+            begin_repeat: `_.${name}?.map(extractQuestionName)`
           }, _ => undefined)
         ]
       })
@@ -147,37 +145,46 @@ const extractQuestionName = (_: Record<string, any>) => {
       + `}) as ${this.options.formName}`
   }
 
-  readonly skipQuestionInBeginRepeat = (survey: KoboApiForm['content']['survey']) => (_: KoboApiForm['content']['survey'][0]) => {
-    const repeatsGroup = this.getBeginRepeatQuestion(survey)
-    return _ => _.type === 'begin_repeat' || repeatsGroup.every(r => !_.$qpath.includes(r.name))
-  }
+  // readonly skipQuestionInBeginRepeat = (survey: KoboApiForm['content']['survey']) => (_: KoboApiForm['content']['survey'][0]) => {
+  //   const repeatItem = this.getBeginRepeatQuestion(survey)
+  //   console.log(repeatItem)
+  //   return _ => repeatItem.every(r => {
+  //     console.log('$qpath', _.$qpath)
+  //     return !_.$qpath.includes(r.name + '-')
+  //   })
+  // }
 
-  readonly getBeginRepeatQuestion = lazy((survey: KoboApiForm['content']['survey']) => {
+  readonly getBeginRepeatQuestion = (survey: KoboApiForm['content']['survey']) => {
     return survey.filter(_ => _.type === 'begin_repeat')
-  })
+  }
 
   readonly generateInterface = (survey: KoboApiForm['content']['survey']) => {
     const indexOptionId = Arr(survey).groupBy(_ => _.select_from_list_name)
-    // const repeatsGroup = survey.filter(_ => _.type === 'begin_repeat')
+    const repeatItems = this.getBeginRepeatQuestion(survey)
     const properties = survey
       .filter(_ => !ignoredQuestionTypes.includes(_.type))
-      .filter(this.skipQuestionInBeginRepeat(survey))
+      .filter(_ => repeatItems.every(r => {
+        return !_.$qpath.includes(r.name + '-')
+      }))
       .map(x => {
         const lastQuestionNameHavingOptionId = Arr(indexOptionId[x.select_from_list_name ?? '']).last?.name
-        const basicQuestionTypeMapping = {
-          'select_one': `Opt<'${lastQuestionNameHavingOptionId}'>`,
-          'select_multiple': `Opt<'${lastQuestionNameHavingOptionId}'>[]`,
-          'integer': 'number | undefined',
-          'text': 'string | undefined',
-          'date': 'Date | undefined',
-        }
+        const basicQuestionTypeMapping = (lastQuestionNameHavingOptionId?: string) => ({
+          'select_one': () => `Opt<'${lastQuestionNameHavingOptionId}'>`,
+          'select_multiple': () => `Opt<'${lastQuestionNameHavingOptionId}'>[]`,
+          'integer': () => 'number | undefined',
+          'text': () => 'string | undefined',
+          'date': () => 'Date | undefined',
+        })
         const type = fnSwitch(x.type, {
-          ...basicQuestionTypeMapping,
-          'begin_repeat': (() => {
-            const groupedQuestions = survey.filter(_ => _.name !== x.name && _.$qpath?.includes(x.name))
-            const sType = fnSwitch(x.type, basicQuestionTypeMapping, _ => 'string')
-            return '{' + groupedQuestions.map(_ => `${_.$autoname}: ${sType} | undefined`).join(',') + '}[]'
-          })()
+          ...basicQuestionTypeMapping(lastQuestionNameHavingOptionId),
+          'begin_repeat': () => {
+            const groupedQuestions = survey.filter(_ => _.name !== x.name && _.$qpath?.includes(x.name + '-'))
+            return '{' + groupedQuestions.map(_ => {
+              const lastQuestionNameHavingOptionId = Arr(indexOptionId[_.select_from_list_name ?? '']).last?.name
+              return `${_.$autoname}: ${fnSwitch(_.type, basicQuestionTypeMapping(lastQuestionNameHavingOptionId), _ => 'string')} | undefined`
+            }).join(',') + '}[] | undefined'
+
+          }
         }, () => 'string')
         return (x.label ? `  // ${x.label[0]}\n` : '')
           + `  ${x.name ?? x.$autoname}: ${type},`

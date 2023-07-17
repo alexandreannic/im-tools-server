@@ -1,13 +1,13 @@
 import {KoboForm, PrismaClient} from '@prisma/client'
 import {ApiPaginate, ApiPagination, defaultPagination, toApiPaginate} from '../../core/Type'
-import {DBKoboAnswer, KoboAnswerMetaData, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
+import {DbKoboAnswer, KoboAnswerMetaData, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
 import XlsxPopulate from 'xlsx-populate'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {filterKoboQuestionType, KoboApiQuestion} from '../connector/kobo/KoboClient/type/KoboApiForm'
 import {Arr, Enum, fnSwitch} from '@alexandreannic/ts-utils'
 import {format} from 'date-fns'
-import {ProtHHS_2_1Options} from '../../db/koboInterface/ProtHHS_2_1/ProtHHS_2_1Options'
+import {ProtHHS_2_1Options} from '../../db/generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1Options'
 import {convertNumberIndexToLetter, removeHtml} from '../../helper/Utils'
 import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAnswer'
 
@@ -33,7 +33,7 @@ export class KoboService {
     formId: string,
     filters: KoboAnswersFilters,
     paginate: ApiPagination = defaultPagination
-  ): Promise<ApiPaginate<DBKoboAnswer>> => {
+  ): Promise<ApiPaginate<DbKoboAnswer>> => {
     return this.prisma.koboAnswers.findMany({
       take: paginate.limit,
       skip: paginate.offset,
@@ -63,11 +63,13 @@ export class KoboService {
       geolocation: d.geolocation,
       submissionTime: d.submissionTime,
       id: d.id,
+      uuid: d.uuid,
       validationStatus: d.validationStatus as any,
       validatedBy: d.validatedBy ?? undefined,
       lastValidatedTimestamp: d.lastValidatedTimestamp ?? undefined,
       answers: d.answers as any,
-      formId: d.formId
+      formId: d.formId,
+      tags: d.tags,
     }))).then(toApiPaginate)
   }
 
@@ -159,14 +161,14 @@ export class KoboService {
   }: {
     formId: KoboId,
     langIndex: number,
-    data: DBKoboAnswer[],
+    data: DbKoboAnswer[],
   }) => {
     const flatAnswers = data.map(({answers, ...meta}) => ({...meta, ...answers}))
     const koboFormDetails = await this.getFormDetails(formId)
     const indexLabel = Arr(koboFormDetails.content.survey).filter(filterKoboQuestionType).reduceObject<Record<string, KoboApiQuestion>>(_ => [_.name, _])
     const indexOptionsLabels = Arr(koboFormDetails.content.choices).reduceObject<Record<string, undefined | string>>(_ => [_.name, _.label?.[langIndex]])
     return flatAnswers.map(d => {
-      const translated = {} as DBKoboAnswer
+      const translated = {} as DbKoboAnswer
       Enum.keys(d).forEach(k => {
         const translatedKey = indexLabel[k]?.label?.[langIndex] ?? k
         const translatedValue = (() => {
@@ -194,7 +196,7 @@ export class KoboService {
   }: {
     fileName: string
     formId: KoboId,
-    data: DBKoboAnswer[],
+    data: DbKoboAnswer[],
     langIndex?: number
     password?: string
   }) => {

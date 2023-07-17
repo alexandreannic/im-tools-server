@@ -12,6 +12,12 @@ export namespace AppError {
     return Promise.reject(new error())
   }
 
+  export class Forbidden extends Base {
+    constructor(message: string) {
+      super(message)
+    }
+  }
+
   export class NotFound extends Base {
     constructor(message: string) {
       super(message)

@@ -28,7 +28,8 @@ model KoboForm {
 }
 
 model KoboAnswers {
-  id                     String                   @id
+  uuid                   String                   @id
+  id                     String
   form                   KoboForm                 @relation(fields: [formId], references: [id])
   formId                 String
   start                  DateTime
@@ -45,16 +46,10 @@ model KoboAnswers {
   source                 String?
   deletedAt              DateTime?
   deletedBy              String?
-  donor                  KoboProtHhsDonor[]
   donorId                String[]
-}
+  tags                   Json?
 
-model KoboProtHhsDonor {
-  id        String      @id @default(uuid())
-  createdAt DateTime    @default(now())
-  answerId  String
-  answer    KoboAnswers @relation(fields: [answerId], references: [id])
-  donor     String?
+  @@unique([id, formId])
 }
 
 model MpcaPaymentTool {
@@ -74,13 +69,13 @@ model MpcaPaymentTool {
 }
 
 model MpcaPaymentToolAnswers {
-  koboAnswers       KoboAnswers     @relation(fields: [koboAnswersId], references: [id])
-  koboAnswersId     String
+  koboAnswers       KoboAnswers     @relation(fields: [koboAnswersUuid], references: [uuid])
+  koboAnswersUuid   String
   mpcaPaymentTool   MpcaPaymentTool @relation(fields: [mpcaPaymentToolId], references: [id])
   mpcaPaymentToolId String
   createdAt         DateTime        @default(now())
 
-  @@id([koboAnswersId, mpcaPaymentToolId])
+  @@id([koboAnswersUuid, mpcaPaymentToolId])
 }
 
 model User {
@@ -88,6 +83,10 @@ model User {
   email           String    @unique
   createdAt       DateTime  @default(now())
   lastConnectedAt DateTime?
+  drcJobTitle     String?
+  drcOffice       String?
+  admin           Boolean   @default(false)
+  officer         String?
 }
 
 model MpcaWfpDeduplicationIdMapping {
@@ -125,12 +124,13 @@ enum FeatureAccessLevel {
 }
 
 model FeatureAccess {
-  id        String             @id @default(uuid())
-  createdBy String?
-  featureId String?
-  params    Json?
-  level     FeatureAccessLevel
-  email     String
-  createdAt DateTime           @default(now())
-  updatedAt DateTime?
+  id          String             @id @default(uuid())
+  createdBy   String?
+  featureId   String?
+  params      Json?
+  level       FeatureAccessLevel
+  email       String?
+  drcJobTitle String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime?
 }

@@ -23,7 +23,8 @@ export type KoboAnswerMetaData = Pick<ApiKoboAnswerMetaData, 'start' | 'end'> & 
   geolocation: ApiKoboAnswerMetaData['_geolocation']
   submissionTime: ApiKoboAnswerMetaData['_submission_time']
   id: ApiKoboAnswerMetaData['_id']
-  validationStatus?: 'validation_status_approved'
+  uuid: ApiKoboAnswerMetaData['_uuid']
+  validationStatus?: string//'validation_status_approved'
   validatedBy?: string
   submittedBy?: string
   lastValidatedTimestamp?: number
@@ -36,6 +37,7 @@ export const koboAnswerMetaData: (keyof KoboAnswerMetaData)[] = [
   'geolocation',
   'submissionTime',
   'id',
+  'uuid',
   'validationStatus',
   'validatedBy',
   'lastValidatedTimestamp',
@@ -67,11 +69,11 @@ interface ApiKoboAnswerMetaData {
 // export interface KoboAnswer extends KoboAnswerMetaData {
 //   [key: string]: string
 // }
-export type KoboAnswer = KoboAnswerMetaData & {answers: Record<string, any>}
+export type KoboAnswer<T extends Record<string, any> = Record<string, any>> = KoboAnswerMetaData & {answers: T}
 
 export type KoboAnswer2<T extends Record<string, any> = Record<string, string | undefined>> = (KoboAnswerMetaData & T)
 
-export type DBKoboAnswer = KoboAnswer & {formId: KoboId}
+export type DbKoboAnswer<T extends Record<string, any> = Record<string, any>> = KoboAnswer<T> & {formId: KoboId}
 
 export interface KoboApiList<T> {
   count: number,
@@ -117,6 +119,7 @@ export class KoboAnswerUtils {
       submissionTime: new Date(_submission_time),
       version: __version__,
       id: '' + _id,
+      uuid: _uuid,
       submittedBy: _submitted_by,
       validationStatus: _validation_status.uid,
       lastValidatedTimestamp: _validation_status.timestamp,

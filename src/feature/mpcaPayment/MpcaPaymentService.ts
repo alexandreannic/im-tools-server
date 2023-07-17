@@ -15,7 +15,7 @@ const mapPayment = ({answers, ..._}: MpcaPaymentTool & {answers: MpcaPaymentTool
   city: _.city ?? undefined,
   createdAt: _.createdAt ?? undefined,
   updatedAt: _.updatedAt ?? undefined,
-  answers: answers.map(a => a.koboAnswersId)
+  answers: answers.map(a => a.koboAnswersUuid)
 })
 
 export class MpcaPaymentService {
@@ -34,7 +34,7 @@ export class MpcaPaymentService {
       this.prisma.mpcaPaymentToolAnswers.createMany({
         data: {
           mpcaPaymentToolId: tool.id,
-          koboAnswersId: _
+          koboAnswersUuid: _
         }
       })
     ))

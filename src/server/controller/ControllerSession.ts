@@ -31,20 +31,15 @@ export class ControllerSession extends Controller {
       username: yup.string().required(),
       accessToken: yup.string().required(),
     }).validate(req.body)
-
-    class MyCustomAuthenticationProvider implements AuthenticationProvider {
-      getAccessToken = async (authenticationProviderOptions?: AuthenticationProviderOptions) => {
-        return user.accessToken
-      }
+    const connectedUser = await this.service.login(user)
+    req.session.user = {
+      name: user.name,
+      accessToken: user.accessToken,
+      admin: connectedUser.admin,
+      email: connectedUser.email,
+      drcJobTitle: connectedUser.drcJobTitle ?? undefined,
+      drcOffice: connectedUser.drcOffice ?? undefined,
     }
-
-    const msGraphSdk = Client.initWithMiddleware({
-      authProvider: new MyCustomAuthenticationProvider()
-    })
-    const email = await msGraphSdk.api('/me').get().then(_ => _.mail as string)
-
-    await this.service.updateLastConnectedAt(email)
-    req.session.user = {...user, email}
     res.send(req.session.user)
   }
 }

@@ -1,6 +1,7 @@
 import {PrismaClient} from '@prisma/client'
-import {DatabaseHelper} from '../../db/DatabaseHelper'
+import {DbInit} from '../../db/DbInit'
 import XlsxPopulate from 'xlsx-populate'
+import {DbHelper} from '../../db/DbHelper'
 
 interface WfpDbSearch {
   limit?: number
@@ -44,7 +45,7 @@ export class WfpDeduplicationService {
         }
       }),
     ])
-    return DatabaseHelper.toPaginate(totalSize)(data)
+    return DbHelper.toPaginate(totalSize)(data)
   }
 
   readonly uploadTaxId = async (filePath: string) => {
