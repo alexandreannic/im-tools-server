@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "lib": [
+      "es6",
+      "dom"
+    ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "allowSyntheticDefaultImports": true,
@@ -16,8 +20,9 @@
     "strict": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "typeRoots": [
-//      "./node_modules/@types",
+      "./node_modules/@types",
       "./src/typings"
     ]
   },
