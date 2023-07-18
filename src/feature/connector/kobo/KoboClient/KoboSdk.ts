@@ -28,7 +28,12 @@ export class KoboSdk {
   static readonly makeAuthorizationHeader = (token: string) => `Token ${token}`
 
   readonly getForm = (form: string) => {
-    return this.api.get<KoboApiForm>(`/v2/assets/${form}`)
+    return this.api.get<KoboApiForm>(`/v2/assets/${form}`).then(_ => {
+      _.content.survey.forEach(q => {
+        q.name = q.$autoname ?? q.name
+      })
+      return _
+    })
   }
 
 

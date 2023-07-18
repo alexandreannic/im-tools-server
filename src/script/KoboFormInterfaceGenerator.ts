@@ -2,6 +2,7 @@ import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
 import {Arr, fnSwitch} from '@alexandreannic/ts-utils'
 import {KoboApiForm} from '../feature/connector/kobo/KoboClient/type/KoboApiForm'
 import * as fs from 'fs'
+import {koboFormsId} from '../core/conf/KoboFormsId'
 
 interface KoboInterfaceGeneratorParams {
   outDir: string,
@@ -13,9 +14,9 @@ interface KoboInterfaceGeneratorParams {
 
 export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) => {
   const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
-    // {formName: 'Shelter', formId: 'aL8oHMzJJ9soPepvK6YU9E'},
-    // {formName: 'BNRE', formId: 'aKgX4MNs6gCemDQKPeXxY8'},
-    // {formName: 'MealVisitMonitoring', formId: koboFormsId.prod.mealVisitMonitoring,},
+    {formName: 'Shelter', formId: 'aL8oHMzJJ9soPepvK6YU9E'},
+    {formName: 'BNRE', formId: 'aKgX4MNs6gCemDQKPeXxY8'},
+    {formName: 'MealVisitMonitoring', formId: koboFormsId.prod.mealVisitMonitoring,},
     {
       formName: 'ProtHHS_2_1',
       formId: 'aQDZ2xhPUnNd43XzuQucVR',

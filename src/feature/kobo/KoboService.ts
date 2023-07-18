@@ -232,22 +232,3 @@ export class KoboService {
     workbook.toFileAsync(`/Users/alexandreac/Workspace/_humanitarian/im-tools-server/${fileName}.xlsx`, {password})
   }
 }
-
-// IPTHELP
-// all - 113
-// chernihivska - 143
-// lvivska - 59
-// kharkivska - 104
-// mykolaivska - 47
-// = 466
-
-// myko - 265
-// lviv - 397
-// khv - 158
-// dni - 95
-// chv - 276
-// 265 + 397 + 158 + 95 + 276 = 1191
-
-//V2.1  461 / 834
-//V2    22 / 51
-//      483 / 885
