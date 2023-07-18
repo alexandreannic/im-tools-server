@@ -33,8 +33,12 @@ export class Server {
   readonly errorHandler = (err: HttpError, req: Request, res: Response, next: (err?: any) => void) => {
     const errorId = genUUID()
     try {
-      console.log('errorHandler')
-      if (err instanceof AppError.NotFound) {
+      if (err instanceof AppError.Forbidden) {
+        res.status(401).json({
+          data: err.message,
+          errorId
+        })
+      } else if (err instanceof AppError.NotFound) {
         res.status(404).json({
           data: err.message,
           errorId,

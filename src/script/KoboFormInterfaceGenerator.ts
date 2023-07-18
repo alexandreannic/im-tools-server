@@ -1,5 +1,5 @@
 import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
-import {Arr, fnSwitch, lazy} from '@alexandreannic/ts-utils'
+import {Arr, fnSwitch} from '@alexandreannic/ts-utils'
 import {KoboApiForm} from '../feature/connector/kobo/KoboClient/type/KoboApiForm'
 import * as fs from 'fs'
 

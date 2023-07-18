@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
 import {yup} from '../../helper/Utils'
 import {PrismaClient} from '@prisma/client'
-import {WfpDeduplicationService} from '../../feature/wfpDeduplication/WfpDeduplicationService'
+import {WfpDbSearch, WfpDeduplicationService} from '../../feature/wfpDeduplication/WfpDeduplicationService'
 import {WfPDeduplicationError} from '../../feature/wfpDeduplication/WfpDeduplicationError'
 import {WfpDeduplicationUpload} from '../../feature/wfpDeduplication/WfpDeduplicationUpload'
 import {appConf} from '../../core/conf/AppConf'
@@ -30,9 +30,10 @@ export class ControllerWfp {
   }
 
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
-    const schema = yup.object({
+    const schema = yup.object<WfpDbSearch>({
       limit: yup.number().optional(),
       offset: yup.number().optional(),
+      offices: yup.array().of(yup.string().required()).optional(),
       taxId: yup.array().of(yup.string().required()),
       createdAtStart: yup.date().optional(),
       createdAtEnd: yup.date().optional(),

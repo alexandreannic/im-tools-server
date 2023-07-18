@@ -1,5 +1,5 @@
-import {WfpDeduplicationOffice} from '../wfpDeduplication/WfpDeduplicationType'
 import {KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
+import {DrcOffice} from '../../core/DrcJobTitle'
 
 export enum AppFeature {
   mpca = 'mpca',
@@ -9,7 +9,7 @@ export enum AppFeature {
 }
 
 interface AccessWfpDeduplication {
-  office: WfpDeduplicationOffice
+  office: DrcOffice
 }
 
 export interface DatabaseFeatureParams {

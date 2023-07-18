@@ -1,13 +1,12 @@
 import {WFPBuildingBlockSdk} from '../connector/wfpBuildingBlock/WfpBuildingBlockSdk'
-import {AssistancePrevented, AssistanceProvided, WfpFilters, WfpPaginate} from '../connector/wfpBuildingBlock/WfpBuildingBlockType'
+import {AssistancePrevented, AssistanceProvided, WfpFilters} from '../connector/wfpBuildingBlock/WfpBuildingBlockType'
 import {PrismaClient} from '@prisma/client'
 import {WfpDeduplicationStatus} from '../../db/models/WfpDeduplicationStatus'
 import {addMinutes, parse, subMinutes} from 'date-fns'
-import XlsxPopulate from 'xlsx-populate'
 import {ApiPaginate} from '../../core/Type'
-import {WfpDeduplicationOffice} from './WfpDeduplicationType'
 import {appConf, AppConf} from '../../core/conf/AppConf'
 import {WfpBuildingBlockClient} from '../connector/wfpBuildingBlock/WfpBuildingBlockClient'
+import {DrcOffice} from '../../core/DrcJobTitle'
 
 export class WfpDeduplicationUpload {
 
@@ -28,7 +27,6 @@ export class WfpDeduplicationUpload {
   }
 
   readonly saveAll = async () => {
-    await this.setOblast()
     await this.prisma.mpcaWfpDeduplication.deleteMany()
     await Promise.all([
       this.runOnAll({
@@ -90,6 +88,7 @@ export class WfpDeduplicationUpload {
       }),
     ])
     await this.mergePartiallyDuplicated()
+    await this.setOblast()
   }
 
   private readonly upsertMappingId = async (ids: string[]) => {
@@ -147,15 +146,15 @@ export class WfpDeduplicationUpload {
 
   private setOblast = async () => {
     const possibleOffices = ['HRK', 'NLV', 'CEJ', 'DNK', 'CWC', 'NLK', 'LWO', 'CHJ']
-    const officeMapping: Record<string, WfpDeduplicationOffice> = {
-      'HRK': WfpDeduplicationOffice.Kharkiv,
-      'NLV': WfpDeduplicationOffice.Mykloaiv,
-      'CEJ': WfpDeduplicationOffice.Chernihiv,
-      'DNK': WfpDeduplicationOffice.Dnipro,
-      'CWC': WfpDeduplicationOffice.Lviv,
-      'NLK': WfpDeduplicationOffice.Mykloaiv,
-      'LWO': WfpDeduplicationOffice.Lviv,
-      'CHJ': WfpDeduplicationOffice.Chernihiv,
+    const officeMapping: Record<string, DrcOffice> = {
+      'HRK': DrcOffice.Kharkiv,
+      'NLV': DrcOffice.Mykolaiv,
+      'CEJ': DrcOffice.Chernihiv,
+      'DNK': DrcOffice.Dnipro,
+      'CWC': DrcOffice.Lviv,
+      'NLK': DrcOffice.Mykolaiv,
+      'LWO': DrcOffice.Lviv,
+      'CHJ': DrcOffice.Chernihiv,
     }
     await this.runOnAll({
       req: this.wfpSdk.getImportFiles, fn: async (imports) => {

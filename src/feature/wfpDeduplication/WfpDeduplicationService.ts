@@ -1,12 +1,12 @@
-import {PrismaClient} from '@prisma/client'
-import {DbInit} from '../../db/DbInit'
+import {MpcaWfpDeduplicationPayload, PrismaClient} from '@prisma/client'
 import XlsxPopulate from 'xlsx-populate'
 import {DbHelper} from '../../db/DbHelper'
 
-interface WfpDbSearch {
+export interface WfpDbSearch {
   limit?: number
   offset?: number
   taxId?: string[]
+  offices?: string[]
   createdAtStart?: Date
   createdAtEnd?: Date
 }
@@ -23,9 +23,10 @@ export class WfpDeduplicationService {
         gte: search.createdAtStart,
         lte: search.createdAtEnd,
       },
+      office: {in: search.offices},
       beneficiary: {
         taxId: {in: search.taxId}
-      }
+      },
     }
     const [totalSize, data] = await Promise.all([
       this.prisma.mpcaWfpDeduplication.count({where}),

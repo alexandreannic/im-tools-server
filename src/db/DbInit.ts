@@ -49,6 +49,7 @@ export class DbInit {
       await this.prisma.user.create({
         data: {
           email: this.conf.ownerEmail,
+          admin: true
         }
       })
     }

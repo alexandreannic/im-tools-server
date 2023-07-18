@@ -7,7 +7,6 @@ import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {filterKoboQuestionType, KoboApiQuestion} from '../connector/kobo/KoboClient/type/KoboApiForm'
 import {Arr, Enum, fnSwitch} from '@alexandreannic/ts-utils'
 import {format} from 'date-fns'
-import {ProtHHS_2_1Options} from '../../db/generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1Options'
 import {convertNumberIndexToLetter, removeHtml} from '../../helper/Utils'
 import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAnswer'
 
@@ -75,7 +74,7 @@ export class KoboService {
 
   readonly generateXLSForHHS = async ({start, end}: {start?: Date, end?: Date}) => {
     const filePattern = (oblast: string) => `drc.ua.prot.hh2.${start ? format(start, 'yyyy-MM') + '.' : ''}${oblast}`
-    const oblasts: (keyof typeof ProtHHS_2_1Options.staff_to_insert_their_DRC_office)[] = [
+    const oblasts = [
       'chernihiv',
       'lviv',
       'kharkiv',

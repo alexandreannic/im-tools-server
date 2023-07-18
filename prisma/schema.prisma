@@ -134,3 +134,9 @@ model FeatureAccess {
   createdAt   DateTime           @default(now())
   updatedAt   DateTime?
 }
+
+model AccessToken {
+  id        String   @id @default(uuid())
+  createdBy DateTime @default(now())
+  name      String
+}
