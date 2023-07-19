@@ -3,9 +3,6 @@ import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {SessionService} from '../../feature/session/SessionService'
-import {Client} from '@microsoft/microsoft-graph-client'
-import {AuthenticationProvider} from '@microsoft/microsoft-graph-client/src/IAuthenticationProvider'
-import {AuthenticationProviderOptions} from '@microsoft/microsoft-graph-client/src/IAuthenticationProviderOptions'
 
 export class ControllerSession extends Controller {
 

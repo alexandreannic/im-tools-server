@@ -4,9 +4,7 @@ import {AuthenticationProvider} from '@microsoft/microsoft-graph-client/src/IAut
 import {AuthenticationProviderOptions} from '@microsoft/microsoft-graph-client/src/IAuthenticationProviderOptions'
 import {Client} from '@microsoft/microsoft-graph-client'
 import {User} from '@microsoft/msgraph-sdk-javascript/lib/src/models/user'
-import {GraphServiceClient} from '@microsoft/msgraph-sdk-javascript'
 import {SessionError} from './SessionErrors'
-import {DrcJobTitle, DrcOffice, DrcSector} from '../../core/DrcJobTitle'
 
 export class SessionService {
 

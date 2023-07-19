@@ -46,7 +46,7 @@ mdd_001: {
 	'dani': `DANIDA (UKR-000267)`,
 	'dut1': `Dutch Ⅰ (UKR-000294)`,
 	'dut2': `Dutch Ⅱ (UKR-000306)`,
-	'nono': `Novo-Nordisk (UKR-000298)`,
+	'nono': `Novo-Nordisk (UKR-000274)`,
 	'sdcs': `SDC Shelter (UKR-000290)`
 },
 mdt: {
