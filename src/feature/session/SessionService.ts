@@ -46,14 +46,14 @@ export class SessionService {
     return connectedUser
   }
 
-  readonly syncUserInDb = async (email: string, drcJobTitle: string): Promise<PUser> => {
+  readonly syncUserInDb = async (email: string, drcJob: string): Promise<PUser> => {
     const user = await this.prisma.user.findFirst({where: {email}})
     if (!user) {
       this.log.info(`Create account ${email}.`)
       return this.prisma.user.create({
         data: {
           email,
-          drcJobTitle,
+          drcJob: drcJob,
           lastConnectedAt: new Date()
         }
       })
@@ -61,7 +61,7 @@ export class SessionService {
       return this.prisma.user.update({
         where: {email},
         data: {
-          drcJobTitle,
+          drcJob: drcJob,
           lastConnectedAt: new Date()
         }
       })

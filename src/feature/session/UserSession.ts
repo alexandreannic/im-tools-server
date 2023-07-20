@@ -3,6 +3,6 @@ export interface UserSession {
   name: string
   admin?: boolean
   accessToken: string
-  drcJobTitle?: string
+  drcJob?: string
   drcOffice?: string
 }

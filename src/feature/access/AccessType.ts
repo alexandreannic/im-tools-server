@@ -1,10 +1,10 @@
 import {KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
-import {DrcOffice} from '../../core/DrcJobTitle'
+import {DrcOffice} from '../../core/DrcType'
 
 export enum AppFeature {
   mpca = 'mpca',
   wfp_deduplication = 'wfp_deduplication',
-  database = 'database',
+  kobo_database = 'kobo_database',
   activity_info = 'activity_info',
 }
 
@@ -12,11 +12,11 @@ interface AccessWfpDeduplication {
   office: DrcOffice
 }
 
-export interface DatabaseFeatureParams {
+export interface KoboDatabaseFeatureParams {
   koboFormId: KoboId,
   filters?: Record<string, string[]>
 }
 
-export class DatabaseFeatureParams {
-  static readonly create = (_: DatabaseFeatureParams): any => _
+export class KoboDatabaseFeatureParams {
+  static readonly create = (_: KoboDatabaseFeatureParams): any => _
 }

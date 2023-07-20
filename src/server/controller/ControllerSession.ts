@@ -34,7 +34,7 @@ export class ControllerSession extends Controller {
       accessToken: user.accessToken,
       admin: connectedUser.admin,
       email: connectedUser.email,
-      drcJobTitle: connectedUser.drcJobTitle ?? undefined,
+      drcJob: connectedUser.drcJob ?? undefined,
       drcOffice: connectedUser.drcOffice ?? undefined,
     }
     res.send(req.session.user)

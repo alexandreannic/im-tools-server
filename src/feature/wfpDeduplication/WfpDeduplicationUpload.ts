@@ -6,7 +6,7 @@ import {addMinutes, parse, subMinutes} from 'date-fns'
 import {ApiPaginate} from '../../core/Type'
 import {appConf, AppConf} from '../../core/conf/AppConf'
 import {WfpBuildingBlockClient} from '../connector/wfpBuildingBlock/WfpBuildingBlockClient'
-import {DrcOffice} from '../../core/DrcJobTitle'
+import {DrcOffice} from '../../core/DrcType'
 
 export class WfpDeduplicationUpload {
 

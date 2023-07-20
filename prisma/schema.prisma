@@ -83,7 +83,7 @@ model User {
   email           String    @unique
   createdAt       DateTime  @default(now())
   lastConnectedAt DateTime?
-  drcJobTitle     String?
+  drcJob          String?
   drcOffice       String?
   admin           Boolean   @default(false)
   officer         String?
@@ -118,19 +118,25 @@ model MpcaWfpDeduplication {
 }
 
 enum FeatureAccessLevel {
-  READ
-  WRITE
-  ADMIN
+  Read
+  Write
+  Admin
+}
+
+enum FeatureAccessType {
+  KoboForm
 }
 
 model FeatureAccess {
   id          String             @id @default(uuid())
   createdBy   String?
+  featureType FeatureAccessType?
   featureId   String?
   params      Json?
   level       FeatureAccessLevel
   email       String?
-  drcJobTitle String?
+  drcJob      String?
+  drcOffice   String?
   createdAt   DateTime           @default(now())
   updatedAt   DateTime?
 }

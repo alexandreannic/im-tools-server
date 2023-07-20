@@ -88,13 +88,15 @@ const startApp = async () => {
   // }).generate())
   // await new WfpDeduplicationUpload(prisma, wfpSdk).saveAll()
 
-  const ecrecAppSdk = new EcrecSdk(new EcrecClient(appConf.ecrecApp))
-  const legalAidSdk = new LegalaidSdk(new ApiClient({
-    baseUrl: 'https://api.lau-crm.org.ua',
-    headers: {
-      'x-auth-token': appConf.legalAid.apiToken,
-    }
-  }))
+  const ecrecAppSdk = 1 as any
+  const legalAidSdk = 1 as any
+  // const ecrecAppSdk = new EcrecSdk(new EcrecClient(appConf.ecrecApp))
+  // const legalAidSdk = new LegalaidSdk(new ApiClient({
+  //   baseUrl: 'https://api.lau-crm.org.ua',
+  //   headers: {
+  //     'x-auth-token': appConf.legalAid.apiToken,
+  //   }
+  // }))
   const services = initServices(
     koboSdk,
     ecrecAppSdk,

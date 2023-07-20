@@ -126,3 +126,16 @@ export namespace Util {
     return t
   }
 }
+
+export const PromiseSequence = async <T>(promises: Iterable<T | PromiseLike<T>>): Promise<Awaited<T>[]> => {
+  let res: Awaited<T>[] = [] as any
+  for (const p of promises) {
+    res.push(await p)
+  }
+  return res
+}
+
+// const x = Promise.resolve([
+//   async () => 1,
+//   async () => '1',
+// ]).then(([r, z]) => r)

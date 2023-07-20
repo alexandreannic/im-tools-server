@@ -1,19 +1,43 @@
-import {PrismaClient} from '@prisma/client'
+import {FeatureAccessLevel, PrismaClient} from '@prisma/client'
 import {AppFeature} from './AccessType'
 import {yup} from '../../helper/Utils'
 import {Enum} from '@alexandreannic/ts-utils'
 import {InferType} from 'yup'
+import {DrcJob, DrcOffice} from '../../core/DrcType'
 
-export const accessSearchParamsSchema = yup.object({
-  email: yup.string(),
-  featureId: yup.mixed<AppFeature>().oneOf(Enum.values(AppFeature))
-})
-
-type AccessSearchParams = InferType<typeof accessSearchParamsSchema>
+export type AccessSearchParams = InferType<typeof AccessService.searchSchema>
+export type AccessCreateParams = InferType<typeof AccessService.createSchema>
 
 export class AccessService {
 
   constructor(private prisma: PrismaClient) {
+  }
+
+  static readonly createSchema = yup.object({
+    accessLevel: yup.mixed<FeatureAccessLevel>().oneOf(Enum.values(FeatureAccessLevel)).required(),
+    drcJob: yup.mixed<DrcJob>().oneOf(Enum.values(DrcJob)),
+    drcOffice: yup.mixed<DrcOffice>().oneOf(Enum.values(DrcOffice)),
+    email: yup.string(),
+    featureId: yup.mixed<AppFeature>().oneOf(Enum.values(AppFeature)),
+    params: yup.mixed().optional(),
+  })
+
+  static readonly searchSchema = yup.object({
+    email: yup.string(),
+    featureId: yup.mixed<AppFeature>().oneOf(Enum.values(AppFeature))
+  })
+
+  readonly add = (body: AccessCreateParams) => {
+    return this.prisma.featureAccess.create({
+      data: {
+        level: body.accessLevel,
+        drcJob: body.drcJob,
+        drcOffice: body.drcOffice,
+        email: body.email,
+        featureId: body.featureId,
+        params: body.params,
+      },
+    })
   }
 
   readonly search = (search: AccessSearchParams) => {

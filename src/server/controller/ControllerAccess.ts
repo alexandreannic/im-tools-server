@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
-import {accessSearchParamsSchema, AccessService} from '../../feature/access/AccessService'
+import {AccessService} from '../../feature/access/AccessService'
 
 export class ControllerAccess {
 
@@ -10,8 +10,14 @@ export class ControllerAccess {
   ) {
   }
 
+  readonly create = async (req: Request, res: Response, next: NextFunction) => {
+    const body = await AccessService.createSchema.validate(req.body)
+    const data = await this.service.add(body)
+    res.send(data)
+  }
+
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
-    const params = await accessSearchParamsSchema.validate(req.params)
+    const params = await AccessService.searchSchema.validate(req.params)
     const data = await this.service.search(params)
     res.send(data)
   }

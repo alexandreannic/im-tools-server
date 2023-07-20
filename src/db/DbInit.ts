@@ -1,8 +1,8 @@
-import {FeatureAccess, PrismaClient} from '@prisma/client'
+import {FeatureAccess, FeatureAccessLevel, PrismaClient} from '@prisma/client'
 import {koboFormsId, koboServerId} from '../core/conf/KoboFormsId'
 import {appConf, AppConf} from '../core/conf/AppConf'
 import {ApiPaginate} from '../core/Type'
-import {AppFeature, DatabaseFeatureParams} from '../feature/access/AccessType'
+import {AppFeature, KoboDatabaseFeatureParams} from '../feature/access/AccessType'
 import {Enum} from '@alexandreannic/ts-utils'
 import {KoboId} from '../feature/connector/kobo/KoboClient/type/KoboAnswer'
 import {KoboMigrateHHS2} from '../script/KoboMigrateHHS2'
@@ -29,8 +29,8 @@ export class DbInit {
 
   private readonly fixKoboForms = async () => {
     return Promise.all([
-      new DbHelperBNRE(this.prisma).assignMissingSettlement(),
-      new DbHelperProtectionHhs2(this.prisma).assignDonor(),
+      // new DbHelperBNRE(this.prisma).assignMissingSettlement(),
+      // new DbHelperProtectionHhs2(this.prisma).assignDonor(),
     ])
   }
 
@@ -63,9 +63,9 @@ export class DbInit {
         data: {
           createdBy: createdBySystem,
           email: 'romane.breton@drc.ngo',
-          featureId: AppFeature.database,
-          level: 'ADMIN',
-          params: DatabaseFeatureParams.create({
+          featureId: AppFeature.kobo_database,
+          level: FeatureAccessLevel.Admin,
+          params: KoboDatabaseFeatureParams.create({
             koboFormId: koboFormsId.prod.protectionHh_2_1,
           }),
         }
@@ -73,10 +73,21 @@ export class DbInit {
       this.prisma.featureAccess.create({
         data: {
           createdBy: createdBySystem,
+          level: FeatureAccessLevel.Write,
+          featureId: AppFeature.kobo_database,
+          params: KoboDatabaseFeatureParams.create({
+            koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
+            filters: {}
+          }),
+        }
+      }),
+      this.prisma.featureAccess.create({
+        data: {
+          createdBy: createdBySystem,
           email: 'niamh.foley@drc.ngo',
-          featureId: AppFeature.database,
-          level: 'ADMIN',
-          params: DatabaseFeatureParams.create({
+          featureId: AppFeature.kobo_database,
+          level: FeatureAccessLevel.Admin,
+          params: KoboDatabaseFeatureParams.create({
             koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
             filters: {}
           }),
@@ -88,7 +99,7 @@ export class DbInit {
             createdBy: createdBySystem,
             email: appConf.ownerEmail,
             featureId,
-            level: 'ADMIN',
+            level: FeatureAccessLevel.Admin,
           }
         })
       )
@@ -103,16 +114,16 @@ export class DbInit {
           data: {
             id: koboServerId.prod,
             url: 'https://kobo.humanitarianresponse.info',
-            token: 'TODO',
+            token: appConf.kobo.token,
           }
         }),
-        this.prisma.koboServer.create({
-          data: {
-            id: koboServerId.dev,
-            url: 'https://kf.kobotoolbox.org',
-            token: 'TODO',
-          }
-        })
+        // this.prisma.koboServer.create({
+        //   data: {
+        //     id: koboServerId.dev,
+        //     url: 'https://kf.kobotoolbox.org',
+        //     token: 'TODO',
+        //   }
+        // })
       ])
     }
   }

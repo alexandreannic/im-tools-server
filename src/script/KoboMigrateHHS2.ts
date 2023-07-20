@@ -132,6 +132,13 @@ export const KoboMigrateHHS2 = ({
           unhandledQuestionName.add(questionName)
         }
       })
+      if (row.id === '2416408495') {
+        answers.staff_to_insert_their_DRC_office = 'lviv'
+        answers.staff_code = 'LWO004'
+      } else if (row.id === '2416258479') {
+        answers.staff_to_insert_their_DRC_office = 'lviv'
+        answers.staff_code = 'LWO002'
+      }
       Object.entries(answers).forEach(([questionName, answer]) => {
         checkOptions(questionName, answer)
       })

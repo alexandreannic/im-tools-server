@@ -16,7 +16,6 @@ import {ControllerSession} from './controller/ControllerSession'
 import {ControllerKoboForm} from './controller/kobo/ControllerKoboForm'
 import {ControllerKoboServer} from './controller/kobo/ControllerKoboServer'
 import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer'
-import {WFPBuildingBlockSdk} from '../feature/connector/wfpBuildingBlock/WfpBuildingBlockSdk'
 import {ControllerWfp} from './controller/ControllerWfp'
 import {Server} from './Server'
 import {ControllerAccess} from './controller/ControllerAccess'
@@ -74,6 +73,7 @@ export const getRoutes = (
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session', errorCatcher(session.get))
     router.get('/access', errorCatcher(access.search))
+    router.put('/access', errorCatcher(access.create))
 
     router.post('/user/me', errorCatcher(user.updateMe))
 
