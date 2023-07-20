@@ -81,6 +81,7 @@ model MpcaPaymentToolAnswers {
 model User {
   id              String    @id @default(uuid())
   email           String    @unique
+  createdBy       String?
   createdAt       DateTime  @default(now())
   lastConnectedAt DateTime?
   drcJob          String?

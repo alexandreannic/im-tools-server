@@ -10,6 +10,10 @@ export class UserService {
   ) {
   }
 
+  readonly getAll = () => {
+    return this.prisma.user.findMany()
+  }
+
   readonly update = ({
     email,
     drcOffice,

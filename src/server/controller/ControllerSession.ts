@@ -7,8 +7,8 @@ import {SessionService} from '../../feature/session/SessionService'
 export class ControllerSession extends Controller {
 
   constructor(
-    private pgClient: PrismaClient,
-    private service = new SessionService(pgClient)
+    private prisma: PrismaClient,
+    private service = new SessionService(prisma)
   ) {
     super({errorKey: 'session'})
   }
@@ -36,6 +36,24 @@ export class ControllerSession extends Controller {
       email: connectedUser.email,
       drcJob: connectedUser.drcJob ?? undefined,
       drcOffice: connectedUser.drcOffice ?? undefined,
+    }
+    res.send(req.session.user)
+  }
+
+  readonly connectAs = async (req: Request, res: Response, next: NextFunction) => {
+    const body = await yup.object({
+      email: yup.string().required(),
+    }).validate(req.body)
+
+    const user = await this.prisma.user.findFirstOrThrow({where: {email: body.email}})
+    req.session.user = {
+      ...req.session.user,
+      accessToken: req.session.user?.accessToken ?? '',
+      name: (req.session.user?.name ?? '') + ' [STEALTH]',
+      admin: user.admin,
+      email: user.email,
+      drcJob: user.drcJob ?? undefined,
+      drcOffice: user.drcOffice ?? undefined,
     }
     res.send(req.session.user)
   }

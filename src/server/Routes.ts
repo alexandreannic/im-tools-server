@@ -19,21 +19,27 @@ import {ControllerKoboAnswer} from './controller/kobo/ControllerKoboAnswer'
 import {ControllerWfp} from './controller/ControllerWfp'
 import {Server} from './Server'
 import {ControllerAccess} from './controller/ControllerAccess'
-import {UserController} from './controller/UserController'
+import {ControllerUser} from './controller/ControllerUser'
+import {UserSession} from '../feature/session/UserSession'
+import {AppError} from '../helper/Errors'
+
+export interface AuthenticatedRequest extends Request {
+  user?: UserSession
+}
 
 export const errorCatcher = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       await handler(req, res, next)
     } catch (err) {
-      console.log('CATCH FUCK')
+      console.log('[errorCatcher()]')
       next(err)
     }
   }
 }
 
 export const getRoutes = (
-  pgClient: PrismaClient,
+  prisma: PrismaClient,
   koboSdk: KoboSdk,
   ecrecSdk: EcrecSdk,
   legalAidSdk: LegalaidSdk,
@@ -57,55 +63,72 @@ export const getRoutes = (
     services.mpcaPayment
   )
   const main = new ControllerMain(services.stats)
-  const koboForm = new ControllerKoboForm(pgClient)
-  const koboServer = new ControllerKoboServer(pgClient)
-  const koboAnswer = new ControllerKoboAnswer(pgClient)
-  const koboApi = new ControllerKoboApi(pgClient)
+  const koboForm = new ControllerKoboForm(prisma)
+  const koboServer = new ControllerKoboServer(prisma)
+  const koboAnswer = new ControllerKoboAnswer(prisma)
+  const koboApi = new ControllerKoboApi(prisma)
   const activityInfo = new ControllerActivityInfo()
-  const session = new ControllerSession(pgClient)
-  const wfp = new ControllerWfp(pgClient)
-  const access = new ControllerAccess(pgClient)
-  const user = new UserController(pgClient)
+  const session = new ControllerSession(prisma)
+  const wfp = new ControllerWfp(prisma)
+  const access = new ControllerAccess(prisma)
+  const user = new ControllerUser(prisma)
+
+  const auth = ({adminOnly = false}: {adminOnly?: boolean} = {}) => async (req: Request, res: Response, next: NextFunction) => {
+    const email = req.session.user?.email
+    if (!email) {
+      throw new AppError.Forbidden('user_not_connected')
+    }
+    const user = await prisma.user.findFirst({where: {email}})
+    if (!user) {
+      throw new AppError.Forbidden('user_not_allowed')
+    }
+    if (adminOnly && !user.admin) {
+      throw new AppError.Forbidden('user_not_allowed')
+    }
+    next()
+  }
 
   try {
     router.get('/', errorCatcher(main.htmlStats))
     router.post('/session/login', errorCatcher(session.login))
+    router.post('/session/connect-as', auth({adminOnly: true}), errorCatcher(session.connectAs))
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session', errorCatcher(session.get))
     router.get('/access', errorCatcher(access.search))
     router.put('/access', errorCatcher(access.create))
 
-    router.post('/user/me', errorCatcher(user.updateMe))
+    router.post('/user/me', auth(), errorCatcher(user.updateMe))
+    router.get('/user', auth({adminOnly: true}), errorCatcher(user.search))
 
-    router.post('/activity-info/activity', errorCatcher(activityInfo.submitActivity))
+    router.post('/activity-info/activity', auth(), errorCatcher(activityInfo.submitActivity))
 
-    router.get('/kobo/server', errorCatcher(koboServer.getServers))
-    router.get('/kobo/form', errorCatcher(koboForm.getAll))
-    router.get('/kobo/form/:id', errorCatcher(koboForm.get))
-    router.put('/kobo/form', errorCatcher(koboForm.create))
-    router.get('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
+    router.get('/kobo/server', auth(), errorCatcher(koboServer.getServers))
+    router.get('/kobo/form', auth(), errorCatcher(koboForm.getAll))
+    router.get('/kobo/form/:id', auth(), errorCatcher(koboForm.get))
+    router.put('/kobo/form', auth(), errorCatcher(koboForm.create))
+    router.get('/kobo/answer/:formId', auth(), errorCatcher(koboAnswer.search))
 
-    router.post('/proxy', errorCatcher(main.proxy))
+    router.post('/proxy', auth(), errorCatcher(main.proxy))
 
-    router.get('/kobo-api/local-form', errorCatcher(koboApi.getAnswersFromLocalCsv))
-    router.post('/kobo-api/:id/:formId/sync', errorCatcher(koboApi.synchronizeAnswersFromKoboServer))
-    router.get('/kobo-api/:id/attachment', errorCatcher(koboApi.getAttachementsWithoutAuth))
-    router.get('/kobo-api/:id/:formId/answers', errorCatcher(koboApi.getAnswers))
-    router.get('/kobo-api/:id', errorCatcher(koboApi.getForms))
-    router.get('/kobo-api/:id/:formId', errorCatcher(koboApi.getForm))
+    router.get('/kobo-api/local-form', auth(), errorCatcher(koboApi.getAnswersFromLocalCsv))
+    router.post('/kobo-api/:id/:formId/sync', auth(), errorCatcher(koboApi.synchronizeAnswersFromKoboServer))
+    router.get('/kobo-api/:id/attachment', auth(), errorCatcher(koboApi.getAttachementsWithoutAuth))
+    router.get('/kobo-api/:id/:formId/answers', auth(), errorCatcher(koboApi.getAnswers))
+    router.get('/kobo-api/:id', auth(), errorCatcher(koboApi.getForms))
+    router.get('/kobo-api/:id/:formId', auth(), errorCatcher(koboApi.getForm))
 
-    router.put('/mpca-payment', errorCatcher(mpcaPayment.create))
-    router.post('/mpca-payment/:id', errorCatcher(mpcaPayment.update))
-    router.get('/mpca-payment', errorCatcher(mpcaPayment.getAll))
-    router.get('/mpca-payment/:id', errorCatcher(mpcaPayment.get))
-    router.post('/wfp-deduplication/refresh', errorCatcher(wfp.refresh))
-    router.post('/wfp-deduplication/search', errorCatcher(wfp.search))
-    router.post('/wfp-deduplication/upload-taxid', Server.upload.single('aa-file'), errorCatcher(wfp.uploadTaxIdMapping))
+    router.put('/mpca-payment', auth(), errorCatcher(mpcaPayment.create))
+    router.post('/mpca-payment/:id', auth(), errorCatcher(mpcaPayment.update))
+    router.get('/mpca-payment', auth(), errorCatcher(mpcaPayment.getAll))
+    router.get('/mpca-payment/:id', auth(), errorCatcher(mpcaPayment.get))
+    router.post('/wfp-deduplication/refresh', auth(), errorCatcher(wfp.refresh))
+    router.post('/wfp-deduplication/search', auth(), errorCatcher(wfp.search))
+    router.post('/wfp-deduplication/upload-taxid', auth(), Server.upload.single('aa-file'), errorCatcher(wfp.uploadTaxIdMapping))
 
-    router.get('/legalaid', errorCatcher(legalaid.index))
-    router.get('/nfi/raw', errorCatcher(nfi.raw))
-    router.get('/nfi', errorCatcher(nfi.index))
-    router.get('/ecrec', errorCatcher(ecrec.index))
+    router.get('/legalaid', auth(), errorCatcher(legalaid.index))
+    router.get('/nfi/raw', auth(), errorCatcher(nfi.raw))
+    router.get('/nfi', auth(), errorCatcher(nfi.index))
+    router.get('/ecrec', auth(), errorCatcher(ecrec.index))
     router.get('/*', errorCatcher(ecrec.index))
   } catch (e) {
     console.error('ROUTES CAUGHT!!!')

@@ -7,12 +7,17 @@ import {Enum} from '@alexandreannic/ts-utils'
 import {SessionError} from '../../feature/session/SessionErrors'
 import {Util} from '../../helper/Utils'
 
-export class UserController {
+export class ControllerUser {
 
   constructor(
     private pgClient: PrismaClient,
     private service = new UserService(pgClient)
   ) {
+  }
+
+  readonly search = async (req: Request, res: Response, next: NextFunction) => {
+    const data = await this.service.getAll()
+    res.send(data)
   }
 
   readonly updateMe = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,15 +1,13 @@
-import {FeatureAccess, FeatureAccessLevel, PrismaClient} from '@prisma/client'
+import {FeatureAccessLevel, Prisma, PrismaClient} from '@prisma/client'
 import {koboFormsId, koboServerId} from '../core/conf/KoboFormsId'
 import {appConf, AppConf} from '../core/conf/AppConf'
-import {ApiPaginate} from '../core/Type'
 import {AppFeature, KoboDatabaseFeatureParams} from '../feature/access/AccessType'
-import {Enum} from '@alexandreannic/ts-utils'
-import {KoboId} from '../feature/connector/kobo/KoboClient/type/KoboAnswer'
 import {KoboMigrateHHS2} from '../script/KoboMigrateHHS2'
-import {DbHelperBNRE} from './koboForm/DbHelperBNRE'
-import {DbHelperProtectionHhs2} from './koboForm/DbHelperProtectionHhs2'
+
+const createdBySystem = 'SYSTEM'
 
 export class DbInit {
+
 
   constructor(
     private conf: AppConf,
@@ -22,6 +20,7 @@ export class DbInit {
       this.migrateHhs2(),
       this.fixKoboForms(),
       this.createOwner(),
+      this.createAdmins(),
       this.createServer(),
       this.createAccess(),
     ])
@@ -44,66 +43,77 @@ export class DbInit {
       }).run()
   }
 
+  private readonly createAdmins = async () => {
+    const adminsEmail = [
+      'romane.breton@drc.ngo',
+      'isabel.pearson@drc.ngo',
+    ]
+    return this.upsertUsers(adminsEmail.map(email => ({
+      email,
+      createdBy: createdBySystem,
+      admin: true
+    })))
+  }
+
   private readonly createOwner = async () => {
-    if (!await this.prisma.user.findFirst({where: {email: this.conf.ownerEmail}})) {
-      await this.prisma.user.create({
-        data: {
-          email: this.conf.ownerEmail,
-          admin: true
-        }
+    return this.upsertUsers([
+      {
+        email: this.conf.ownerEmail,
+        admin: true
+      }
+    ])
+  }
+
+  private readonly upsertUsers = async (users: Prisma.UserCreateInput[]) => {
+    await Promise.all(users.map(_ =>
+      this.prisma.user.upsert({
+        update: _,
+        create: _,
+        where: {email: _.email},
       })
-    }
+    ))
   }
 
   private readonly createAccess = async () => {
-    const createdBySystem = 'system'
     await this.prisma.featureAccess.deleteMany({where: {createdBy: createdBySystem}})
-    await Promise.all([
-      this.prisma.featureAccess.create({
-        data: {
-          createdBy: createdBySystem,
-          email: 'romane.breton@drc.ngo',
-          featureId: AppFeature.kobo_database,
-          level: FeatureAccessLevel.Admin,
-          params: KoboDatabaseFeatureParams.create({
-            koboFormId: koboFormsId.prod.protectionHh_2_1,
-          }),
-        }
-      }),
-      this.prisma.featureAccess.create({
-        data: {
-          createdBy: createdBySystem,
-          level: FeatureAccessLevel.Write,
-          featureId: AppFeature.kobo_database,
-          params: KoboDatabaseFeatureParams.create({
-            koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
-            filters: {}
-          }),
-        }
-      }),
-      this.prisma.featureAccess.create({
-        data: {
-          createdBy: createdBySystem,
-          email: 'niamh.foley@drc.ngo',
-          featureId: AppFeature.kobo_database,
-          level: FeatureAccessLevel.Admin,
-          params: KoboDatabaseFeatureParams.create({
-            koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
-            filters: {}
-          }),
-        }
-      }),
-      ...Enum.values(AppFeature).map(featureId =>
-        this.prisma.featureAccess.create({
-          data: {
-            createdBy: createdBySystem,
-            email: appConf.ownerEmail,
-            featureId,
-            level: FeatureAccessLevel.Admin,
-          }
-        })
-      )
-    ])
+    const access: Prisma.FeatureAccessCreateInput[] = [
+      {
+        createdBy: createdBySystem,
+        email: 'romane.breton@drc.ngo',
+        featureId: AppFeature.kobo_database,
+        level: FeatureAccessLevel.Admin,
+        params: KoboDatabaseFeatureParams.create({
+          koboFormId: koboFormsId.prod.protectionHh_2_1,
+        }),
+      },
+      {
+        createdBy: createdBySystem,
+        level: FeatureAccessLevel.Write,
+        featureId: AppFeature.kobo_database,
+        params: KoboDatabaseFeatureParams.create({
+          koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
+          filters: {}
+        }),
+      },
+      {
+        createdBy: createdBySystem,
+        email: 'niamh.foley@drc.ngo',
+        featureId: AppFeature.kobo_database,
+        level: FeatureAccessLevel.Admin,
+        params: KoboDatabaseFeatureParams.create({
+          koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
+          filters: {}
+        }),
+      },
+      {
+        createdBy: createdBySystem,
+        email: appConf.ownerEmail,
+        level: FeatureAccessLevel.Admin,
+      }
+    ]
+    await Promise.all(access.map(_ => this.prisma.featureAccess.create({
+      data: _
+    })))
   }
 
   private readonly createServer = async () => {
