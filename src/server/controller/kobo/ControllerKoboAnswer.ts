@@ -34,11 +34,21 @@ export class ControllerKoboAnswer {
   ) {
   }
 
+  /** TODO need to handle public access */
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
     const {formId} = req.params
     const filters = await answersFiltersValidation.validate(req.query)
     const paginate = await validateApiPaginate.validate(req.query)
-    const answers = await this.service.fetchAnswers(formId, filters, paginate)
+    const answers = await this.service.searchAnswers({formId, filters, paginate})
+    res.send(answers)
+  }
+
+  readonly searchByUser = async (req: Request, res: Response, next: NextFunction) => {
+    const {formId} = req.params
+    const user = req.session.user
+    const filters = await answersFiltersValidation.validate(req.query)
+    const paginate = await validateApiPaginate.validate(req.query)
+    const answers = await this.service.searchAnswersByUsersAccess({formId, filters, paginate, user})
     res.send(answers)
   }
 }

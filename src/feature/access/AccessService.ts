@@ -4,6 +4,7 @@ import {yup} from '../../helper/Utils'
 import {Enum} from '@alexandreannic/ts-utils'
 import {InferType} from 'yup'
 import {DrcJob, DrcOffice} from '../../core/DrcType'
+import {UserSession} from '../session/UserSession'
 
 export type AccessSearchParams = InferType<typeof AccessService.searchSchema>
 export type AccessCreateParams = InferType<typeof AccessService.createSchema>
@@ -42,5 +43,20 @@ export class AccessService {
 
   readonly search = (search: AccessSearchParams) => {
     return this.prisma.featureAccess.findMany({where: search})
+  }
+
+  readonly byUser = (user: UserSession) => {
+    console.log(user)
+    return this.prisma.featureAccess.findMany({
+      where: {
+        OR: {
+          email: user.email,
+          AND: {
+            drcJob: user.drcJob,
+            drcOffice: {in: user.drcOffice},
+          }
+        }
+      },
+    })
   }
 }

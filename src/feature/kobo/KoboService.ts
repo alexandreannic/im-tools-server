@@ -9,16 +9,14 @@ import {Arr, Enum, fnSwitch} from '@alexandreannic/ts-utils'
 import {format} from 'date-fns'
 import {convertNumberIndexToLetter, removeHtml} from '../../helper/Utils'
 import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAnswer'
-
-export interface Period {
-  start: Date
-  end: Date
-}
+import {UserSession} from '../session/UserSession'
+import {AccessService} from '../access/AccessService'
 
 export class KoboService {
 
   constructor(
     private prisma: PrismaClient,
+    private access = new AccessService(prisma),
     private sdkGenerator: KoboSdkGenerator = new KoboSdkGenerator(prisma)
   ) {
 
@@ -28,11 +26,30 @@ export class KoboService {
     return this.prisma.koboForm.findMany()
   }
 
-  readonly fetchAnswers = (
+  readonly searchAnswersByUsersAccess = async ({
+    user,
+    ...params
+  }: {
     formId: string,
     filters: KoboAnswersFilters,
-    paginate: ApiPagination = defaultPagination
-  ): Promise<ApiPaginate<DbKoboAnswer>> => {
+    paginate: ApiPagination
+    user?: UserSession
+  }) => {
+    if (!user) return
+    const access = await this.access.byUser(user)
+    console.log('access', access)
+    return this.searchAnswers(params)
+  }
+
+  readonly searchAnswers = ({
+    formId,
+    filters,
+    paginate = defaultPagination,
+  }: {
+    formId: string,
+    filters: KoboAnswersFilters,
+    paginate?: ApiPagination
+  }): Promise<ApiPaginate<DbKoboAnswer>> => {
     return this.prisma.koboAnswers.findMany({
       take: paginate.limit,
       skip: paginate.offset,
@@ -81,17 +98,20 @@ export class KoboService {
       'mykolaiv',
       'dnipro',
     ]
-    const requests = oblasts.map(oblast => this.fetchAnswers(koboFormsId.prod.protectionHh_2_1, {
-      start: start,
-      end: end,
-      filterBy: [{
-        column: 'staff_to_insert_their_DRC_office',
-        value: oblast
-      }]
+    const requests = oblasts.map(oblast => this.searchAnswers({
+      formId: koboFormsId.prod.protectionHh_2_1,
+      filters: {
+        start: start,
+        end: end,
+        filterBy: [{
+          column: 'staff_to_insert_their_DRC_office',
+          value: oblast
+        }]
+      }
     }))
-    const requestAll = this.fetchAnswers(koboFormsId.prod.protectionHh_2_1, {
-      start: start,
-      end: end,
+    const requestAll = this.searchAnswers({
+      formId: koboFormsId.prod.protectionHh_2_1,
+      filters: {start: start, end: end}
     })
     await Promise.all([requestAll, ...requests]).then(_ => _.map(_ => _.data)).then(([
       all,

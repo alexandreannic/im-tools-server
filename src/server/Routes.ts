@@ -22,6 +22,7 @@ import {ControllerAccess} from './controller/ControllerAccess'
 import {ControllerUser} from './controller/ControllerUser'
 import {UserSession} from '../feature/session/UserSession'
 import {AppError} from '../helper/Errors'
+import {ca} from 'date-fns/locale'
 
 export interface AuthenticatedRequest extends Request {
   user?: UserSession
@@ -74,18 +75,22 @@ export const getRoutes = (
   const user = new ControllerUser(prisma)
 
   const auth = ({adminOnly = false}: {adminOnly?: boolean} = {}) => async (req: Request, res: Response, next: NextFunction) => {
-    const email = req.session.user?.email
-    if (!email) {
-      throw new AppError.Forbidden('user_not_connected')
+    try {
+      const email = req.session.user?.email
+      if (!email) {
+        throw new AppError.Forbidden('user_not_connected')
+      }
+      const user = await prisma.user.findFirst({where: {email}})
+      if (!user) {
+        throw new AppError.Forbidden('user_not_allowed')
+      }
+      if (adminOnly && !user.admin) {
+        throw new AppError.Forbidden('user_not_allowed')
+      }
+      next()
+    } catch (e) {
+      next(e)
     }
-    const user = await prisma.user.findFirst({where: {email}})
-    if (!user) {
-      throw new AppError.Forbidden('user_not_allowed')
-    }
-    if (adminOnly && !user.admin) {
-      throw new AppError.Forbidden('user_not_allowed')
-    }
-    next()
   }
 
   try {
@@ -106,7 +111,8 @@ export const getRoutes = (
     router.get('/kobo/form', auth(), errorCatcher(koboForm.getAll))
     router.get('/kobo/form/:id', auth(), errorCatcher(koboForm.get))
     router.put('/kobo/form', auth(), errorCatcher(koboForm.create))
-    router.get('/kobo/answer/:formId', auth(), errorCatcher(koboAnswer.search))
+    router.get('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
+    router.get('/kobo/answer/:formId/by-access', auth(), errorCatcher(koboAnswer.searchByUser))
 
     router.post('/proxy', auth(), errorCatcher(main.proxy))
 

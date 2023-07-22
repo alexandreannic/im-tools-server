@@ -45,7 +45,7 @@ export class DbInit {
 
   private readonly createAdmins = async () => {
     const adminsEmail = [
-      'romane.breton@drc.ngo',
+      // 'romane.breton@drc.ngo',
       'isabel.pearson@drc.ngo',
     ]
     return this.upsertUsers(adminsEmail.map(email => ({
@@ -77,29 +77,19 @@ export class DbInit {
   private readonly createAccess = async () => {
     await this.prisma.featureAccess.deleteMany({where: {createdBy: createdBySystem}})
     const access: Prisma.FeatureAccessCreateInput[] = [
-      {
-        createdBy: createdBySystem,
-        email: 'romane.breton@drc.ngo',
-        featureId: AppFeature.kobo_database,
-        level: FeatureAccessLevel.Admin,
-        params: KoboDatabaseFeatureParams.create({
-          koboFormId: koboFormsId.prod.protectionHh_2_1,
-        }),
-      },
+      // {
+      //   createdBy: createdBySystem,
+      //   email: 'romane.breton@drc.ngo',
+      //   featureId: AppFeature.kobo_database,
+      //   level: FeatureAccessLevel.Admin,
+      //   params: KoboDatabaseFeatureParams.create({
+      //     koboFormId: koboFormsId.prod.protectionHh_2_1,
+      //   }),
+      // },
       {
         createdBy: createdBySystem,
         level: FeatureAccessLevel.Write,
         featureId: AppFeature.kobo_database,
-        params: KoboDatabaseFeatureParams.create({
-          koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
-          filters: {}
-        }),
-      },
-      {
-        createdBy: createdBySystem,
-        email: 'niamh.foley@drc.ngo',
-        featureId: AppFeature.kobo_database,
-        level: FeatureAccessLevel.Admin,
         params: KoboDatabaseFeatureParams.create({
           koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
           filters: {}
