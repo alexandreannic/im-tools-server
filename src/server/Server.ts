@@ -14,6 +14,7 @@ import session from 'express-session'
 import {duration} from '@alexandreannic/ts-utils'
 import multer from 'multer'
 import {AppError} from '../helper/Errors'
+import sessionFileStore from 'session-file-store'
 
 export class Server {
 
@@ -70,7 +71,9 @@ export class Server {
   readonly start = () => {
     const app = express()
     app.use(this.corsHeader)
+    const x = sessionFileStore(session)
     app.use(session({
+      store: new x(),
       secret: '669d73f2-fc68-4b75-88ac-c2da4af60aa3',
       name: 'session',
       cookie: {
