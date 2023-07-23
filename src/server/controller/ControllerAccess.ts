@@ -18,9 +18,8 @@ export class ControllerAccess {
 
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
     const params = await AccessService.searchSchema.validate(req.params)
-    const data = await this.service.search(params)
+    const data = await this.service.search({...params, user: req.session.user})
     res.send(data)
   }
-
 
 }

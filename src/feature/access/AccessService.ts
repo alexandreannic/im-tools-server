@@ -1,5 +1,5 @@
 import {FeatureAccessLevel, PrismaClient} from '@prisma/client'
-import {AppFeature} from './AccessType'
+import {Access, AppFeatureId, KoboDatabaseFeatureParams} from './AccessType'
 import {yup} from '../../helper/Utils'
 import {Enum} from '@alexandreannic/ts-utils'
 import {InferType} from 'yup'
@@ -8,6 +8,12 @@ import {UserSession} from '../session/UserSession'
 
 export type AccessSearchParams = InferType<typeof AccessService.searchSchema>
 export type AccessCreateParams = InferType<typeof AccessService.createSchema>
+
+
+interface SearchByFeature {
+  ({featureId, user}: {featureId: AppFeatureId.kobo_database, user?: UserSession}): Promise<Access<KoboDatabaseFeatureParams>[]>
+  ({featureId, user}: {featureId?: AppFeatureId, user?: UserSession}): Promise<Access<any>[]>
+}
 
 export class AccessService {
 
@@ -19,14 +25,43 @@ export class AccessService {
     drcJob: yup.mixed<DrcJob>().oneOf(Enum.values(DrcJob)),
     drcOffice: yup.mixed<DrcOffice>().oneOf(Enum.values(DrcOffice)),
     email: yup.string(),
-    featureId: yup.mixed<AppFeature>().oneOf(Enum.values(AppFeature)),
+    featureId: yup.mixed<AppFeatureId>().oneOf(Enum.values(AppFeatureId)),
     params: yup.mixed().optional(),
   })
 
   static readonly searchSchema = yup.object({
-    email: yup.string(),
-    featureId: yup.mixed<AppFeature>().oneOf(Enum.values(AppFeature))
+    featureId: yup.mixed<AppFeatureId>().oneOf(Enum.values(AppFeatureId))
   })
+
+  // @ts-ignore
+  readonly search: SearchByFeature = ({featureId, user}: any) => {
+    return this.prisma.featureAccess.findMany({
+        distinct: ['id'],
+        where: {
+          AND: [
+            {featureId: featureId},
+            ...user ? [{
+              OR: [
+                {
+                  email: user.email,
+                },
+                {
+                  AND: [
+                    {
+                      drcJob: user.drcJob ?? null,
+                    },
+                    {
+                      drcOffice: user.drcOffice,
+                    }
+                  ]
+                }
+              ]
+            }] : []
+          ]
+        },
+      }
+    )
+  }
 
   readonly add = (body: AccessCreateParams) => {
     return this.prisma.featureAccess.create({
@@ -41,22 +76,23 @@ export class AccessService {
     })
   }
 
-  readonly search = (search: AccessSearchParams) => {
-    return this.prisma.featureAccess.findMany({where: search})
-  }
-
   readonly byUser = (user: UserSession) => {
-    console.log(user)
     return this.prisma.featureAccess.findMany({
-      where: {
-        OR: {
-          email: user.email,
-          AND: {
-            drcJob: user.drcJob,
-            drcOffice: {in: user.drcOffice},
-          }
-        }
-      },
-    })
+        distinct: ['id'],
+        where: {
+          OR: [
+            {
+              email: user.email,
+            },
+            {
+              AND: {
+                drcJob: user.drcJob,
+                drcOffice: {in: user.drcOffice},
+              }
+            }
+          ]
+        },
+      }
+    )
   }
 }

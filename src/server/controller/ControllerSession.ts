@@ -49,7 +49,7 @@ export class ControllerSession extends Controller {
     req.session.user = {
       ...req.session.user,
       accessToken: req.session.user?.accessToken ?? '',
-      name: (req.session.user?.name ?? '') + ' [STEALTH]',
+      name: req.session.user?.name ?? '',
       admin: user.admin,
       email: user.email,
       drcJob: user.drcJob ?? undefined,

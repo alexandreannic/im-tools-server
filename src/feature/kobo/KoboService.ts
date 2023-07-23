@@ -11,6 +11,7 @@ import {convertNumberIndexToLetter, removeHtml} from '../../helper/Utils'
 import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAnswer'
 import {UserSession} from '../session/UserSession'
 import {AccessService} from '../access/AccessService'
+import {AppFeatureId} from '../access/AccessType'
 
 export class KoboService {
 
@@ -35,10 +36,20 @@ export class KoboService {
     paginate: ApiPagination
     user?: UserSession
   }) => {
-    if (!user) return
-    const access = await this.access.byUser(user)
+    console.log('user', user)
+    if (!user) return toApiPaginate([])
+    const access = await this.access.search({featureId: AppFeatureId.kobo_database, user})
+      .then(_ => _.filter(_ => _.params?.koboFormId === params.formId))
     console.log('access', access)
-    return this.searchAnswers(params)
+    if (!user.admin && access.length === 0) return toApiPaginate([])
+    const accessFilters = access.reduce<Record<string, string[]>>((acc, x) => ({...acc, ...x.params?.filters}), {})
+    return this.searchAnswers(params).then(p => ({
+      ...p,
+      data: p.data.filter(_ => {
+        return user.admin
+          || Enum.entries(accessFilters).every(([question, answer]) => answer.includes(_.answers[question]))
+      })
+    }))
   }
 
   readonly searchAnswers = ({
@@ -60,12 +71,12 @@ export class KoboService {
           lt: filters.end,
         },
         formId,
-        ...filters.filterBy?.reduce((acc, curr) => ({
-          answers: {
-            path: [curr.column],
-            string_contains: curr.value
-          }
-        }), {})
+        // ...filters.filterBy?.reduce((acc, curr) => ({
+        //   answers: {
+        //     path: [curr.column],
+        //     string_contains: curr.value
+        //   }
+        // }), {})
         // end: {
         //   gte: filters.start,
         //   lte: filters.end,

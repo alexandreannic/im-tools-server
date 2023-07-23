@@ -68,7 +68,6 @@ export class Server {
     next()
   }
 
-  const SessionStore = sessionFileStore(session)()
   readonly start = () => {
     const app = express()
     app.use(this.corsHeader)

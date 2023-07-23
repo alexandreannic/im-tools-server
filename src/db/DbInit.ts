@@ -1,7 +1,7 @@
 import {FeatureAccessLevel, Prisma, PrismaClient} from '@prisma/client'
 import {koboFormsId, koboServerId} from '../core/conf/KoboFormsId'
 import {appConf, AppConf} from '../core/conf/AppConf'
-import {AppFeature, KoboDatabaseFeatureParams} from '../feature/access/AccessType'
+import {AppFeatureId, KoboDatabaseFeatureParams} from '../feature/access/AccessType'
 import {KoboMigrateHHS2} from '../script/KoboMigrateHHS2'
 
 const createdBySystem = 'SYSTEM'
@@ -19,8 +19,9 @@ export class DbInit {
     await Promise.all([
       this.migrateHhs2(),
       this.fixKoboForms(),
-      this.createOwner(),
-      this.createAdmins(),
+      this.createAccOwner(),
+      this.createAccAdmins(),
+      this.createAccTest(),
       this.createServer(),
       this.createAccess(),
     ])
@@ -43,9 +44,24 @@ export class DbInit {
       }).run()
   }
 
-  private readonly createAdmins = async () => {
+  private readonly createAccTest = async () => {
     const adminsEmail = [
-      // 'romane.breton@drc.ngo',
+      'prot.man.hrk@dummy',
+      'prot.officer.dnp@dummy',
+      'noaccess@dummy',
+    ]
+    return this.upsertUsers(adminsEmail.map(email => ({
+      email,
+      createdBy: createdBySystem,
+      admin: false
+    })))
+  }
+
+  private readonly createAccAdmins = async () => {
+    const adminsEmail = [
+      'julian.zakrzewski@drc.ngo',
+      'alix.journoud@drc.ngo',
+      'katrina.zacharewski@drc.ngo',
       'isabel.pearson@drc.ngo',
     ]
     return this.upsertUsers(adminsEmail.map(email => ({
@@ -55,7 +71,7 @@ export class DbInit {
     })))
   }
 
-  private readonly createOwner = async () => {
+  private readonly createAccOwner = async () => {
     return this.upsertUsers([
       {
         email: this.conf.ownerEmail,
@@ -89,7 +105,7 @@ export class DbInit {
       {
         createdBy: createdBySystem,
         level: FeatureAccessLevel.Write,
-        featureId: AppFeature.kobo_database,
+        featureId: AppFeatureId.kobo_database,
         params: KoboDatabaseFeatureParams.create({
           koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
           filters: {}
