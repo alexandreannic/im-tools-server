@@ -20,6 +20,10 @@ export class AccessService {
   constructor(private prisma: PrismaClient) {
   }
 
+  static readonly removeSchema = yup.object({
+    id: yup.string().required(),
+  })
+
   static readonly createSchema = yup.object({
     accessLevel: yup.mixed<FeatureAccessLevel>().oneOf(Enum.values(FeatureAccessLevel)).required(),
     drcJob: yup.mixed<DrcJob>().oneOf(Enum.values(DrcJob)),
@@ -35,6 +39,7 @@ export class AccessService {
 
   // @ts-ignore
   readonly search: SearchByFeature = ({featureId, user}: any) => {
+    console.log('search', featureId, user?.email)
     return this.prisma.featureAccess.findMany({
         distinct: ['id'],
         where: {
@@ -42,17 +47,11 @@ export class AccessService {
             {featureId: featureId},
             ...user ? [{
               OR: [
-                {
-                  email: user.email,
-                },
+                {email: user.email},
                 {
                   AND: [
-                    {
-                      drcJob: user.drcJob ?? null,
-                    },
-                    {
-                      drcOffice: user.drcOffice,
-                    }
+                    {drcJob: user.drcJob ?? null},
+                    {drcOffice: user.drcOffice}
                   ]
                 }
               ]
@@ -72,6 +71,14 @@ export class AccessService {
         email: body.email,
         featureId: body.featureId,
         params: body.params,
+      },
+    })
+  }
+
+  readonly remove = (id: string) => {
+    return this.prisma.featureAccess.delete({
+      where: {
+        id
       },
     })
   }

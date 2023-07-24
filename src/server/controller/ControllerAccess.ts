@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from 'express'
 import {PrismaClient} from '@prisma/client'
 import {AccessService} from '../../feature/access/AccessService'
+import {Util} from '../../helper/Utils'
 
 export class ControllerAccess {
 
@@ -16,9 +17,21 @@ export class ControllerAccess {
     res.send(data)
   }
 
+  readonly remove = async (req: Request, res: Response, next: NextFunction) => {
+    const {id} = await AccessService.removeSchema.validate(req.params)
+    await this.service.remove(id)
+    res.send()
+  }
+
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
-    const params = await AccessService.searchSchema.validate(req.params)
-    const data = await this.service.search({...params, user: req.session.user})
+    const qs = await AccessService.searchSchema.validate(req.query)
+    const data = await this.service.search(qs).then(Util.logThen('searh access'))
+    res.send(data)
+  }
+
+  readonly searchMine = async (req: Request, res: Response, next: NextFunction) => {
+    const qs = await AccessService.searchSchema.validate(req.query)
+    const data = await this.service.search({...qs, user: req.session.user}).then(Util.logThen('searh access'))
     res.send(data)
   }
 

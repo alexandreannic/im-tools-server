@@ -3,6 +3,7 @@ import {koboFormsId, koboServerId} from '../core/conf/KoboFormsId'
 import {appConf, AppConf} from '../core/conf/AppConf'
 import {AppFeatureId, KoboDatabaseFeatureParams} from '../feature/access/AccessType'
 import {KoboMigrateHHS2} from '../script/KoboMigrateHHS2'
+import {DrcJob, DrcOffice} from '../core/DrcType'
 
 const createdBySystem = 'SYSTEM'
 
@@ -50,11 +51,24 @@ export class DbInit {
       'prot.officer.dnp@dummy',
       'noaccess@dummy',
     ]
-    return this.upsertUsers(adminsEmail.map(email => ({
-      email,
-      createdBy: createdBySystem,
-      admin: false
-    })))
+    return this.upsertUsers([
+      {
+        email: 'prot.man.hrk@dummy',
+        drcJob: DrcJob['Protection Manager'],
+        drcOffice: DrcOffice.Kharkiv,
+        createdBy: createdBySystem,
+      },
+      {
+        email: 'prot.officer.dnp@dummy',
+        drcJob: DrcJob['Protection Officer'],
+        drcOffice: DrcOffice.Dnipro,
+        createdBy: createdBySystem,
+      },
+      {
+        email: 'noaccess@dummy',
+        createdBy: createdBySystem,
+      },
+    ])
   }
 
   private readonly createAccAdmins = async () => {

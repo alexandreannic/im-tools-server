@@ -117,6 +117,12 @@ export const tryCach = <T>(tryFn: () => T, catchFn: () => T): T => {
 export const removeHtml = (_?: string) => _?.replace(/(<([^>]+)>)/gi, '')
 
 export namespace Util {
+
+  export const logThen = (log: string) => <T>(args: T): T => {
+    console.log(log, args)
+    return args
+  }
+
   export const removeUndefined = <T extends object>(t: T): T => {
     for (const i in t) {
       if (t[i] === undefined || t[i] === null) {

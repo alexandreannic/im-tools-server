@@ -99,8 +99,11 @@ export const getRoutes = (
     router.post('/session/connect-as', auth({adminOnly: true}), errorCatcher(session.connectAs))
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session', errorCatcher(session.get))
-    router.get('/access', errorCatcher(access.search))
-    router.put('/access', errorCatcher(access.create))
+
+    router.get('/access', auth(), errorCatcher(access.search))
+    router.get('/access/me', auth(), errorCatcher(access.searchMine))
+    router.put('/access', auth({adminOnly: true}), errorCatcher(access.create))
+    router.delete('/access/:id', auth({adminOnly: true}), errorCatcher(access.remove))
 
     router.post('/user/me', auth(), errorCatcher(user.updateMe))
     router.get('/user', auth({adminOnly: true}), errorCatcher(user.search))
