@@ -9,16 +9,15 @@ import {Arr, Enum, fnSwitch} from '@alexandreannic/ts-utils'
 import {format} from 'date-fns'
 import {convertNumberIndexToLetter, removeHtml} from '../../helper/Utils'
 import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAnswer'
-
-export interface Period {
-  start: Date
-  end: Date
-}
+import {UserSession} from '../session/UserSession'
+import {AccessService} from '../access/AccessService'
+import {AppFeatureId} from '../access/AccessType'
 
 export class KoboService {
 
   constructor(
     private prisma: PrismaClient,
+    private access = new AccessService(prisma),
     private sdkGenerator: KoboSdkGenerator = new KoboSdkGenerator(prisma)
   ) {
 
@@ -28,11 +27,40 @@ export class KoboService {
     return this.prisma.koboForm.findMany()
   }
 
-  readonly fetchAnswers = (
+  readonly searchAnswersByUsersAccess = async ({
+    user,
+    ...params
+  }: {
     formId: string,
     filters: KoboAnswersFilters,
-    paginate: ApiPagination = defaultPagination
-  ): Promise<ApiPaginate<DbKoboAnswer>> => {
+    paginate: ApiPagination
+    user?: UserSession
+  }) => {
+    console.log('user', user)
+    if (!user) return toApiPaginate([])
+    const access = await this.access.search({featureId: AppFeatureId.kobo_database, user})
+      .then(_ => _.filter(_ => _.params?.koboFormId === params.formId))
+    console.log('access', access)
+    if (!user.admin && access.length === 0) return toApiPaginate([])
+    const accessFilters = access.reduce<Record<string, string[]>>((acc, x) => ({...acc, ...x.params?.filters}), {})
+    return this.searchAnswers(params).then(p => ({
+      ...p,
+      data: p.data.filter(_ => {
+        return user.admin
+          || Enum.entries(accessFilters).every(([question, answer]) => answer.includes(_.answers[question]))
+      })
+    }))
+  }
+
+  readonly searchAnswers = ({
+    formId,
+    filters,
+    paginate = defaultPagination,
+  }: {
+    formId: string,
+    filters: KoboAnswersFilters,
+    paginate?: ApiPagination
+  }): Promise<ApiPaginate<DbKoboAnswer>> => {
     return this.prisma.koboAnswers.findMany({
       take: paginate.limit,
       skip: paginate.offset,
@@ -43,12 +71,12 @@ export class KoboService {
           lt: filters.end,
         },
         formId,
-        ...filters.filterBy?.reduce((acc, curr) => ({
-          answers: {
-            path: [curr.column],
-            string_contains: curr.value
-          }
-        }), {})
+        // ...filters.filterBy?.reduce((acc, curr) => ({
+        //   answers: {
+        //     path: [curr.column],
+        //     string_contains: curr.value
+        //   }
+        // }), {})
         // end: {
         //   gte: filters.start,
         //   lte: filters.end,
@@ -81,17 +109,20 @@ export class KoboService {
       'mykolaiv',
       'dnipro',
     ]
-    const requests = oblasts.map(oblast => this.fetchAnswers(koboFormsId.prod.protectionHh_2_1, {
-      start: start,
-      end: end,
-      filterBy: [{
-        column: 'staff_to_insert_their_DRC_office',
-        value: oblast
-      }]
+    const requests = oblasts.map(oblast => this.searchAnswers({
+      formId: koboFormsId.prod.protectionHh_2_1,
+      filters: {
+        start: start,
+        end: end,
+        filterBy: [{
+          column: 'staff_to_insert_their_DRC_office',
+          value: oblast
+        }]
+      }
     }))
-    const requestAll = this.fetchAnswers(koboFormsId.prod.protectionHh_2_1, {
-      start: start,
-      end: end,
+    const requestAll = this.searchAnswers({
+      formId: koboFormsId.prod.protectionHh_2_1,
+      filters: {start: start, end: end}
     })
     await Promise.all([requestAll, ...requests]).then(_ => _.map(_ => _.data)).then(([
       all,
