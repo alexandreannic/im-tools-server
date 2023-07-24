@@ -5,6 +5,7 @@ import {WfpDbSearch, WfpDeduplicationService} from '../../feature/wfpDeduplicati
 import {WfPDeduplicationError} from '../../feature/wfpDeduplication/WfpDeduplicationError'
 import {WfpDeduplicationUpload} from '../../feature/wfpDeduplication/WfpDeduplicationUpload'
 import {appConf} from '../../core/conf/AppConf'
+import {AppError} from '../../helper/Errors'
 
 export class ControllerWfp {
 
@@ -30,6 +31,9 @@ export class ControllerWfp {
   }
 
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.session.user) {
+      throw new AppError.Forbidden('')
+    }
     const schema = yup.object<WfpDbSearch>({
       limit: yup.number().optional(),
       offset: yup.number().optional(),
@@ -39,7 +43,7 @@ export class ControllerWfp {
       createdAtEnd: yup.date().optional(),
     })
     const body = await schema.validate(req.body)
-    const data = await this.service.search(body)
+    const data = await this.service.searchByUserAccess(body, req.session.user)
     res.send(data)
   }
 }

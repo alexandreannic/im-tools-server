@@ -14,6 +14,16 @@ interface AccessWfpDeduplication {
   office: DrcOffice
 }
 
+export interface WfpDeduplicationAccessParams {
+  filters?: {office: string[]}
+}
+
+export interface KoboDatabaseAccessParams {
+  koboFormId: KoboId,
+  filters?: Record<string, string[]>
+}
+
+
 export interface KoboDatabaseFeatureParams {
   koboFormId: KoboId,
   filters?: Record<string, string[]>

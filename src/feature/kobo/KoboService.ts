@@ -36,7 +36,6 @@ export class KoboService {
     paginate: ApiPagination
     user?: UserSession
   }) => {
-    console.log('user', user)
     if (!user) return toApiPaginate([])
     const access = await this.access.search({featureId: AppFeatureId.kobo_database, user})
       .then(_ => _.filter(_ => _.params?.koboFormId === params.formId))

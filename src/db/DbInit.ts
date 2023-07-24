@@ -46,15 +46,16 @@ export class DbInit {
   }
 
   private readonly createAccTest = async () => {
-    const adminsEmail = [
-      'prot.man.hrk@dummy',
-      'prot.officer.dnp@dummy',
-      'noaccess@dummy',
-    ]
     return this.upsertUsers([
       {
         email: 'prot.man.hrk@dummy',
         drcJob: DrcJob['Protection Manager'],
+        drcOffice: DrcOffice.Kharkiv,
+        createdBy: createdBySystem,
+      },
+      {
+        email: 'mpca.assist.hrk@dummy',
+        drcJob: DrcJob['MPCA/NFI Assistant'],
         drcOffice: DrcOffice.Kharkiv,
         createdBy: createdBySystem,
       },

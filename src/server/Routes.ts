@@ -100,8 +100,8 @@ export const getRoutes = (
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session', errorCatcher(session.get))
 
-    router.get('/access', auth(), errorCatcher(access.search))
     router.get('/access/me', auth(), errorCatcher(access.searchMine))
+    router.get('/access', auth(), errorCatcher(access.search))
     router.put('/access', auth({adminOnly: true}), errorCatcher(access.create))
     router.delete('/access/:id', auth({adminOnly: true}), errorCatcher(access.remove))
 

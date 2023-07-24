@@ -1,6 +1,10 @@
-import {MpcaWfpDeduplicationPayload, PrismaClient} from '@prisma/client'
+import {PrismaClient} from '@prisma/client'
 import XlsxPopulate from 'xlsx-populate'
 import {DbHelper} from '../../db/DbHelper'
+import {UserSession} from '../session/UserSession'
+import {AccessService} from '../access/AccessService'
+import {AppFeatureId} from '../access/AccessType'
+import {Arr} from '@alexandreannic/ts-utils'
 
 export interface WfpDbSearch {
   limit?: number
@@ -13,17 +17,26 @@ export interface WfpDbSearch {
 
 export class WfpDeduplicationService {
 
-  constructor(private prisma: PrismaClient) {
+  constructor(
+    private prisma: PrismaClient,
+    private access: AccessService = new AccessService(prisma),
+  ) {
 
   }
 
-  readonly search = async (search: WfpDbSearch) => {
+  readonly searchByUserAccess = async (search: WfpDbSearch, user: UserSession) => {
+    const accesses = await this.access.search({featureId: AppFeatureId.wfp_deduplication, user})
+    const authorizedOffices = [...new Set(Arr(accesses).flatMap(_ => _.params?.filters?.office!).compact())]
+    console.log(authorizedOffices, accesses)
+    const filteredOffices = user.admin
+      ? search.offices
+      : authorizedOffices.filter(_ => !search.offices || search.offices.includes(_))
     const where = {
       createdAt: {
         gte: search.createdAtStart,
         lte: search.createdAtEnd,
       },
-      office: {in: search.offices},
+      office: {in: filteredOffices},
       beneficiary: {
         taxId: {in: search.taxId}
       },

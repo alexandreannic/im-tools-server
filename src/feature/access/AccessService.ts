@@ -1,5 +1,5 @@
 import {FeatureAccessLevel, PrismaClient} from '@prisma/client'
-import {Access, AppFeatureId, KoboDatabaseFeatureParams} from './AccessType'
+import {Access, AppFeatureId, KoboDatabaseFeatureParams, WfpDeduplicationAccessParams} from './AccessType'
 import {yup} from '../../helper/Utils'
 import {Enum} from '@alexandreannic/ts-utils'
 import {InferType} from 'yup'
@@ -12,6 +12,7 @@ export type AccessCreateParams = InferType<typeof AccessService.createSchema>
 
 interface SearchByFeature {
   ({featureId, user}: {featureId: AppFeatureId.kobo_database, user?: UserSession}): Promise<Access<KoboDatabaseFeatureParams>[]>
+  ({featureId, user}: {featureId: AppFeatureId.wfp_deduplication, user?: UserSession}): Promise<Access<WfpDeduplicationAccessParams>[]>
   ({featureId, user}: {featureId?: AppFeatureId, user?: UserSession}): Promise<Access<any>[]>
 }
 
@@ -25,7 +26,7 @@ export class AccessService {
   })
 
   static readonly createSchema = yup.object({
-    accessLevel: yup.mixed<FeatureAccessLevel>().oneOf(Enum.values(FeatureAccessLevel)).required(),
+    level: yup.mixed<FeatureAccessLevel>().oneOf(Enum.values(FeatureAccessLevel)).required(),
     drcJob: yup.mixed<DrcJob>().oneOf(Enum.values(DrcJob)),
     drcOffice: yup.mixed<DrcOffice>().oneOf(Enum.values(DrcOffice)),
     email: yup.string(),
@@ -65,7 +66,7 @@ export class AccessService {
   readonly add = (body: AccessCreateParams) => {
     return this.prisma.featureAccess.create({
       data: {
-        level: body.accessLevel,
+        level: body.level,
         drcJob: body.drcJob,
         drcOffice: body.drcOffice,
         email: body.email,
