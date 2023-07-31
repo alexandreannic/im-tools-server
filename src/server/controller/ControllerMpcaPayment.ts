@@ -38,7 +38,6 @@ export class ControllerMpcaPayment {
         financeAndAdministrationOfficer: y.string().optional(),
         city: y.string().optional(),
       }).validate(req.body)
-      console.log(body)
       const tool = this.service.update(id, body)
       res.send(tool)
     } catch (e) {

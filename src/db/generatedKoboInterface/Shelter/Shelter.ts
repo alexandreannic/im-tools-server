@@ -75,6 +75,10 @@ export interface Shelter {
   pd_picture4: string,
   // Picture of personal documents
   pd_picture5: string,
+  // Individual tax number of the person with whom the contract will be signed ?
+  pay_det_tax_id_num: string | undefined,
+  // Take a photo of the Tax ID
+  pay_det_tax_id_ph: string,
   // Does an ownership verification exist?
   ownership_verification: Opt<'pregnant_lac'>,
   // Type of document verifying ownership?
@@ -127,6 +131,8 @@ export interface Shelter {
   ben_det_hh_size: number | undefined,
   // 3.1.7 HH Members
   hh_char_hh_det: {hh_char_hh_det_gender: Opt<'hh_char_hh_det_gender'> | undefined,hh_char_hh_det_age: number | undefined | undefined,calc_u18: string | undefined,calc_o60: string | undefined,calc_ed_age: string | undefined,calc_preg: string | undefined,calc_female_60_i: string | undefined,calc_male_60_i: string | undefined}[] | undefined,
+  // Do you take care of the child/children yourself?
+  hh_char_hhh_care_child: Opt<'pregnant_lac'>,
   // Is the roof damaged?
   roof_damage: Opt<'rehab_solo'>,
   // How many windows are damaged?

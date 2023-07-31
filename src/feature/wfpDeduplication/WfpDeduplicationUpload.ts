@@ -7,12 +7,16 @@ import {ApiPaginate} from '../../core/Type'
 import {appConf, AppConf} from '../../core/conf/AppConf'
 import {WfpBuildingBlockClient} from '../connector/wfpBuildingBlock/WfpBuildingBlockClient'
 import {DrcOffice} from '../../core/DrcType'
+import {PromisePool} from '@supercharge/promise-pool'
+import {logger, Logger} from '../../helper/Logger'
 
 export class WfpDeduplicationUpload {
 
   private constructor(
     private prisma: PrismaClient,
-    private wfpSdk: WFPBuildingBlockSdk
+    private wfpSdk: WFPBuildingBlockSdk,
+    private conf: AppConf,
+    private log: Logger = logger('WfpDeduplicationUpload'),
   ) {
 
   }
@@ -23,7 +27,7 @@ export class WfpDeduplicationUpload {
       password: appConf.buildingBlockWfp.password,
       otpUrl: appConf.buildingBlockWfp.otpURL,
     }).generate())
-    return new WfpDeduplicationUpload(prisma, wfpSdk)
+    return new WfpDeduplicationUpload(prisma, wfpSdk, conf)
   }
 
   readonly saveAll = async () => {
@@ -88,7 +92,9 @@ export class WfpDeduplicationUpload {
       }),
     ])
     await this.mergePartiallyDuplicated()
+    console.log('setoblast')
     await this.setOblast()
+    this.log.info('Done')
   }
 
   private readonly upsertMappingId = async (ids: string[]) => {
@@ -135,13 +141,16 @@ export class WfpDeduplicationUpload {
     fn: (batch: T[]) => Promise<void>
   }) => {
     const requests: Promise<ApiPaginate<T>>[] = [
-      req({limit: 1000, offset: 0})
+      req({limit: 500, offset: 0})
     ]
     const initialRequest = await requests[0]
     const limit = initialRequest.data.length
     for (let i = limit; i < initialRequest.total; i = i + limit)
       requests.push(req({limit, offset: i}))
-    await Promise.all(requests.map(r => r.then(_ => fn(_.data))))
+    for(const r of requests) {
+      await r.then(_ => fn(_.data))
+    }
+    // await Promise.all(requests.map(r => r.then(_ => fn(_.data))))
   }
 
   private setOblast = async () => {
@@ -157,7 +166,8 @@ export class WfpDeduplicationUpload {
       'CHJ': DrcOffice.Chernihiv,
     }
     await this.runOnAll({
-      req: this.wfpSdk.getImportFiles, fn: async (imports) => {
+      req: this.wfpSdk.getImportFiles,
+      fn: async (imports) => {
         const updates$ = imports.map(async (_) => {
           const office = possibleOffices.find(oblastCode => _.fileName.includes(oblastCode))
           if (!office) console.warn(`Oblast not found for filename ${_.fileName}`)
@@ -185,7 +195,6 @@ export class WfpDeduplicationUpload {
         await Promise.all(updates$)
       }
     })
-
   }
 }
 

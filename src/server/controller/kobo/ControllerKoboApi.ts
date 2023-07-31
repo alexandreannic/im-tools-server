@@ -36,17 +36,12 @@ export class ControllerKoboApi {
   }
 
   readonly getForms = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const {id} = await yup.object({
-        id: yup.string().required(),
-      }).validate(req.params)
-      const sdk = await this.koboSdkGenerator.construct(id)
-      const forms = await sdk.getForms()
-      res.send(forms)
-    } catch (e) {
-      console.log('CAUGHT')
-      next(e)
-    }
+    const {id} = await yup.object({
+      id: yup.string().required(),
+    }).validate(req.params)
+    const sdk = await this.koboSdkGenerator.construct(id)
+    const forms = await sdk.getForms()
+    res.send(forms)
   }
 
   readonly getAnswersFromLocalCsv = async (req: Request, res: Response, next: NextFunction) => {

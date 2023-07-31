@@ -2,28 +2,28 @@ import express, {NextFunction, Request, Response} from 'express'
 import * as bodyParser from 'body-parser'
 import {getRoutes} from './Routes'
 import {logger} from '../helper/Logger'
-import {AppConf} from '../core/conf/AppConf'
+import {appConf, AppConf} from '../core/conf/AppConf'
 import {genUUID} from '../helper/Utils'
 import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
-import {EcrecSdk} from '../feature/connector/ecrec/EcrecSdk'
-import {LegalaidSdk} from '../feature/connector/legalaid/LegalaidSdk'
 import {HttpError} from './controller/Controller'
 import {Services} from './services'
 import {PrismaClient} from '@prisma/client'
 import session from 'express-session'
-import {duration} from '@alexandreannic/ts-utils'
 import multer from 'multer'
 import {AppError} from '../helper/Errors'
-import sessionFileStore from 'session-file-store'
+// import sessionFileStore from 'session-file-store'
+import {PrismaSessionStore} from '@quixo3/prisma-session-store'
+import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 export class Server {
 
   constructor(
-    private conf: AppConf,
+    private conf: AppConf = appConf,
     private pgClient: PrismaClient,
     private koboClient: KoboSdk,
-    private ecrecSdk: EcrecSdk,
-    private legalaidSdk: LegalaidSdk,
+    // private ecrecSdk: EcrecSdk,
+    // private legalaidSdk: LegalaidSdk,
     private services: Services,
     private log = logger('Server'),
   ) {
@@ -32,7 +32,7 @@ export class Server {
   static readonly upload = multer({dest: 'uploads/'})
 
   readonly errorHandler = (err: HttpError, req: Request, res: Response, next: (err?: any) => void) => {
-    const errorId = genUUID()
+    const errorId = genUUID().split('-')[0]
     try {
       if (err instanceof AppError.Forbidden) {
         res.status(401).json({
@@ -53,7 +53,7 @@ export class Server {
         errorId
       })
     } catch (e) {
-      res.send(500).json({
+      res.status(500).json({
         data: 'Something went wrong.',
         errorId,
       })
@@ -70,28 +70,44 @@ export class Server {
 
   readonly start = () => {
     const app = express()
-    app.use(this.corsHeader)
-    const x = sessionFileStore(session)
+    app.set('trust proxy', 1)
+    // app.use(this.corsHeader)
+    app.use(cors({
+      credentials: true,
+      origin: this.conf.cors.allowOrigin,
+    }))
+    // const sessionstore = sessionFileStore(session)
+    app.use(cookieParser())
     app.use(session({
-      store: new x(),
       secret: '669d73f2-fc68-4b75-88ac-c2da4af60aa3',
-      name: 'session',
-      cookie: {
-        secure: false,
-        httpOnly: false,
-        maxAge: duration(365, 'day').toMs,
-      },
       resave: false,
       saveUninitialized: false,
+      name: 'infoportal-session',
+      // proxy: true,
+      unset: 'destroy',
+      store: new PrismaSessionStore(this.pgClient, {
+        checkPeriod: 2 * 60 * 1000,  //ms
+        dbRecordIdIsSessionId: true,
+        dbRecordIdFunction: undefined,
+        // checkPeriod: duration(1, 'day').toMs,
+        // dbRecordIdIsSessionId: true,
+        // dbRecordIdFunction: undefined,
+      }),
+      cookie: {
+        secure: appConf.production,
+        // httpOnly: true,
+        sameSite: appConf.production ? 'none' : undefined,
+        maxAge: 2 * 1000 * 60 * 60 * 24
+        // duration(365, 'day').toMs,
+      },
     }))
-    // app.use(cookieParser())
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({extended: false}))
     app.use(getRoutes(
       this.pgClient,
       this.koboClient,
-      this.ecrecSdk,
-      this.legalaidSdk,
+      // this.ecrecSdk,
+      // this.legalaidSdk,
       this.services,
       this.log,
     ))
@@ -101,3 +117,5 @@ export class Server {
     })
   }
 }
+
+// https://kobo.humanitarianresponse.info/api/v2/assets/aEvwuJkHVRiRQRKBNFNocH/data/79f86d1b-248a-4969-90e0-6e157ab47007/enketo/edit/?return_url=false

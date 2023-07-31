@@ -39,7 +39,6 @@ export class KoboService {
     if (!user) return toApiPaginate([])
     const access = await this.access.search({featureId: AppFeatureId.kobo_database, user})
       .then(_ => _.filter(_ => _.params?.koboFormId === params.formId))
-    console.log('access', access)
     if (!user.admin && access.length === 0) return toApiPaginate([])
     const accessFilters = access.reduce<Record<string, string[]>>((acc, x) => ({...acc, ...x.params?.filters}), {})
     return this.searchAnswers(params).then(p => ({

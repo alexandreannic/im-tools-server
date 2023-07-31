@@ -2,7 +2,6 @@ import {ApiClient} from './core/client/ApiClient'
 import {KoboSdk} from './feature/connector/kobo/KoboClient/KoboSdk'
 import {appConf} from './core/conf/AppConf'
 import {Server} from './server/Server'
-import {EcrecClient} from './feature/connector/ecrec/EcrecClient'
 import {EcrecSdk} from './feature/connector/ecrec/EcrecSdk'
 import {LegalaidSdk} from './feature/connector/legalaid/LegalaidSdk'
 import {ServiceEcrec} from './server/services/ServiceEcrec'
@@ -14,29 +13,27 @@ import {PrismaClient} from '@prisma/client'
 import {MpcaPaymentService} from './feature/mpcaPayment/MpcaPaymentService'
 import {DbInit} from './db/DbInit'
 import {logger} from './helper/Logger'
-import {generateKoboInterface} from './script/KoboFormInterfaceGenerator'
-import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
-import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
+import {EcrecClient} from './feature/connector/ecrec/EcrecClient'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 
 const initServices = (
   koboClient: KoboSdk,
-  ecrecSdk: EcrecSdk,
-  legalaidSdk: LegalaidSdk,
+  // ecrecSdk: EcrecSdk,
+  // legalaidSdk: LegalaidSdk,
   prisma: PrismaClient
 ): Services => {
-  const ecrec = new ServiceEcrec(ecrecSdk)
-  const legalAid = new ServiceLegalAid(legalaidSdk)
+  // const ecrec = new ServiceEcrec(ecrecSdk)
+  // const legalAid = new ServiceLegalAid(legalaidSdk)
   const nfi = new ServiceNfi(koboClient)
   const mpcaPayment = new MpcaPaymentService(prisma)
   const stats = new ServiceStats(
-    ecrec,
-    legalAid,
+    // ecrec,
+    // legalAid,
     nfi,
   )
   return {
-    ecrec,
-    legalAid,
+    // ecrec,
+    // legalAid,
     nfi,
     stats,
     mpcaPayment,
@@ -88,8 +85,6 @@ const startApp = async () => {
   // }).generate())
   // await new WfpDeduplicationUpload(prisma, wfpSdk).saveAll()
 
-  const ecrecAppSdk = 1 as any
-  const legalAidSdk = 1 as any
   // const ecrecAppSdk = new EcrecSdk(new EcrecClient(appConf.ecrecApp))
   // const legalAidSdk = new LegalaidSdk(new ApiClient({
   //   baseUrl: 'https://api.lau-crm.org.ua',
@@ -99,8 +94,8 @@ const startApp = async () => {
   // }))
   const services = initServices(
     koboSdk,
-    ecrecAppSdk,
-    legalAidSdk,
+    // ecrecAppSdk,
+    // legalAidSdk,
     prisma,
   )
 
@@ -108,8 +103,8 @@ const startApp = async () => {
     conf,
     prisma,
     koboSdk,
-    ecrecAppSdk,
-    legalAidSdk,
+    // ecrecAppSdk,
+    // legalAidSdk,
     services,
   ).start()
 }

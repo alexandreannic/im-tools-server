@@ -1,4 +1,4 @@
-import {defaultValue, env, int, required} from '@alexandreannic/ts-utils'
+import {bool, defaultValue, env, int, required} from '@alexandreannic/ts-utils'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
@@ -6,6 +6,7 @@ dotenv.config()
 const e = env(process.env)
 
 export const appConf = {
+  production: e(_ => _?.toLowerCase() === 'production', defaultValue(true))('NODE_ENV'),
   port: e(int, defaultValue(80))('PORT'),
   ownerEmail: e(defaultValue('alexandre.annic@drc.ngo'))('OWNER_EMAIL'),
   cors: {
@@ -17,6 +18,7 @@ export const appConf = {
     password: e(required)('BUILDINGBLOCK_WFP_PASSWORD'),
   },
   db: {
+    maxConcurrency: e(int, defaultValue(100))('DATABASE_MAX_CONCURRENCY'),
     url: e(required)('DATABASE_URL')
   },
   //   host: e(required)('DB_HOST'),
@@ -41,4 +43,5 @@ export const appConf = {
   }
 }
 
+console.log(appConf)
 export type AppConf = typeof appConf

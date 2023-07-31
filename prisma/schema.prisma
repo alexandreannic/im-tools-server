@@ -147,3 +147,10 @@ model AccessToken {
   createdBy DateTime @default(now())
   name      String
 }
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt   DateTime
+}

@@ -27,7 +27,8 @@ export class AccessService {
 
   static readonly createSchema = yup.object({
     level: yup.mixed<FeatureAccessLevel>().oneOf(Enum.values(FeatureAccessLevel)).required(),
-    drcJob: yup.mixed<DrcJob>().oneOf(Enum.values(DrcJob)),
+    drcJob: yup.string(),//yup.mixed<DrcJob>().oneOf(Enum.values(DrcJob)),
+    // drcOffice: yup.string().optional(),
     drcOffice: yup.mixed<DrcOffice>().oneOf(Enum.values(DrcOffice)),
     email: yup.string(),
     featureId: yup.mixed<AppFeatureId>().oneOf(Enum.values(AppFeatureId)),
@@ -40,7 +41,6 @@ export class AccessService {
 
   // @ts-ignore
   readonly search: SearchByFeature = ({featureId, user}: any) => {
-    console.log('search', featureId, user?.email)
     return this.prisma.featureAccess.findMany({
         distinct: ['id'],
         where: {
@@ -50,10 +50,12 @@ export class AccessService {
               OR: [
                 {email: user.email},
                 {
-                  AND: [
-                    {drcJob: user.drcJob ?? null},
-                    {drcOffice: user.drcOffice}
-                  ]
+                  OR: [
+                    {drcOffice: user.drcOffice}, // Replace 'value' with the specific value you want to check against
+                    {drcOffice: null},
+                    {drcOffice: ''},
+                  ],
+                  drcJob: user.drcJob
                 }
               ]
             }] : []
@@ -61,6 +63,10 @@ export class AccessService {
         },
       }
     )
+    // .then(_ => _.filter(_ => {
+    // console.log(_)
+    // return _.drcOffice === null || _.drcOffice === user.drcOffice
+    // }))
   }
 
   readonly add = (body: AccessCreateParams) => {

@@ -48,32 +48,32 @@ const translations = {
 export class ServiceStats {
 
   constructor(
-    private ecrec: ServiceEcrec,
-    private legalAid: ServiceLegalAid,
+    // private ecrec: ServiceEcrec,
+    // private legalAid: ServiceLegalAid,
     private nfi: ServiceNfi,
   ) {
   }
 
   readonly getAll = Cache.request(async (filters: StatsFilters) => {
-    const [ecrec, legalAid, nfi] = await Promise.all([
-      this.ecrec.getStats(filters).catch(() => ({
-        msd: 3,
-        vet: 32,
-        sme: 12,
-        micro: 57,
-        womanTeaching: 130,
-      })).then(translate(translations.ecrec)),
-      this.legalAid.getStats(filters).then(translate(translations.legalAid)).catch(console.error),
-      this.nfi.getStats(filters).then(translate(translations.nfis)).catch(_ => Promise.reject(`Failed to get NFI`))
-    ])
-    return `
-      <h2>EcRec</h2>
-      ${ecrec}
-      <h2>Legal Aid</h2>
-      ${legalAid}
-      <h2>NFI / MPCA</h2>
-      ${nfi}
-    `
+    // const [ecrec, legalAid, nfi] = await Promise.all([
+    //   this.ecrec.getStats(filters).catch(() => ({
+    //     msd: 3,
+    //     vet: 32,
+    //     sme: 12,
+    //     micro: 57,
+    //     womanTeaching: 130,
+    //   })).then(translate(translations.ecrec)),
+    //   this.legalAid.getStats(filters).then(translate(translations.legalAid)).catch(console.error),
+    //   this.nfi.getStats(filters).then(translate(translations.nfis)).catch(_ => Promise.reject(`Failed to get NFI`))
+    // ])
+    // return `
+    //   <h2>EcRec</h2>
+    //   ${ecrec}
+    //   <h2>Legal Aid</h2>
+    //   ${legalAid}
+    //   <h2>NFI / MPCA</h2>
+    //   ${nfi}
+    // `
   })
 
 }

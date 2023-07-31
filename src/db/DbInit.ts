@@ -66,6 +66,11 @@ export class DbInit {
         createdBy: createdBySystem,
       },
       {
+        email: 'prot.co@dummy',
+        drcJob: DrcJob['Protection Coordinator'],
+        createdBy: createdBySystem,
+      },
+      {
         email: 'noaccess@dummy',
         createdBy: createdBySystem,
       },

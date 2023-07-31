@@ -23,6 +23,7 @@ import {ControllerUser} from './controller/ControllerUser'
 import {UserSession} from '../feature/session/UserSession'
 import {AppError} from '../helper/Errors'
 import {ca} from 'date-fns/locale'
+import {appConf} from '../core/conf/AppConf'
 
 export interface AuthenticatedRequest extends Request {
   user?: UserSession
@@ -33,7 +34,7 @@ export const errorCatcher = (handler: (req: Request, res: Response, next: NextFu
     try {
       await handler(req, res, next)
     } catch (err) {
-      console.log('[errorCatcher()]')
+      console.error('[errorCatcher()]')
       next(err)
     }
   }
@@ -42,8 +43,8 @@ export const errorCatcher = (handler: (req: Request, res: Response, next: NextFu
 export const getRoutes = (
   prisma: PrismaClient,
   koboSdk: KoboSdk,
-  ecrecSdk: EcrecSdk,
-  legalAidSdk: LegalaidSdk,
+  // ecrecSdk: EcrecSdk,
+  // legalAidSdk: LegalaidSdk,
   services: Services,
   logger: Logger,
 ) => {
@@ -53,13 +54,13 @@ export const getRoutes = (
     services.nfi,
     logger
   )
-  const ecrec = new ControllerEcrec(
-    ecrecSdk,
-  )
-  const legalaid = new ControllerLegalAid(
-    legalAidSdk,
-    logger,
-  )
+  // const ecrec = new ControllerEcrec(
+  //   ecrecSdk,
+  // )
+  // const legalaid = new ControllerLegalAid(
+  //   legalAidSdk,
+  //   logger,
+  // )
   const mpcaPayment = new ControllerMpcaPayment(
     services.mpcaPayment
   )
@@ -75,10 +76,15 @@ export const getRoutes = (
   const user = new ControllerUser(prisma)
 
   const auth = ({adminOnly = false}: {adminOnly?: boolean} = {}) => async (req: Request, res: Response, next: NextFunction) => {
+    // req.session.user = {
+    //   email: 'alexandre.annic@drc.ngo',
+    //   admin: true,
+    // } as any
+    // next()
     try {
       const email = req.session.user?.email
       if (!email) {
-        throw new AppError.Forbidden('user_not_connected')
+        throw new AppError.Forbidden('auth_user_not_connected' + JSON.stringify(appConf))
       }
       const user = await prisma.user.findFirst({where: {email}})
       if (!user) {
@@ -134,11 +140,11 @@ export const getRoutes = (
     router.post('/wfp-deduplication/search', auth(), errorCatcher(wfp.search))
     router.post('/wfp-deduplication/upload-taxid', auth(), Server.upload.single('aa-file'), errorCatcher(wfp.uploadTaxIdMapping))
 
-    router.get('/legalaid', auth(), errorCatcher(legalaid.index))
+    // router.get('/legalaid', auth(), errorCatcher(legalaid.index))
     router.get('/nfi/raw', auth(), errorCatcher(nfi.raw))
     router.get('/nfi', auth(), errorCatcher(nfi.index))
-    router.get('/ecrec', auth(), errorCatcher(ecrec.index))
-    router.get('/*', errorCatcher(ecrec.index))
+    // router.get('/ecrec', auth(), errorCatcher(ecrec.index))
+    // router.get('/*', errorCatcher(ecrec.index))
   } catch (e) {
     console.error('ROUTES CAUGHT!!!')
   }

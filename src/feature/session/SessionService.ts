@@ -3,8 +3,10 @@ import {logger, Logger} from '../../helper/Logger'
 import {AuthenticationProvider} from '@microsoft/microsoft-graph-client/src/IAuthenticationProvider'
 import {AuthenticationProviderOptions} from '@microsoft/microsoft-graph-client/src/IAuthenticationProviderOptions'
 import {Client} from '@microsoft/microsoft-graph-client'
-import {User} from '@microsoft/msgraph-sdk-javascript/lib/src/models/user'
 import {SessionError} from './SessionErrors'
+
+// import {User} from '@microsoft/msgraph-sdk-javascript/lib/src/models/user'
+type User = any
 
 export class SessionService {
 
