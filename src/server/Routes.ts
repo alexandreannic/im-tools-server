@@ -114,7 +114,7 @@ export const getRoutes = (
     router.post('/user/me', auth(), errorCatcher(user.updateMe))
     router.get('/user', auth({adminOnly: true}), errorCatcher(user.search))
 
-    router.post('/activity-info/activity', auth(), errorCatcher(activityInfo.submitActivity))
+    router.post('/activity-info/activity', auth({adminOnly: true}), errorCatcher(activityInfo.submitActivity))
 
     router.get('/kobo/server', auth(), errorCatcher(koboServer.getServers))
     router.get('/kobo/form', auth(), errorCatcher(koboForm.getAll))
