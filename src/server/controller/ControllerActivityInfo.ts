@@ -2,7 +2,7 @@ import {NextFunction, Request, Response} from 'express'
 import {ActivityInfoSdk} from '../../feature/activityInfo/sdk/ActivityInfoSdk'
 import {logger, Logger} from '../../helper/Logger'
 import {appConf} from '../../core/conf/AppConf'
-import {AppError, Forbidden} from '../../helper/Errors'
+import {AppError} from '../../helper/Errors'
 
 export class ControllerActivityInfo {
 

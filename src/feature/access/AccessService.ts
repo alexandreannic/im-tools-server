@@ -27,7 +27,7 @@ export class AccessService {
 
   static readonly createSchema = yup.object({
     level: yup.mixed<FeatureAccessLevel>().oneOf(Enum.values(FeatureAccessLevel)).required(),
-    drcJob: yup.string(),//yup.mixed<DrcJob>().oneOf(Enum.values(DrcJob)),
+    drcJob: yup.array().of(yup.string().required()),//yup.mixed<DrcJob>().oneOf(Enum.values(DrcJob)),
     // drcOffice: yup.string().optional(),
     drcOffice: yup.mixed<DrcOffice>().oneOf(Enum.values(DrcOffice)),
     email: yup.string(),
@@ -70,16 +70,18 @@ export class AccessService {
   }
 
   readonly add = (body: AccessCreateParams) => {
-    return this.prisma.featureAccess.create({
-      data: {
-        level: body.level,
-        drcJob: body.drcJob,
-        drcOffice: body.drcOffice,
-        email: body.email,
-        featureId: body.featureId,
-        params: body.params,
-      },
-    })
+    return Promise.all((body.drcJob ?? [undefined]).map(drcJob =>
+      this.prisma.featureAccess.create({
+        data: {
+          level: body.level,
+          drcJob,
+          drcOffice: body.drcOffice,
+          email: body.email,
+          featureId: body.featureId,
+          params: body.params,
+        },
+      })
+    ))
   }
 
   readonly remove = (id: string) => {
