@@ -128,8 +128,14 @@ export class KoboAnswerUtils {
     }
   }
 
-  static readonly removeGroup = <T>(answers: Record<string, T>): Record<string, T> => {
-    return Arr(Object.entries(answers)).reduceObject(([k, v]) => [k.replace(/^.*\//, ''), v])
+  static readonly removeGroup = (answers: Record<string, any>): Record<string, any> => {
+    return Arr(Object.entries(answers)).reduceObject(([k, v]) => {
+      const nameWithoutGroup = k.replace(/^.*\//, '')
+      if (Array.isArray(v)) {
+        return [nameWithoutGroup, v.map(KoboAnswerUtils.removeGroup)]
+      }
+      return [nameWithoutGroup, v]
+    })
   }
   // static readonly mapAnswerMetaData = (k: Record<keyof KoboAnswerMetaData, any>): KoboAnswerMetaData => {
   //   return {
