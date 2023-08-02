@@ -100,4 +100,11 @@ export namespace AppError {
     }
   }
 
+  export class InternalServerError extends Base {
+    constructor(message: string) {
+      super(message)
+      // this.name = this.constructor.name
+    }
+  }
+
 }

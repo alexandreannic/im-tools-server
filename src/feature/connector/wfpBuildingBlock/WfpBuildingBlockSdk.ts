@@ -32,6 +32,7 @@ export class WFPBuildingBlockSdk {
         _offset: offset,
       }
     })
+      .then(AssistancePrevented.filterRemoved)
       .then(WFPBuildingBlockSdk.mapPaginate(AssistanceProvided.map))
   }
 
@@ -43,6 +44,7 @@ export class WFPBuildingBlockSdk {
         _offset: offset,
       }
     })
+      .then(AssistancePrevented.filterRemoved)
       .then(WFPBuildingBlockSdk.mapPaginate(AssistancePrevented.map))
   }
 

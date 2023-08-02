@@ -48,6 +48,13 @@ export interface AssistancePrevented {
 
 export class AssistancePrevented {
 
+  static readonly filterRemoved = (input: WfpPaginate<any>): WfpPaginate<any> => {
+    return {
+      ...input,
+      items: input.items.filter(_ => _.removedByAsyncTaskId === null)
+    }
+  }
+
   static readonly map = (_: Record<keyof AssistancePrevented, any>): AssistancePrevented => {
     return {
       ..._,
