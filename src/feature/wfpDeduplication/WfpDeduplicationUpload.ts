@@ -7,8 +7,8 @@ import {ApiPaginate} from '../../core/Type'
 import {appConf, AppConf} from '../../core/conf/AppConf'
 import {WfpBuildingBlockClient} from '../connector/wfpBuildingBlock/WfpBuildingBlockClient'
 import {DrcOffice} from '../../core/DrcType'
-import {PromisePool} from '@supercharge/promise-pool'
 import {logger, Logger} from '../../helper/Logger'
+import {AppError} from '../../helper/Errors'
 
 export class WfpDeduplicationUpload {
 
@@ -31,69 +31,75 @@ export class WfpDeduplicationUpload {
   }
 
   readonly saveAll = async () => {
+    this.log.info('Clear database...')
     await this.prisma.mpcaWfpDeduplication.deleteMany()
-    await Promise.all([
-      this.runOnAll({
-        req: _ => this.wfpSdk.getAssistanceProvided(_),
-        fn: async (res: AssistanceProvided[]) => {
-          await this.upsertMappingId(res.map(_ => _.beneficiaryId))
-          await this.prisma.mpcaWfpDeduplication.createMany({
-            data: res.map(_ => {
-              return ({
-                amount: +_.amount,
-                wfpId: _.id,
-                createdAt: _.createdAt,
-                expiry: _.expiry,
-                beneficiaryId: _.beneficiaryId,
-                status: WfpDeduplicationStatus.NotDeduplicated,
-                validFrom: _.validFrom,
-              })
+    this.log.info('AssistanceProvided...')
+    // await Promise.all([
+    await this.runOnAll({
+      req: _ => this.wfpSdk.getAssistanceProvided(_),
+      fn: async (res: AssistanceProvided[]) => {
+        await this.upsertMappingId(res.map(_ => _.beneficiaryId))
+        await this.prisma.mpcaWfpDeduplication.createMany({
+          data: res.map(_ => {
+            return ({
+              amount: +_.amount,
+              wfpId: _.id,
+              createdAt: _.createdAt,
+              expiry: _.expiry,
+              beneficiaryId: _.beneficiaryId,
+              status: WfpDeduplicationStatus.NotDeduplicated,
+              validFrom: _.validFrom,
             })
           })
-        }
-      }),
-      this.runOnAll({
-        req: _ => this.wfpSdk.getAssistancePrevented(_),
-        fn: async (res: AssistancePrevented[]) => {
-          await this.upsertMappingId(res.map(_ => _.beneficiaryId))
-          await this.prisma.mpcaWfpDeduplication.createMany({
-            data: res.map(_ => {
-              const status = (() => {
-                if (_.message.includes('Partially deduplicated')) {
-                  return WfpDeduplicationStatus.PartiallyDeduplicated
-                } else if (_.message.includes('Deduplicated')) {
-                  return WfpDeduplicationStatus.Deduplicated
-                }
-                return WfpDeduplicationStatus.Error
-              })()
-              const existing = (() => {
-                const match = _.message.match(/\-\s+Already\s+assisted\s+by\s+(.*?)\s+from\s+(\d{8})\s+to\s+(\d{8})\s+for\s+UAH\s+([\d,\.]+)\s+for\s+CASH-MP/)
-                return {
-                  existingOrga: match![1],
-                  existingStart: parse(match![2], 'yyyyMMdd', new Date()),
-                  existingEnd: parse(match![3], 'yyyyMMdd', new Date()),
-                  existingAmount: +match![4].replace(',', '').split('.')[0],
-                }
-              })()
-              return ({
-                amount: +_.amount,
-                wfpId: _.id,
-                createdAt: _.createdAt,
-                expiry: _.expiry,
-                beneficiaryId: _.beneficiaryId,
-                message: _.message,
-                status,
-                validFrom: _.validFrom,
-                ...existing,
-              })
+        })
+      }
+    })
+    this.log.info('AssistancePrevented...')
+    await this.runOnAll({
+      req: _ => this.wfpSdk.getAssistancePrevented(_),
+      fn: async (res: AssistancePrevented[]) => {
+        await this.upsertMappingId(res.map(_ => _.beneficiaryId))
+        await this.prisma.mpcaWfpDeduplication.createMany({
+          data: res.map(_ => {
+            const status = (() => {
+              if (_.message.includes('Partially deduplicated')) {
+                return WfpDeduplicationStatus.PartiallyDeduplicated
+              } else if (_.message.includes('Deduplicated')) {
+                return WfpDeduplicationStatus.Deduplicated
+              }
+              return WfpDeduplicationStatus.Error
+            })()
+            const existing = (() => {
+              const match = _.message.match(/\-\s+Already\s+assisted\s+by\s+(.*?)\s+from\s+(\d{8})\s+to\s+(\d{8})\s+for\s+UAH\s+([\d,\.]+)\s+for\s+CASH-MP/)
+              return {
+                existingOrga: match![1],
+                existingStart: parse(match![2], 'yyyyMMdd', new Date()),
+                existingEnd: parse(match![3], 'yyyyMMdd', new Date()),
+                existingAmount: +match![4].replace(',', '').split('.')[0],
+              }
+            })()
+            return ({
+              amount: +_.amount,
+              wfpId: _.id,
+              createdAt: _.createdAt,
+              expiry: _.expiry,
+              beneficiaryId: _.beneficiaryId,
+              message: _.message,
+              status,
+              validFrom: _.validFrom,
+              ...existing,
             })
           })
-        }
-      }),
-    ])
+        })
+      }
+    })
+    // ])
+    this.log.info('mergePartiallyDuplicated')
     await this.mergePartiallyDuplicated()
-    console.log('setoblast')
+    this.log.info('setoblast')
     await this.setOblast()
+    this.log.info('clearHumanMistakes')
+    await this.clearHumanMistakes()
     this.log.info('Done')
   }
 
@@ -140,17 +146,27 @@ export class WfpDeduplicationUpload {
     req: (_: WfpFilters) => Promise<ApiPaginate<T>>,
     fn: (batch: T[]) => Promise<void>
   }) => {
-    const requests: Promise<ApiPaginate<T>>[] = [
-      req({limit: 500, offset: 0})
+    const requests: (() => Promise<ApiPaginate<T>>)[] = [
+      () => req({limit: 1000, offset: 0})
     ]
-    const initialRequest = await requests[0]
+    const initialRequest = await requests[0]()
     const limit = initialRequest.data.length
-    for (let i = limit; i < initialRequest.total; i = i + limit)
-      requests.push(req({limit, offset: i}))
-    for(const r of requests) {
-      await r.then(_ => fn(_.data))
+    if (limit === 0) {
+      throw new AppError.InternalServerError('Initial request returned 0 data.')
+    }
+    for (let i = limit; i < initialRequest.total; i = i + limit) {
+      requests.push(() => req({limit, offset: i}))
+    }
+    for (const r of requests) {
+      await r().then(_ => fn(_.data))
     }
     // await Promise.all(requests.map(r => r.then(_ => fn(_.data))))
+  }
+
+  private clearHumanMistakes = async () => {
+    return this.prisma.mpcaWfpDeduplication.deleteMany({
+      where: {fileName: 'DRC Ukraine_BB_Data submission_CEJ_20230731.xlsx.gpg'}
+    })
   }
 
   private setOblast = async () => {
