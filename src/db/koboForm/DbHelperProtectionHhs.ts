@@ -1,7 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {ProtHHS_2_1Options} from '../generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1Options'
 import {DbKoboFormHelper} from './Helper'
-import {BNRE} from '../generatedKoboInterface/BNRE/BNRE'
 import {ProtHHS_2_1} from '../generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1'
 import {Enum, map} from '@alexandreannic/ts-utils'
 import {endOfDay, endOfMonth, parse, startOfMonth} from 'date-fns'
@@ -60,7 +59,7 @@ export class DbHelperProtectionHhs {
   constructor(private prisma: PrismaClient) {
   }
 
-  readonly assignDonors = async (months: (keyof typeof reporting)[] = [
+  readonly assignDonorsForHhs = async (months: (keyof typeof reporting)[] = [
     '2023-06',
     '2023-07',
   ]) => {

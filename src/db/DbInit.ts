@@ -32,7 +32,7 @@ export class DbInit {
   private readonly fixKoboForms = async () => {
     return Promise.all([
       // new DbHelperBNRE(this.prisma).assignMissingSettlement(),
-      new DbHelperProtectionHhs(this.prisma).assignDonors(),
+      new DbHelperProtectionHhs(this.prisma).assignDonorsForHhs(),
     ])
   }
 
