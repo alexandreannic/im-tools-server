@@ -4,6 +4,7 @@ import {DbKoboFormHelper} from './Helper'
 import {BNRE} from '../generatedKoboInterface/BNRE/BNRE'
 import {ProtHHS_2_1} from '../generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1'
 import {Enum, map} from '@alexandreannic/ts-utils'
+import {endOfDay, endOfMonth, parse, startOfMonth} from 'date-fns'
 
 type Office = typeof ProtHHS_2_1Options['staff_to_insert_their_DRC_office']
 
@@ -18,10 +19,12 @@ export enum Donor {
   'NN2_UKR000298' = 'NN2 UKR-000298',
 }
 
-const juneReporting: Partial<Record<
+type ReportingmDonorMap = Partial<Record<
   keyof Office,
   Partial<Record<Donor, {ai?: number, ipt?: number}>>>
-> = {
+>
+
+const reportingUntilUHF4Approval: ReportingmDonorMap = {
   'lviv': {
     [Donor.BHA_UKR000284]: {ai: .5, ipt: 1,},
     [Donor.OKF_UKR000309]: {ai: .5, ipt: 1,},
@@ -42,29 +45,46 @@ const juneReporting: Partial<Record<
   },
 }
 
+const reporting: Record<'2023-06' | '2023-07', ReportingmDonorMap> = {
+  '2023-06': reportingUntilUHF4Approval,
+  '2023-07': reportingUntilUHF4Approval
+}
+
 export interface DbProtectionHhs2Tags {
   reportingAiDonor?: Donor
   reportingIptDonor?: Donor
 }
 
-export class DbHelperProtectionHhs2 {
+export class DbHelperProtectionHhs {
 
   constructor(private prisma: PrismaClient) {
   }
 
-  readonly assignDonor = async () => {
+  readonly assignDonors = async (months: (keyof typeof reporting)[] = [
+    '2023-06',
+    '2023-07',
+  ]) => {
+    return Promise.all(months.map(this.assignDonor))
+  }
+
+  readonly assignDonor = async (month: keyof typeof reporting) => {
+    const start = startOfMonth(parse(month, 'yyyy-MM', new Date()))
+    const end = endOfDay(endOfMonth(parse(month, 'yyyy-MM', new Date())))
     const data = await this.prisma.koboAnswers.findMany({
       where: {
         end: {
-          gte: new Date(2023, 5, 1),
-          lt: new Date(2023, 6, 1),
+          gte: start,
+          lt: end,
         },
       }
     }).then(_ => _.map(DbKoboFormHelper.definedJsonType<ProtHHS_2_1>()))
     await Promise.all(data
       .filter(_ => !!_.answers.staff_to_insert_their_DRC_office)
       .map(_ => {
-        return map(juneReporting[_.answers.staff_to_insert_their_DRC_office], reporting => {
+        if (!reporting[month]) {
+          throw new Error(`Month ${month} not handled.`)
+        }
+        return map(reporting[month][_.answers.staff_to_insert_their_DRC_office], reporting => {
           const donor: {ipt: Donor[], ai?: Donor} = {ipt: []}
           Enum.entries(reporting).forEach(([k, v], donorIndex) => {
             if (v.ipt === 1)

@@ -46,7 +46,6 @@ model KoboAnswers {
   source                 String?
   deletedAt              DateTime?
   deletedBy              String?
-  donorId                String[]
   tags                   Json?
 
   @@unique([id, formId])

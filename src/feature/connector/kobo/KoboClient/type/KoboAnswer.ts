@@ -121,9 +121,9 @@ export class KoboAnswerUtils {
       id: '' + _id,
       uuid: _uuid,
       submittedBy: _submitted_by,
-      validationStatus: _validation_status.uid,
-      lastValidatedTimestamp: _validation_status.timestamp,
-      validatedBy: _validation_status.by_whom,
+      validationStatus: _validation_status?.uid,
+      lastValidatedTimestamp: _validation_status?.timestamp,
+      validatedBy: _validation_status?.by_whom,
       answers: KoboAnswerUtils.removeGroup(answers),
     }
   }

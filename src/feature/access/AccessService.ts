@@ -69,7 +69,7 @@ export class AccessService {
     // }))
   }
 
-  readonly add = (body: AccessCreateParams) => {
+  readonly create = (body: AccessCreateParams) => {
     return Promise.all((body.drcJob ?? [undefined]).map(drcJob =>
       this.prisma.featureAccess.create({
         data: {

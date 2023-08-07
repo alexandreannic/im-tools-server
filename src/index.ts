@@ -14,6 +14,7 @@ import {MpcaPaymentService} from './feature/mpcaPayment/MpcaPaymentService'
 import {DbInit} from './db/DbInit'
 import {logger} from './helper/Logger'
 import {EcrecClient} from './feature/connector/ecrec/EcrecClient'
+import {generateKoboInterface} from './script/KoboFormInterfaceGenerator'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 
 const initServices = (
@@ -72,11 +73,6 @@ const startApp = async () => {
   // } catch (e) {
   //   console.error(e)
   // }
-
-  // await generateKoboInterface(
-  //   koboSdk,
-  //   '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/generatedKoboInterface',
-  // )
 
   // const wfpSdk = new WFPBuildingBlockSdk(await new WfpBuildingBlockClient({
   //   login: appConf.buildingBlockWfp.login,

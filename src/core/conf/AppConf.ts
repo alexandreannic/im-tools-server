@@ -28,7 +28,7 @@ export const appConf = {
   //   port: e(int, defaultValue(5432))('DB_PORT')
   // },
   kobo: {
-    url: e(defaultValue('https://kf.kobotoolbox.org'))('KOBO_URL'),
+    url: e(defaultValue('https://kobo.humanitarianresponse.info'))('KOBO_URL'),
     token: e(required)('KOBO_TOKEN'),
   },
   ecrecApp: {

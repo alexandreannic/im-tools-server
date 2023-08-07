@@ -4,6 +4,7 @@ import {appConf, AppConf} from '../core/conf/AppConf'
 import {AppFeatureId, KoboDatabaseFeatureParams} from '../feature/access/AccessType'
 import {KoboMigrateHHS2} from '../script/KoboMigrateHHS2'
 import {DrcJob, DrcOffice} from '../core/DrcType'
+import {DbHelperProtectionHhs} from './koboForm/DbHelperProtectionHhs'
 
 const createdBySystem = 'SYSTEM'
 
@@ -31,7 +32,7 @@ export class DbInit {
   private readonly fixKoboForms = async () => {
     return Promise.all([
       // new DbHelperBNRE(this.prisma).assignMissingSettlement(),
-      // new DbHelperProtectionHhs2(this.prisma).assignDonor(),
+      new DbHelperProtectionHhs(this.prisma).assignDonors(),
     ])
   }
 

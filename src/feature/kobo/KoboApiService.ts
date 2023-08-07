@@ -30,11 +30,6 @@ export class KoboApiService {
     })
   }
 
-  readonly getForms = async (serverId: string) => {
-    const sdk = await this.koboSdkGenerator.construct(serverId)
-    return await sdk.getForms()
-  }
-
   readonly fetchAnswers = async (serverId: string, formId: string, params: KoboAnswerParams = {}) => {
     const sdk = await this.koboSdkGenerator.construct(serverId)
     return sdk.getAnswers(formId, params)

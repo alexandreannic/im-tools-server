@@ -13,7 +13,7 @@ export class ControllerAccess {
 
   readonly create = async (req: Request, res: Response, next: NextFunction) => {
     const body = await AccessService.createSchema.validate(req.body)
-    const data = await this.service.add(body)
+    const data = await this.service.create(body)
     res.send(data)
   }
 

@@ -3,49 +3,54 @@ import {Arr, fnSwitch} from '@alexandreannic/ts-utils'
 import {KoboApiForm} from '../feature/connector/kobo/KoboClient/type/KoboApiForm'
 import * as fs from 'fs'
 import {koboFormsId} from '../core/conf/KoboFormsId'
+import {ApiClient} from '../core/client/ApiClient'
+import {appConf} from '../core/conf/AppConf'
 
 interface KoboInterfaceGeneratorParams {
   outDir: string,
   formName: string,
   formId: string,
+  overrideQuestionType?: Record<string, Record<string, string[]>>
   overrideOptionsByQuestion?: Record<string, Record<string, string[]>>
   overrideAllOptions?: Record<string, string[]>
 }
 
 export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) => {
   const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
-    {formName: 'Shelter', formId: 'aL8oHMzJJ9soPepvK6YU9E'},
-    {formName: 'BNRE', formId: 'aKgX4MNs6gCemDQKPeXxY8'},
+    // {formName: 'Shelter', formId: 'aL8oHMzJJ9soPepvK6YU9E'},
+    // {formName: 'BNRE', formId: 'aKgX4MNs6gCemDQKPeXxY8'},
     {formName: 'MealVisitMonitoring', formId: koboFormsId.prod.mealVisitMonitoring,},
-    {
-      formName: 'ProtHHS_2_1',
-      formId: 'aQDZ2xhPUnNd43XzuQucVR',
-      overrideAllOptions: {
-        other_specify: ['Other'],
-      },
-      overrideOptionsByQuestion: {
-        what_are_the_barriers_to_accessing_health_services: {
-          safety_risks_associated_with_access_to_presence_at_health_facility: ['Safety risks associated with access to/presence at health facility'],
-        },
-        what_are_your_main_concerns_regarding_your_accommodation: {
-          'risk_of_eviction': [`Risk of eviction`],
-          'accommodations_condition': [`Accommodation’s condition`],
-          'overcrowded_lack_of_privacy': [`Overcrowded/Lack of privacy`],
-          'lack_of_functioning_utilities': [`Lack of functioning utilities`],
-          'lack_of_connectivity': [`Lack of connectivity`],
-          'security_and_safety_risks': [`Security and safety risks`],
-          'lack_of_financial_compensation_or_rehabilitation_for_damage_or_destruction_of_housing': [`Lack of support for damaged housing`],
-        },
-        what_is_the_type_of_your_household: {
-          'one_person_household': [`One person household`],
-          'couple_without_children': [`Couple without children`],
-          'couple_with_children': [`Couple with children`],
-          'mother_with_children': [`Mother with children`],
-          'father_with_children': [`Father with children`],
-          'extended_family': [`Extended family`],
-        }
-      }
-    },
+    {formName: 'Shelter_NTA', formId: koboFormsId.prod.shelterNTA},
+    {formName: 'Shelter_TA', formId: koboFormsId.prod.shelterTA},
+    // {
+    //   formName: 'ProtHHS_2_1',
+    //   formId: 'aQDZ2xhPUnNd43XzuQucVR',
+    //   overrideAllOptions: {
+    //     other_specify: ['Other'],
+    //   },
+    //   overrideOptionsByQuestion: {
+    //     what_are_the_barriers_to_accessing_health_services: {
+    //       safety_risks_associated_with_access_to_presence_at_health_facility: ['Safety risks associated with access to/presence at health facility'],
+    //     },
+    //     what_are_your_main_concerns_regarding_your_accommodation: {
+    //       'risk_of_eviction': [`Risk of eviction`],
+    //       'accommodations_condition': [`Accommodation’s condition`],
+    //       'overcrowded_lack_of_privacy': [`Overcrowded/Lack of privacy`],
+    //       'lack_of_functioning_utilities': [`Lack of functioning utilities`],
+    //       'lack_of_connectivity': [`Lack of connectivity`],
+    //       'security_and_safety_risks': [`Security and safety risks`],
+    //       'lack_of_financial_compensation_or_rehabilitation_for_damage_or_destruction_of_housing': [`Lack of support for damaged housing`],
+    //     },
+    //     what_is_the_type_of_your_household: {
+    //       'one_person_household': [`One person household`],
+    //       'couple_without_children': [`Couple without children`],
+    //       'couple_with_children': [`Couple with children`],
+    //       'mother_with_children': [`Mother with children`],
+    //       'father_with_children': [`Father with children`],
+    //       'extended_family': [`Extended family`],
+    //     }
+    //   }
+    // },
     // {formName: 'MPCA_NFI', formId: 'a4Sx3PrFMDAMZEGsyzgJJg'},
     // {formName: 'MPCA_NFI_NAA', formId: 'aBGVXW2N26DaLehmKneuyB'},
     // {formName: 'MPCA_NFI_Myko', formId: 'a8WAWB9Yxu2jkgk4Ei8GTk'},
@@ -205,7 +210,9 @@ const extractQuestionName = (_: Record<string, any>) => {
       }
       res[questionName][_.name] = (() => {
         try {
-          return this.options.overrideOptionsByQuestion?.[questionName][_.name][0] ?? this.options.overrideAllOptions?.[_.name][0] ?? _.label[0]
+          return this.options.overrideOptionsByQuestion?.[questionName][_.name][0]
+            ?? this.options.overrideAllOptions?.[_.name][0]
+            ?? _.label[0]
         } catch (e: any) {
           return _.label[0]
         }
@@ -220,3 +227,17 @@ const extractQuestionName = (_: Record<string, any>) => {
       + '\n}}'
   }
 }
+
+(async () => {
+  const koboSdk = new KoboSdk(new ApiClient({
+      baseUrl: appConf.kobo.url + '/api',
+      headers: {
+        Authorization: KoboSdk.makeAuthorizationHeader(appConf.kobo.token),
+      }
+    })
+  )
+  await generateKoboInterface(
+    koboSdk,
+    '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/generatedKoboInterface',
+  )
+})()
