@@ -48,14 +48,22 @@ export class AccessService {
             {featureId: featureId},
             ...user ? [{
               OR: [
-                {email: user.email},
+                {
+                  email: {
+                    equals: user.email,
+                    mode: 'insensitive' as const,
+                  }
+                },
                 {
                   OR: [
                     {drcOffice: user.drcOffice}, // Replace 'value' with the specific value you want to check against
                     {drcOffice: null},
                     {drcOffice: ''},
                   ],
-                  drcJob: user.drcJob
+                  drcJob: {
+                    equals: user.drcJob,
+                    mode: 'insensitive' as const,
+                  }
                 }
               ]
             }] : []
