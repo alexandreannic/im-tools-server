@@ -4,6 +4,7 @@ import {DbKoboFormHelper} from './Helper'
 import {ProtHHS_2_1} from '../generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1'
 import {Enum, map} from '@alexandreannic/ts-utils'
 import {endOfDay, endOfMonth, parse, startOfMonth} from 'date-fns'
+import {koboFormsId} from '../../core/conf/KoboFormsId'
 
 type Office = typeof ProtHHS_2_1Options['staff_to_insert_their_DRC_office']
 
@@ -71,6 +72,7 @@ export class DbHelperProtectionHhs {
     const end = endOfDay(endOfMonth(parse(month, 'yyyy-MM', new Date())))
     const data = await this.prisma.koboAnswers.findMany({
       where: {
+        formId: koboFormsId.prod.protectionHh_2_1,
         end: {
           gte: start,
           lt: end,

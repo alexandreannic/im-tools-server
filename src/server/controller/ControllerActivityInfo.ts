@@ -17,11 +17,15 @@ export class ControllerActivityInfo {
   readonly submitActivity = async (req: Request, res: Response, next: NextFunction) => {
     const activities = req.body
     try {
-      if(req.session.user?.email !== this.conf.ownerEmail) {
+      if (req.session.user?.email !== this.conf.ownerEmail) {
         throw new AppError.Forbidden('only_owner_can_submit_ai')
       }
       this.log.info(`Insert ${activities.length} activities`)
-      await Promise.all(activities.map(this.api.publish))
+      const status = await Promise.all(activities.map(this.api.publish))
+      if (status.find(_ => !!_.code)) {
+        console.error(status)
+        throw new AppError.BadRequest('cannot insert activity')
+      }
       this.log.info(`${activities.length} activities inserted !`)
       res.send()
     } catch (e) {

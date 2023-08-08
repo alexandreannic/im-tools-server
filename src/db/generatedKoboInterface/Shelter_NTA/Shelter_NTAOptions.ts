@@ -1,145 +1,151 @@
-export const BNREOptions = {
+export const Shelter_NTAOptions = {
+ben_det_res_stat: {
+	'idp': `A = Internally Displaced Person (IDP)`,
+	'long_res': `B = Long - Term Resident`,
+	'ret': `C = Returnee`,
+	'ref_asy': `D = Refugee/asylum seeker`
+},
+hh_char_civ_stat: {
+	'single': `A = Single (Never Married)`,
+	'dom_part': `B = Not Married but Living in Domestic Partnership`,
+	'married': `C = Married`,
+	'div_sep': `D = Divorced/Seperated`,
+	'widow': `E = Widowed`,
+	'abandoned': `F = Abandoned`
+},
+hh_char_hh_det_gender: {
+	'male': `A = Male`,
+	'female': `B = Female`
+},
+hh_char_dis_select: {
+	'diff_see': `A = Have difficulty seeing, even if wearing glasses`,
+	'diff_hear': `B = Have difficulty hearing, even if using a hearing aid`,
+	'diff_walk': `C = Have difficulty walking or climbing steps`,
+	'diff_medical': `D = Have a critical medical condition`,
+	'diff_mental': `E = Have a mental/ chronic illness`,
+	'diff_none': `G = None of the above apply`
+},
+undefined: {
+	'zero': `A = No, no difficulty`,
+	'one': `B = Yes, some difficulty`,
+	'two': `C = Yes, a lot of difficulty`,
+	'fri': `D = Cannot do at all`
+},
+return_time: {
+	'last_3_months': `Within the last 3 months`,
+	'3_6_months': `Within the last 3-6 months`,
+	'more_6_months': `More than 6 months ago`
+},
+roof_type: {
+	'flat': `Flat`,
+	'non_flat': `Non-flat`
+},
+rehab_solo: {
+	'yes': `Yes`,
+	'no': `No`,
+	'i_dont_know': `I don't know`
+},
+doc_available: {
+	'yes': `Yes`,
+	'provide_later': `Provide Later`
+},
+owner_tenant_type: {
+	'owner': `Owner`,
+	'tenant': `Tenant`
+},
+dwelling_type: {
+	'house': `House`,
+	'apartment': `Apartment`
+},
+What_is_your_relatio_he_head_of_household: {
+	'spouse': `Spouse`,
+	'child': `Child`,
+	'sibling': `Sibling`,
+	'other_relative': `Other Relative`,
+	'uncle': `Uncle`,
+	'aunt': `Aunt`,
+	'grandparent': `Grandparent`
+},
+document_type: {
+	'ownership_certificate': `Ownership Certificate`,
+	'contract_of_purchase': `Contract of Purchase`,
+	'certificate_of_inheritance': `Certificate of Inheritance`,
+	'document_from_local_authorities': `Document from Local Authorities`,
+	'oth': `Other:`
+},
+pregnant_lac: {
+	'yes': `Yes`,
+	'no': `No`
+},
+what_income: {
+	'ff': `< 5.400 per HH member`,
+	'ffeo': `Between 5.400 – 8.100 per HH member`,
+	'eope': `> 8.100 per HH member`
+},
 back_office: {
-	'lwo': `Lviv (LWO)`,
-	'chj': `Chernihiv (CHJ)`,
+	'umy': `Sumy (UMY)`,
+	'cej': `Chernihiv (CEJ)`,
 	'dnk': `Dnipro (DNK)`,
 	'hrk': `Kharkiv (HRK)`,
-	'nlv': `Mykloaiv (NLV)`
+	'nlv': `Mykolaiv (NLV)`
 },
-back_enum: {
-	'oleksandr_havrylov': `Oleksandr Havrylov`,
-	'ievgen_kylymenniy': `Ievgen Kylymenniy`,
-	'oleksandr_shmunk': `Oleksandr Shmunk`,
-	'inna_kovalchuk': `Inna Kovalchuk`,
-	'dmytro_ivanov': `Dmytro Ivanov`,
-	'henadii_petrychenko': `Henadii Petrychenko`,
-	'nadiia_yudaieva': `Nadiia Yudaieva`,
-	'dmytro_tsaruk': `Dmytro Tsaruk`,
-	'viktoria_ushan': `Viktoria Ushan`,
-	'kostiantyn_yefimchuk': `Kostiantyn Yefimchuk`,
-	'viktoriia_lytvynova': `Viktoriia Lytvynova`,
-	'valerii_vietrov': `Valerii Vietrov`,
-	'daria_kokalia': `Daria Kokalia`,
-	'artem_chernukha_1': `Artem Chernukha`,
-	'lwo_ex1': `Extra 1`,
-	'lwo_ex2': `Extra 2`,
-	'polina_prusakova': `Polina Prusakova`,
-	'nlv_ex1': `Extra 1`,
-	'nlv_ex2': `Extra 2`,
-	'oleh_vyshnevskyi': `Oleh Vyshevskyi`,
-	'alina_bondarenko': `Alina Bondarenko`,
-	'serhii_dolzhenko': `Serhii Dolzhenko`,
-	'viktoria_klymenko': `Viktoria Klymenko`,
-	'andrii_zahoruyev': `Andrii Zahoruyev`,
-	'oleh_Ivanov': `Oleh Ivanov`,
-	'karina_korzh': `Karina Korzh`,
-	'serhii_nevmyvaka': `Serhii Nevmyvaka`,
-	'olha_osmukha': `Olha Osmukha`,
-	'halyna_diachenko': `Halyna Diachenko`,
-	'mariia_kozachko': `Mariia Kozachko`,
-	'dnk_ex1': `Extra 1`,
-	'dnk_ex2': `Extra 2`,
-	'yurii_volkov': `Yurii Volkov`,
-	'andrii_zagoruiev': `Andrii Zagoruiev`,
-	'olena_sydorenko': `Olena Sydorenko`,
-	'svitlana_smyrnova': `Svitlana Smyrnova`,
-	'tetiana_konovshii': `Tetiana Konovshii`,
-	'hrk_ex1': `Extra 1`,
-	'hrk_ex2': `Extra 2`,
-	'dmytro_chernukha': `Dmytro Chernukha`,
-	'anastasiia_reshynska': `Anastasiia Reshynska`,
-	'nataliia_pushenko': `Nataliia Pushenko`,
-	'tetiana_gorbatiuk': `Tetiana Gorbatiuk`,
-	'oleksandr_lukomets': `Oleksandr Lukomets`,
-	'tetiana_kolot': `Tetiana Kolot`,
-	'katerina_severin': `Katerina Severin`,
-	'maksim_sedun': `Maksim Sedun`,
-	'ivan_volynkin': `Ivan Volynkin`,
-	'chj_ex1': `Extra 1`,
-	'chj_ex2': `Extra 2`
+enum_name: {
+	'1': `1`,
+	'2': `2`,
+	'MM': `Maksym Mordovets`,
+	'AG': `Anastasia Zhelezko`,
+	'KG': `Kateryna Garnaga`,
+	'DP': `Dmytro Petrusevych`,
+	'OP': `Oleksandr Plyushch`,
+	'IR': `Igor Rebenko`,
+	'OM': `Alexander Malakhov`,
+	'AX': `Andriy Khimchenko`,
+	'Omu': `Oleksandr Chikunov`,
+	'VN': `Valerii Necheporenko`,
+	'dp': `Dmytro Prokopenko`,
+	'AS': `Andrii Stovpchenko`,
+	'OHS': `Oleksandr Honcharov`,
+	'VS': `Viktoriia Stepanenko`,
+	'VS1': `Valeriy Shapovalov`,
+	'OH': `Oleh Hryshchenko`,
+	'ex1': `extra1`,
+	'ex2': `extra2`,
+	'ext1': `extra1`,
+	'ext2': `extra2`,
+	'KL': `Klym Oleksandr`,
+	'FS': `Fedorov Serhii`,
+	'YV': `Yevhenii Vasiukov`,
+	'AD': `Anna Demianenko`,
+	'TD': `Taras Dubenko`,
+	'x1': `extra1`,
+	'x2': `extra2`
 },
-back_donor: {
-	'uhf_chj': `UHF-4`,
-	'uhf_dnk': `UHF-4`,
-	'uhf_hrk': `UHF-4`,
-	'uhf_lwo': `UHF-4`,
-	'uhf_nlv': `UHF-4`,
-	'bha_lwo': `BHA`,
-	'bha_chj': `BHA`,
-	'bha_dnk': `BHA`,
-	'bha_hrk': `BHA`,
-	'bha_nlv': `BHA`,
-	'echo_chj': `ECHO`,
-	'echo_dnk': `ECHO`,
-	'echo_hrk': `ECHO`,
-	'echo_lwo': `ECHO`,
-	'echo_nlv': `ECHO`,
-	'novo_nlv': `Novo Nordisk`,
-	'okf_lwo': `OKF`,
-	'pool_chj': `Pooled Funds`,
-	'pool_dnk': `Pooled Funds`,
-	'pool_hrk': `Pooled Funds`,
-	'pool_lwo': `Pooled Funds`,
-	'pool_nlv': `Pooled Funds`
-},
-back_prog_type: {
-	'mpca_lwo': `MPCA`,
-	'nfi_lwo': `NFI`,
-	'cfr_lwo': `Cash for Rent`,
-	'cfe_lwo': `Cash for Education`,
-	'iwk_lwo': `Infant Winterclothing Kit`,
-	'ihk_lwo': `Infant Hygiene Kit`,
-	'esk_lwo': `Emergency Shelter Kit`,
-	'mpca_nlv': `MPCA`,
-	'nfi_nlv': `NFI`,
-	'esk_nlv': `Emergency Shelter Kit`,
-	'mpca_dnk': `MPCA`,
-	'nfi_dnk': `NFI`,
-	'cfr_dnk': `Cash for Rent`,
-	'esk_dnk': `Emergency Shelter Kit`,
-	'mpca_hrk': `MPCA`,
-	'nfi_hrk': `NFI`,
-	'esk_hrk': `Emergency Shelter Kit`,
-	'mpca_chj': `MPCA`,
-	'nfi_chj': `NFI`,
-	'cfr_chj': `Cash for Rent`,
-	'esk_chj': `Emergency Shelter Kit`
-},
-pay_det_tax_exempt: {
-	'yes': `A = Yes`,
-	'no': `B = No`
-},
-back_refer_who: {
-	'prot': `A = Protection`,
-	'legal': `B = Legal`,
-	'shelter': `C = Shelter`
-},
-ben_det_prev_oblast: {
-	'cherkaska': `Cherkaska`,
-	'chernihivska': `Chernihivska`,
-	'chernivetska': `Chernivetska`,
-	'dnipropetrovska': `Dnipropetrovska`,
-	'donetska': `Donetska`,
-	'ivano-frankivska': `Ivano-Frankivska`,
-	'kharkivska': `Kharkivska`,
-	'khersonska': `Khersonska`,
-	'khmelnytska': `Khmelnytska`,
-	'kirovohradska': `Kirovohradska`,
-	'kyivska': `Kyivska`,
-	'luhanska': `Luhanska`,
-	'lvivska': `Lvivska`,
-	'mykolaivska': `Mykolaivska`,
-	'odeska': `Odeska`,
-	'poltavska': `Poltavska`,
-	'rivnenska': `Rivnenska`,
-	'sevastopilska': `Sevastopilska`,
-	'sumska': `Sumska`,
-	'ternopilska': `Ternopilska`,
-	'vinnytska': `Vinnytska`,
-	'volynska': `Volynska`,
-	'zakarpatska': `Zakarpatska`,
-	'zaporizka': `Zaporizka`,
-	'zhytomyrska': `Zhytomyrska`
+ben_det_oblast: {
+	'cherkaska': `Cherkasy`,
+	'chernihivska': `Chernihiv`,
+	'chernivetska': `Chernivtsi`,
+	'dnipropetrovska': `Dnipropetrovsk`,
+	'donetska': `Donetsk`,
+	'ivano-frankivska': `Ivano-Frankivsk`,
+	'kharkivska': `Kharkiv`,
+	'khersonska': `Kherson`,
+	'khmelnytska': `Khmelnytskyi`,
+	'kirovohradska': `Kirovohrad`,
+	'kyivska': `Kyiv`,
+	'luhanska': `Luhansk`,
+	'lvivska': `Lviv`,
+	'mykolaivska': `Mykolaiv`,
+	'odeska': `Odesa`,
+	'poltavska': `Poltava`,
+	'rivnenska': `Rivne`,
+	'sevastopilska': `Sevastopil`,
+	'sumska': `Sumy`,
+	'ternopilska': `Ternopil`,
+	'vinnytska': `Vinnytsia`,
+	'volynska': `Volyn`,
+	'zakarpatska': `Zakarpattia`,
+	'zaporizka': `Zaporizhzhia`,
+	'zhytomyrska': `Zhytomyr`
 },
 ben_det_raion: {
 	'zvenyhorodskyi': `Zvenyhorodskyi`,
@@ -2043,88 +2049,4 @@ ben_det_hromada: {
 	'zymnovodivska': `Zymnovodivska`,
 	'zymohirivska': `Zymohirivska`,
 	'zymynska': `Zymynska`
-},
-ben_det_res_stat: {
-	'idp': `A = Internally Displaced Person (IDP)`,
-	'long_res': `B = Long - Term Resident`,
-	'ret': `C = Returnee`,
-	'ref_asy': `D = Refugee/asylum seeker`
-},
-hh_char_hh_det_gender: {
-	'male': `A = Male`,
-	'female': `B = Female`
-},
-hh_char_civ_stat: {
-	'single': `A = Single (Never Married)`,
-	'dom_part': `B = Not Married but Living in Domestic Partnership`,
-	'married': `C = Married`,
-	'div_sep': `D = Divorced/Seperated`,
-	'widow': `E = Widowed`,
-	'abandoned': `F = Abandoned`
-},
-hh_char_dis_select: {
-	'diff_see': `A = Have difficulty seeing, even if wearing glasses`,
-	'diff_hear': `B = Have difficulty hearing, even if using a hearing aid`,
-	'diff_walk': `C = Have difficulty walking or climbing steps`,
-	'diff_rem': `D = Have difficulty remembering or concentrating`,
-	'diff_care': `E = Have difficulty with self-care such as washing all over or dressing`,
-	'diff_comm': `F = Have difficulty communicating, for example understanding or being understood`,
-	'diff_none': `G = None of the above apply`
-},
-hh_char_dis_level: {
-	'zero': `A = No, no difficulty`,
-	'one': `B = Yes, some difficulty`,
-	'two': `C = Yes, a lot of difficulty`,
-	'fri': `D = Cannot do at all`
-},
-shelter_damage: {
-	'no_damage': `No Structural Damage`,
-	'minor_damage': `Minor Damage (light or medium damages such as broken windows and doors, minor roof damage)`,
-	'heavy_damage': `Heavy Damage`
-},
-cfr_curr_accom: {
-	'rent': `A = Renting Accommodation`,
-	'host': `B = Living with Friends/Family/Host`,
-	'own_prop': `C = Living in Own Property`,
-	'coll_cen': `D = Living in Collective Center`,
-	'homeless': `E = Homeless`,
-	'other_accom': `F = Other`
-},
-cfr_rent_stat: {
-	'secure': `A = Secure for Medium/Long Term`,
-	'unable_pay': `B = Currently Unable to Pay Rent/Contribute to Collective Costs`,
-	'dan_unable_pay': `C = In Danger of Being Unable to Pay Rent/Contribute to Collective Costs`,
-	'unsuit_accom': `D = Accommodation Unsuitable for my needs`,
-	'eviction': `E = Eviction/Removal for Other Reasons`
-},
-cfr_accom_int: {
-	'remain': `A = Remain in Current Place`,
-	'rent': `B = Find Rental Accommodation`,
-	'not_sure': `C = Not Sure/Don’t Know`
-},
-cfr_accom_cond_heat: {
-	'always': `A = Always`,
-	'not_always': `B = Not always on but comes daily`,
-	'intermittent': `C = Comes on intermittent days`,
-	'rarely': `D = Rarely`,
-	'never': `E = Never`
-},
-pay_det_id_type: {
-	'nat_pass_card': `A = National Passport (card)`,
-	'nat_pass_book': `B = National Passport (book)`,
-	'nat_pass_diia': `C = National Passport (Diia app)`,
-	'pass_ussr_red': `D = Passport (USSR red book)`,
-	'pass_int': `E = Passport for international travel`,
-	'birth_certificate': `F = Birth certificate`,
-	'driver_lic': `G = Driver’s license`,
-	'pen_cert': `H = Pensioner certificate`,
-	'oth_id': `I = Other Form of ID`,
-	'no_id': `J = No ID`
-},
-pay_det_pay_meth: {
-	'raiff_trans': `A = Remittance Raiffaisen AVAL`,
-	'ukrpost': `B = Ukrposhta`,
-	'bank_card': `C = Bank card`,
-	'other_pay': `D = Other Payment Method`,
-	'none_pay': `E = None of the above fit my needs`
 }}
