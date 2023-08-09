@@ -64,10 +64,10 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
 }
 
 const ignoredQuestionTypes: KoboApiForm['content']['survey'][0]['type'][] = [
-  'calculate',
+  // 'calculate',
   'begin_group',
   'end_group',
-  'note',
+  // 'note',
   'end_repeat',
 ]
 
@@ -192,7 +192,7 @@ const extractQuestionName = (_: Record<string, any>) => {
 
           }
         }, () => 'string')
-        return (x.label ? `  // ${x.label[0]}\n` : '')
+        return (x.label ? `  // [${x.type}] ${x.label[0]}\n` : '')
           + `  ${x.name ?? x.$autoname}: ${type},`
       })
     return `import {${this.options.formName}Options} from './${this.options.formName}Options'\n\n`

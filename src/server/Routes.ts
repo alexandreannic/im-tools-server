@@ -2,11 +2,7 @@ import express, {NextFunction, Request, Response} from 'express'
 import {ControllerNfiMpca} from './controller/ControllerNfiMpca'
 import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
 import {Logger} from '../helper/Logger'
-import {EcrecSdk} from '../feature/connector/ecrec/EcrecSdk'
-import {LegalaidSdk} from '../feature/connector/legalaid/LegalaidSdk'
-import {ControllerLegalAid} from './controller/ControllerLegalAid'
 import {ControllerMain} from './controller/ControllerMain'
-import {ControllerEcrec} from './controller/ControllerEcrec'
 import {Services} from './services'
 import {PrismaClient} from '@prisma/client'
 import {ControllerActivityInfo} from './controller/ControllerActivityInfo'
@@ -22,8 +18,8 @@ import {ControllerAccess} from './controller/ControllerAccess'
 import {ControllerUser} from './controller/ControllerUser'
 import {UserSession} from '../feature/session/UserSession'
 import {AppError} from '../helper/Errors'
-import {ca} from 'date-fns/locale'
 import {appConf} from '../core/conf/AppConf'
+import apicache from 'apicache'
 
 export interface AuthenticatedRequest extends Request {
   user?: UserSession
@@ -48,6 +44,8 @@ export const getRoutes = (
   services: Services,
   logger: Logger,
 ) => {
+  const cache = apicache.middleware
+
   const router = express.Router()
   const nfi = new ControllerNfiMpca(
     koboSdk,
@@ -130,7 +128,7 @@ export const getRoutes = (
     router.get('/kobo-api/:id/attachment', auth(), errorCatcher(koboApi.getAttachementsWithoutAuth))
     router.get('/kobo-api/:id/:formId/answers', auth(), errorCatcher(koboApi.getAnswers))
     router.get('/kobo-api/:id', auth(), errorCatcher(koboApi.getForms))
-    router.get('/kobo-api/:id/:formId', auth(), errorCatcher(koboApi.getForm))
+    router.get('/kobo-api/:id/:formId', cache('24 hour'), auth(), errorCatcher(koboApi.getForm))
 
     router.put('/mpca-payment', auth(), errorCatcher(mpcaPayment.create))
     router.post('/mpca-payment/:id', auth(), errorCatcher(mpcaPayment.update))

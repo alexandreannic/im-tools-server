@@ -5,126 +5,128 @@ type Opt<T extends keyof typeof MealVisitMonitoringOptions> = keyof (typeof Meal
 export interface MealVisitMonitoring {
   start: string,
   end: string,
-  // Area
+  // [select_one] Area
   mda: Opt<'mda'>,
-  // Responsible office:
+  // [select_one] Responsible office:
   mdro: Opt<'mdro'>,
-  // Date of visit
+  // [date] Date of visit
   mdd: Date | undefined,
-  // Oblast
+  // [select_one] Oblast
   md_det_oblast: Opt<'md_det_oblast'>,
-  // Raion
+  // [select_one] Raion
   md_det_raion: Opt<'md_det_raion'>,
-  // Hromada
+  // [select_one] Hromada
   md_det_hromada: Opt<'md_det_hromada'>,
-  // Settlement
+  // [text] Settlement
   mds: string | undefined,
-  // MEAL Focal Point
+  // [select_one] MEAL Focal Point
   mdp: Opt<'mdp'>,
-  // DONOR:
+  // [select_multiple] DONOR:
   mdd_001: Opt<'mdd_001'>[],
-  // With which team was conducted visit?
+  // [select_multiple] With which team was conducted visit?
   mdt: Opt<'mdt'>[],
-  // Name of collective center?
+  // [text] Name of collective center?
   mdc: string | undefined,
-  // Other:
+  // [text] Other:
   mdo: string | undefined,
-  // If NFI distribution, then:
+  // [select_multiple] If NFI distribution, then:
   pan: Opt<'pan'>[],
-  // If EcRec:
+  // [select_one] If EcRec:
   pae: Opt<'pae'>,
-  // If Shelter:
+  // [select_one] If Shelter:
   pas: Opt<'pas'>,
-  // If LAU:
+  // [select_one] If LAU:
   pal: Opt<'pal'>,
-  // If Protection:
+  // [select_one] If Protection:
   pap: Opt<'pap'>,
-  // If EORE:
+  // [select_one] If EORE:
   pao: Opt<'pao'>,
-  // Other:
+  // [text] Other:
   paoth: string | undefined,
-  // What percentage of beneficiaries for this activity are male?
+  // [integer] What percentage of beneficiaries for this activity are male?
   sem: number | undefined,
-  // What percentage of beneficiaries for this activity are female?
+  // [integer] What percentage of beneficiaries for this activity are female?
   sew: number | undefined,
-  // If a NFI distribution: Are there priority queues for vulnerable individuals?
+  // [select_one] If a NFI distribution: Are there priority queues for vulnerable individuals?
   sey: Opt<'visf'>,
-  // If no, please explain why:
+  // [text] If no, please explain why:
   set: string | undefined,
-  // Any concerns to flag?
+  // [select_one] Any concerns to flag?
   sef: Opt<'visf'>,
-  // If YES – Details to be provided
+  // [select_multiple] If YES – Details to be provided
   sei: Opt<'sei'>[],
-  // Were there any security concerns during this activity?
+  // [select_one] Were there any security concerns during this activity?
   ssy: Opt<'visf'>,
-  // If yes, please select the type of situation:
+  // [select_multiple] If yes, please select the type of situation:
   sst: Opt<'sst'>[],
-  // Other:
+  // [text] Other:
   sso: string | undefined,
-  // Did DRC staff inform beneficiaries of how they can provide feedback through the CFM mechanism?
+  // [select_one] Did DRC staff inform beneficiaries of how they can provide feedback through the CFM mechanism?
   ccm: Opt<'visf'>,
-  // If no, please explain why:
+  // [text] If no, please explain why:
   ccn: string | undefined,
-  // Was DRC staff behaviour in line with DRC Code of Conduct standards?
+  // [select_one] Was DRC staff behaviour in line with DRC Code of Conduct standards?
   ccs: Opt<'visf'>,
-  // If no, please explain why:
+  // [text] If no, please explain why:
   ccsn: string | undefined,
-  // Did any beneficiaries report of not feeling safe around DRC staff?
+  // [select_one] Did any beneficiaries report of not feeling safe around DRC staff?
   ccd: Opt<'visf'>,
-  // If no, please explain why:
+  // [text] If no, please explain why:
   ccdn: string | undefined,
-  // Were CFM flyers distributed?
+  // [select_one] Were CFM flyers distributed?
   ccc: Opt<'visf'>,
-  // If no, please explain why:
+  // [text] If no, please explain why:
   cccn: string | undefined,
-  // Have you been asked for permission to collect your data?
+  // [select_one] Have you been asked for permission to collect your data?
   pmid: Opt<'visf'>,
-  // If no, please explain why:
+  // [text] If no, please explain why:
   pmidn: string | undefined,
-  // For vulnerable staff, were issues handled with care and confidentiality?
+  // [select_one] For vulnerable staff, were issues handled with care and confidentiality?
   pmic: Opt<'visf'>,
-  // If no, please explain why:
+  // [text] If no, please explain why:
   pmicn: string | undefined,
-  // Was the assistance from DRC timely for people?
+  // [select_one] Was the assistance from DRC timely for people?
   qtip: Opt<'visf'>,
-  // If no, please explain why:
+  // [text] If no, please explain why:
   qtipn: string | undefined,
-  // Was the activity of quality and in line with the planned activity?
+  // [select_one] Was the activity of quality and in line with the planned activity?
   qtia: Opt<'visf'>,
-  // If no, please explain why:
+  // [text] If no, please explain why:
   qtian: string | undefined,
-  // Were all DRC staff in visibility and easily identified by beneficiaries?
+  // [select_one] Were all DRC staff in visibility and easily identified by beneficiaries?
   visb: Opt<'visf'>,
-  // If no, please explain why:
+  // [text] If no, please explain why:
   visbn: string | undefined,
-  // Any critical concerns to flag?
+  // [select_one] Any critical concerns to flag?
   visf: Opt<'visf'>,
-  // If YES, ‘’any details to be provided’’
+  // [select_multiple] If YES, ‘’any details to be provided’’
   visp: Opt<'visp'>[],
-  // Other:
+  // [text] Other:
   vispo: string | undefined,
-  // Comments
+  // [text] Comments
   fcpc: string | undefined,
-  // The photo of the visit
+  // [note] Photos of the visit
+  fspp: string,
+  // [image] The photo of the visit
   fcp1: string,
-  // The photo of the visit
+  // [image] The photo of the visit
   fcp2: string,
-  // The photo of the visit
+  // [image] The photo of the visit
   fcp3: string,
-  // The photo of the visit
+  // [image] The photo of the visit
   fcp4: string,
-  // The photo of the visit
+  // [image] The photo of the visit
   fcp5: string,
-  // The photo of the visit
+  // [image] The photo of the visit
   fcp6: string,
-  // The photo of the visit
+  // [image] The photo of the visit
   fcp7: string,
-  // The photo of the visit
+  // [image] The photo of the visit
   fcp8: string,
-  // The photo of the visit
+  // [image] The photo of the visit
   fcp9: string,
-  // The photo of the visit
+  // [image] The photo of the visit
   fcp10: string,
-  // Link to the folder with photos
+  // [text] Link to the folder with photos
   fcpl: string | undefined,
 }
