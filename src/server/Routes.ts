@@ -120,6 +120,7 @@ export const getRoutes = (
     router.put('/kobo/form', auth(), errorCatcher(koboForm.create))
     router.get('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
     router.get('/kobo/answer/:formId/by-access', auth(), errorCatcher(koboAnswer.searchByUser))
+    router.post('/kobo/answer/:formId/:answerId/tag', auth(), errorCatcher(koboAnswer.update))
 
     router.post('/proxy', auth(), errorCatcher(main.proxy))
 
