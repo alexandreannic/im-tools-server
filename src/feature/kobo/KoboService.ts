@@ -63,6 +63,9 @@ export class KoboService {
     return this.prisma.koboAnswers.findMany({
       take: paginate.limit,
       skip: paginate.offset,
+      orderBy: {
+        submissionTime: 'desc',
+      },
       where: {
         deletedAt: null,
         end: {
@@ -274,12 +277,12 @@ export class KoboService {
       }
     }).then(_ => {
       if (_.length !== 1) {
-        return Promise.reject(new AppError.InternalServerError(`Multiple answers for form ${formId} and id ${answerId}`))
+        return Promise.reject(new AppError.InternalServerError(`${_.length} answer(s) for form ${formId} and id ${answerId}. Expected 1.`))
       }
       return _
     }).then(_ => _[0])
     const newTag = {...answer.tags as any, ...tags}
-    this.prisma.koboAnswers.update({
+    await this.prisma.koboAnswers.update({
       where: {
         uuid: answer.uuid,
       },
@@ -287,5 +290,6 @@ export class KoboService {
         tags: newTag,
       }
     })
+    return newTag
   }
 }

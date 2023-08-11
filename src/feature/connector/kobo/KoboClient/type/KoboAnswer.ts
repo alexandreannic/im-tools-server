@@ -3,6 +3,8 @@ import {Arr} from '@alexandreannic/ts-utils'
 
 export type KoboId = string
 
+export type KoboAnswerId = number
+
 export interface KoboAnswerParams {
   start?: Date
   end?: Date

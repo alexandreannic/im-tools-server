@@ -72,6 +72,14 @@ export class ControllerKoboApi {
     res.send(answers)
   }
 
+  readonly edit = async (req: Request, res: Response, next: NextFunction) => {
+    const {id, formId} = await this.extractParams(req)
+    const answerId = await yup.number().required().validate(req.params.answerId)
+    const sdk = await this.koboSdkGenerator.construct(id)
+    const form = await sdk.edit(formId, answerId)
+    res.send(form)
+  }
+
   readonly getForm = async (req: Request, res: Response, next: NextFunction) => {
     const {id, formId} = await this.extractParams(req)
     const sdk = await this.koboSdkGenerator.construct(id)
