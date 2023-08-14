@@ -15,12 +15,14 @@ export class ProxyService {
       name: yup.string().required(),
       slug: yup.string().required(),
       url: yup.string().required(),
+      expireAt: yup.date().optional(),
       createdBy: yup.string().optional(),
     }),
     update: yup.object({
       name: yup.string().optional(),
       slug: yup.string().optional(),
       url: yup.string().optional(),
+      expireAt: yup.date().optional(),
       disabled: yup.boolean().optional(),
     }),
     id: yup.object({
@@ -29,7 +31,7 @@ export class ProxyService {
   }
 
   readonly create = (body: InferType<typeof ProxyService.schema.create>) => {
-    console.log('create', body)
+    console.log('body',body)
     return this.prisma.proxy.create({data: body})
   }
 
