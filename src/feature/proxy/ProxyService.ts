@@ -31,7 +31,6 @@ export class ProxyService {
   }
 
   readonly create = (body: InferType<typeof ProxyService.schema.create>) => {
-    console.log('body',body)
     return this.prisma.proxy.create({data: body})
   }
 
