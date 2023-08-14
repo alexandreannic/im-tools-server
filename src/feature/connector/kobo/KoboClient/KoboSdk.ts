@@ -1,6 +1,6 @@
 import {ApiPaginate} from '../../../../core/Type'
 import {ApiClient} from '../../../../core/client/ApiClient'
-import {KoboAnswer, KoboAnswerParams, KoboAnswerUtils, KoboApiList, KoboApiVersion, KoboId} from './type/KoboAnswer'
+import {KoboAnswer, KoboAnswerId, KoboAnswerParams, KoboAnswerUtils, KoboApiList, KoboApiVersion, KoboId} from './type/KoboAnswer'
 import {KoboApiForm} from './type/KoboApiForm'
 import {Cache, map} from '@alexandreannic/ts-utils'
 import axios, {AxiosError} from 'axios'
@@ -35,7 +35,9 @@ export class KoboSdk {
       return _
     })
   }
-
+  readonly edit = (formId: KoboId, answerId: KoboAnswerId) => {
+    return this.api.get<KoboApiForm>(`/v2/assets/${formId}/data/${answerId}/enketo/edit/?return_url=false`)
+  }
 
   readonly getVersions = (formId: string) => {
     return this.api.get<KoboApiList<KoboApiVersion>>(`/v2/assets/${formId}/versions`)

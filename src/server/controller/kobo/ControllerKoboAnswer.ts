@@ -34,6 +34,18 @@ export class ControllerKoboAnswer {
   ) {
   }
 
+  readonly update = async (req: Request, res: Response, next: NextFunction) => {
+    const params = await yup.object({
+      formId: yup.string().required(),
+      answerId: yup.number().required(),
+    }).validate(req.params)
+    const {tags} = await yup.object({
+      tags: yup.mixed().required(),
+    }).validate(req.body)
+    const data = await this.service.updateTags({...params, tags: tags as any})
+    res.send(data)
+  }
+
   /** TODO need to handle public access */
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
     const {formId} = req.params

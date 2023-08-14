@@ -12,6 +12,7 @@ import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAns
 import {UserSession} from '../session/UserSession'
 import {AccessService} from '../access/AccessService'
 import {AppFeatureId} from '../access/AccessType'
+import {AppError} from '../../helper/Errors'
 
 export class KoboService {
 
@@ -62,6 +63,9 @@ export class KoboService {
     return this.prisma.koboAnswers.findMany({
       take: paginate.limit,
       skip: paginate.offset,
+      orderBy: {
+        submissionTime: 'desc',
+      },
       where: {
         deletedAt: null,
         end: {
@@ -259,5 +263,33 @@ export class KoboService {
     })
 
     workbook.toFileAsync(`/Users/alexandreac/Workspace/_humanitarian/im-tools-server/${fileName}.xlsx`, {password})
+  }
+
+  readonly updateTags = async ({formId, answerId, tags}: {formId: KoboId, answerId: number, tags: Record<string, any>}) => {
+    const answer = await this.prisma.koboAnswers.findMany({
+      select: {
+        uuid: true,
+        tags: true,
+      },
+      where: {
+        formId,
+        id: '' + answerId
+      }
+    }).then(_ => {
+      if (_.length !== 1) {
+        return Promise.reject(new AppError.InternalServerError(`${_.length} answer(s) for form ${formId} and id ${answerId}. Expected 1.`))
+      }
+      return _
+    }).then(_ => _[0])
+    const newTag = {...answer.tags as any, ...tags}
+    await this.prisma.koboAnswers.update({
+      where: {
+        uuid: answer.uuid,
+      },
+      data: {
+        tags: newTag,
+      }
+    })
+    return newTag
   }
 }

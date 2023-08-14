@@ -20,6 +20,7 @@ import {UserSession} from '../feature/session/UserSession'
 import {AppError} from '../helper/Errors'
 import {appConf} from '../core/conf/AppConf'
 import apicache from 'apicache'
+import {ControllerProxy} from './controller/ControllerProxy'
 
 export interface AuthenticatedRequest extends Request {
   user?: UserSession
@@ -72,6 +73,7 @@ export const getRoutes = (
   const wfp = new ControllerWfp(prisma)
   const access = new ControllerAccess(prisma)
   const user = new ControllerUser(prisma)
+  const proxy = new ControllerProxy(prisma)
 
   const auth = ({adminOnly = false}: {adminOnly?: boolean} = {}) => async (req: Request, res: Response, next: NextFunction) => {
     // req.session.user = {
@@ -104,6 +106,11 @@ export const getRoutes = (
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session', errorCatcher(session.get))
 
+    router.put('/proxy', errorCatcher(proxy.create))
+    router.post('/proxy/:id', errorCatcher(proxy.update))
+    router.delete('/proxy/:id', errorCatcher(proxy.delete))
+    router.get('/proxy', errorCatcher(proxy.search))
+
     router.get('/access/me', auth(), errorCatcher(access.searchMine))
     router.get('/access', auth(), errorCatcher(access.search))
     router.put('/access', auth({adminOnly: true}), errorCatcher(access.create))
@@ -120,8 +127,9 @@ export const getRoutes = (
     router.put('/kobo/form', auth(), errorCatcher(koboForm.create))
     router.get('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
     router.get('/kobo/answer/:formId/by-access', auth(), errorCatcher(koboAnswer.searchByUser))
+    router.post('/kobo/answer/:formId/:answerId/tag', auth(), errorCatcher(koboAnswer.update))
 
-    router.post('/proxy', auth(), errorCatcher(main.proxy))
+    router.post('/proxy-request', auth(), errorCatcher(main.proxy))
 
     router.get('/kobo-api/local-form', auth(), errorCatcher(koboApi.getAnswersFromLocalCsv))
     router.post('/kobo-api/:id/:formId/sync', auth(), errorCatcher(koboApi.synchronizeAnswersFromKoboServer))
@@ -129,6 +137,7 @@ export const getRoutes = (
     router.get('/kobo-api/:id/:formId/answers', auth(), errorCatcher(koboApi.getAnswers))
     router.get('/kobo-api/:id', auth(), errorCatcher(koboApi.getForms))
     router.get('/kobo-api/:id/:formId', cache('24 hour'), auth(), errorCatcher(koboApi.getForm))
+    router.get('/kobo-api/:id/:formId/:answerId/edit-url', auth(), errorCatcher(koboApi.edit))
 
     router.put('/mpca-payment', auth(), errorCatcher(mpcaPayment.create))
     router.post('/mpca-payment/:id', auth(), errorCatcher(mpcaPayment.update))
