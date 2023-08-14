@@ -103,7 +103,7 @@ model MpcaWfpDeduplication {
   fileName       String?
   fileUpload     DateTime?
   amount         Int
-  wfpId          Int                            @unique
+  wfpId          Int
   createdAt      DateTime
   validFrom      DateTime
   expiry         DateTime
@@ -151,5 +151,15 @@ model Session {
   id        String   @id
   sid       String   @unique
   data      String
-  expiresAt   DateTime
+  expiresAt DateTime
+}
+
+model Proxy {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  createdBy String?
+  name      String   @unique
+  slug      String   @unique
+  url       String
+  disabled  Boolean?
 }
