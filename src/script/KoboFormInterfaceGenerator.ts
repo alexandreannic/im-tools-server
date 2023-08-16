@@ -10,18 +10,39 @@ interface KoboInterfaceGeneratorParams {
   outDir: string,
   formName: string,
   formId: string,
-  overrideQuestionType?: Record<string, Record<string, string[]>>
+  skipQuestionType?: string[]
   overrideOptionsByQuestion?: Record<string, Record<string, string[]>>
   overrideAllOptions?: Record<string, string[]>
 }
 
 export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) => {
   const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
-    // {formName: 'Shelter', formId: 'aL8oHMzJJ9soPepvK6YU9E'},
+    {
+      formName: 'MealCfmInternal', formId: koboFormsId.prod.mealCfmInternal, skipQuestionType: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'MealCfmExternal', formId: koboFormsId.prod.mealCfmExternal, skipQuestionType: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
     // {formName: 'BNRE', formId: 'aKgX4MNs6gCemDQKPeXxY8'},
-    {formName: 'MealVisitMonitoring', formId: koboFormsId.prod.mealVisitMonitoring,},
-    {formName: 'Shelter_NTA', formId: koboFormsId.prod.shelterNTA},
-    {formName: 'Shelter_TA', formId: koboFormsId.prod.shelterTA},
+    // {formName: 'MealVisitMonitoring', formId: koboFormsId.prod.mealVisitMonitoring,},
+    {
+      formName: 'Shelter_NTA', formId: koboFormsId.prod.shelterNTA, skipQuestionType: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Shelter_TA', formId: koboFormsId.prod.shelterTA, skipQuestionType: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
     // {
     //   formName: 'ProtHHS_2_1',
     //   formId: 'aQDZ2xhPUnNd43XzuQucVR',
@@ -175,8 +196,8 @@ const extractQuestionName = (_: Record<string, any>) => {
       .map(x => {
         const lastQuestionNameHavingOptionId = Arr(indexOptionId[x.select_from_list_name ?? '']).last?.name
         const basicQuestionTypeMapping = (lastQuestionNameHavingOptionId?: string) => ({
-          'select_one': () => `Opt<'${lastQuestionNameHavingOptionId}'>`,
-          'select_multiple': () => `Opt<'${lastQuestionNameHavingOptionId}'>[]`,
+          'select_one': () => 'undefined | ' + (this.options.skipQuestionType?.includes(x.name) ? 'string' : `Opt<'${lastQuestionNameHavingOptionId}'>`),
+          'select_multiple': () => 'undefined | ' + (this.options.skipQuestionType?.includes(x.name) ? 'string[]' : `Opt<'${lastQuestionNameHavingOptionId}'>[]`),
           'integer': () => 'number | undefined',
           'text': () => 'string | undefined',
           'date': () => 'Date | undefined',
@@ -203,18 +224,19 @@ const extractQuestionName = (_: Record<string, any>) => {
   readonly generateOptionsType = (survey: KoboApiForm['content']['survey'], choices: KoboApiForm['content']['choices']) => {
     const indexOptionId = Arr(survey).reduceObject<Record<string, string>>(_ => [_.select_from_list_name ?? '', _.name])
     const res: Record<string, Record<string, string>> = {}
-    choices.forEach(_ => {
-      const questionName = indexOptionId[_.list_name]
+    choices.forEach(choice => {
+      if (this.options.skipQuestionType?.includes(indexOptionId[choice.list_name])) return
+      const questionName = indexOptionId[choice.list_name]
       if (!res[questionName]) {
         res[questionName] = {}
       }
-      res[questionName][_.name] = (() => {
+      res[questionName][choice.name] = (() => {
         try {
-          return this.options.overrideOptionsByQuestion?.[questionName][_.name][0]
-            ?? this.options.overrideAllOptions?.[_.name][0]
-            ?? _.label[0]
+          return this.options.overrideOptionsByQuestion?.[questionName][choice.name][0]
+            ?? this.options.overrideAllOptions?.[choice.name][0]
+            ?? choice.label[0]
         } catch (e: any) {
-          return _.label[0]
+          return choice.label[0]
         }
       })()
     })

@@ -7,20 +7,18 @@ export interface Shelter_TA {
   end: string,
   // [text] NTA ID
   nta_id: string | undefined,
-  // [text] Tax ID
-  drc_reference_number: string | undefined,
   // [select_one] Specify the Oblast
-  ben_det_oblast: Opt<'ben_det_oblast'>,
+  ben_det_oblast: undefined | Opt<'ben_det_oblast'>,
   // [select_one] Specify the Rayon
-  ben_det_raion: Opt<'ben_det_raion'>,
+  ben_det_raion: undefined | string,
   // [select_one] Specify the Hromada
-  ben_det_hromada: Opt<'ben_det_hromada'>,
+  ben_det_hromada: undefined | string,
   // [text] Specify the Settlement
   ben_det_settlement: string | undefined,
   // [text] Specify the Address and house/apartment number
   ben_det_addres: string | undefined,
   // [select_one] House or Apartment
-  house_or_apartment: Opt<'house_or_apartment'>,
+  house_or_apartment: undefined | Opt<'house_or_apartment'>,
   // [decimal] 1.1 Dismantling of structures (M3)
   dismantling_of_structures: string,
   // [note] 1.2 Single-shutter window, triple-glazed
