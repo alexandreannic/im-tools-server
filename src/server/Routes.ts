@@ -114,6 +114,7 @@ export const getRoutes = (
     router.get('/access/me', auth(), errorCatcher(access.searchMine))
     router.get('/access', auth(), errorCatcher(access.search))
     router.put('/access', auth({adminOnly: true}), errorCatcher(access.create))
+    router.post('/access/:id', auth({adminOnly: true}), errorCatcher(access.update))
     router.delete('/access/:id', auth({adminOnly: true}), errorCatcher(access.remove))
 
     router.post('/user/me', auth(), errorCatcher(user.updateMe))

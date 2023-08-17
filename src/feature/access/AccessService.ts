@@ -5,6 +5,7 @@ import {Enum} from '@alexandreannic/ts-utils'
 import {InferType} from 'yup'
 import {DrcJob, DrcOffice} from '../../core/DrcType'
 import {UserSession} from '../session/UserSession'
+import {UUID} from '../../core/Type'
 
 export type AccessSearchParams = InferType<typeof AccessService.searchSchema>
 export type AccessCreateParams = InferType<typeof AccessService.createSchema>
@@ -21,7 +22,7 @@ export class AccessService {
   constructor(private prisma: PrismaClient) {
   }
 
-  static readonly removeSchema = yup.object({
+  static readonly idParamsSchema = yup.object({
     id: yup.string().required(),
   })
 
@@ -33,6 +34,12 @@ export class AccessService {
     email: yup.string(),
     featureId: yup.mixed<AppFeatureId>().oneOf(Enum.values(AppFeatureId)),
     params: yup.mixed().optional(),
+  })
+
+  static readonly updateSchema = yup.object({
+    level: yup.mixed<FeatureAccessLevel>().oneOf(Enum.values(FeatureAccessLevel)),
+    drcJob: yup.string(),//yup.mixed<DrcJob>().oneOf(Enum.values(DrcJob)),
+    drcOffice: yup.mixed<DrcOffice>().oneOf(Enum.values(DrcOffice)),
   })
 
   static readonly searchSchema = yup.object({
@@ -69,6 +76,9 @@ export class AccessService {
             }] : []
           ]
         },
+        orderBy: {
+          createdAt: 'desc',
+        }
       }
     )
     // .then(_ => _.filter(_ => {
@@ -90,6 +100,17 @@ export class AccessService {
         },
       })
     ))
+  }
+
+  readonly update = (id: UUID, body: InferType<typeof AccessService.updateSchema>) => {
+    return this.prisma.featureAccess.update({
+      where: {id},
+      data: {
+        level: body.level,
+        drcJob: body.drcJob,
+        drcOffice: body.drcOffice,
+      },
+    })
   }
 
   readonly remove = (id: string) => {
