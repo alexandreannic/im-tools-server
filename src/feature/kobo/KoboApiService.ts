@@ -67,35 +67,59 @@ export class KoboApiService {
 
   readonly syncApiAnswerToDb = async (serverId: string, formId: string) => {
     const sdk = await this.koboSdkGenerator.construct(serverId)
-    const koboAnswers = await sdk.getAnswers(formId).then(_ => _.data)
+    const remoteAnswers = await sdk.getAnswers(formId).then(_ => _.data)
+    const localAnswersIndex = await this.prisma.koboAnswers.findMany({where: {formId}, select: {id: true}}).then(_ => {
+      return new Set(_.map(_ => _.id))
+    })
 
-    // await this.hardDelete(koboAnswers.map(_ => _.uuid))
-    const alreadyInsertedUuids = await this.prisma.koboAnswers.findMany({select: {uuid: true}}).then(_ => {
-      return new Set(_.map(_ => _.uuid))
-    })
-    const notInsertedAnswers = await sdk.getAnswers(formId).then(_ => _.data.filter(_ => !alreadyInsertedUuids.has(_.uuid)))
+    const handleDelete = async () => {
+      const remoteIdsIndex = new Set(remoteAnswers.map(_ => _.id))
+      const idsToDelete = [...localAnswersIndex].filter(_ => !remoteIdsIndex.has(_))
+      await this.prisma.koboAnswers.deleteMany({where: {formId, id: {in: idsToDelete}}})
+    }
 
-    const inserts = notInsertedAnswers.map(_ => {
-      const res: Prisma.KoboAnswersUncheckedCreateInput = {
-        formId,
-        answers: _.answers,
-        id: _.id,
-        uuid: _.uuid,
-        start: _.start,
-        end: _.end,
-        submissionTime: _.submissionTime,
-        validationStatus: _.validationStatus,
-        lastValidatedTimestamp: _.lastValidatedTimestamp,
-        validatedBy: _.validatedBy,
-        version: _.version,
-        source: serverId,
-        attachments: _.attachments,
-      }
-      return res
-    })
-    return this.prisma.koboAnswers.createMany({
-      data: inserts,
-      skipDuplicates: true,
-    })
+    const handleCreate = async () => {
+      const notInsertedAnswers = remoteAnswers.filter(_ => !localAnswersIndex.has(_.id))
+      const inserts = notInsertedAnswers.map(_ => {
+        const res: Prisma.KoboAnswersUncheckedCreateInput = {
+          formId,
+          answers: _.answers,
+          id: _.id,
+          uuid: _.uuid,
+          start: _.start,
+          end: _.end,
+          submissionTime: _.submissionTime,
+          validationStatus: _.validationStatus,
+          lastValidatedTimestamp: _.lastValidatedTimestamp,
+          validatedBy: _.validatedBy,
+          version: _.version,
+          source: serverId,
+          attachments: _.attachments,
+        }
+        return res
+      })
+      return this.prisma.koboAnswers.createMany({
+        data: inserts,
+        skipDuplicates: true,
+      })
+    }
+
+    const handleUpdate = async () => {
+      const answersToUpdate = remoteAnswers.filter(_ => localAnswersIndex.has(_.id))
+      await Promise.all(answersToUpdate.map(a => {
+        return this.prisma.koboAnswers.update({
+          where: {
+            id: a.id,
+          },
+          data: {
+            answers: a.answers,
+          }
+        })
+      }))
+    }
+
+    await handleDelete()
+    await handleCreate()
+    await handleUpdate()
   }
 }

@@ -28,8 +28,8 @@ model KoboForm {
 }
 
 model KoboAnswers {
-  uuid                   String                   @id
-  id                     String
+  id                     String                   @id
+  uuid                   String                   @unique
   form                   KoboForm                 @relation(fields: [formId], references: [id])
   formId                 String
   start                  DateTime
@@ -68,13 +68,13 @@ model MpcaPaymentTool {
 }
 
 model MpcaPaymentToolAnswers {
-  koboAnswers       KoboAnswers     @relation(fields: [koboAnswersUuid], references: [uuid])
-  koboAnswersUuid   String
+  koboAnswers       KoboAnswers     @relation(fields: [koboAnswersId], references: [id])
+  koboAnswersId     String
   mpcaPaymentTool   MpcaPaymentTool @relation(fields: [mpcaPaymentToolId], references: [id])
   mpcaPaymentToolId String
   createdAt         DateTime        @default(now())
 
-  @@id([koboAnswersUuid, mpcaPaymentToolId])
+  @@id([koboAnswersId, mpcaPaymentToolId])
 }
 
 model User {
