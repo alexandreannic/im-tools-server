@@ -11,7 +11,7 @@ export class UserService {
   }
 
   readonly getAll = () => {
-    return this.prisma.user.findMany()
+    return this.prisma.user.findMany({orderBy: {lastConnectedAt: 'desc'}})
   }
 
   readonly update = ({
