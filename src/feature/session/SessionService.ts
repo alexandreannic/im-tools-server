@@ -43,18 +43,25 @@ export class SessionService {
     if (msUser.mail === undefined || msUser.jobTitle === undefined) {
       throw new SessionError.UserNotFound
     }
-    const connectedUser = await this.syncUserInDb(msUser.mail, msUser.jobTitle)
+    const connectedUser = await this.syncUserInDb({
+      email: msUser.mail,
+      drcJob: msUser.jobTitle,
+      accessToken: userBody.accessToken,
+      name: userBody.name,
+    })
     this.log.info(`${connectedUser.email} connected.`)
     return connectedUser
   }
 
-  readonly syncUserInDb = async (email: string, drcJob: string): Promise<PUser> => {
+  readonly syncUserInDb = async ({email, drcJob, accessToken, name}: {accessToken: string, name: string, email: string, drcJob: string}): Promise<PUser> => {
     const user = await this.prisma.user.findFirst({where: {email}})
     if (!user) {
       this.log.info(`Create account ${email}.`)
       return this.prisma.user.create({
         data: {
           email,
+          name,
+          accessToken,
           drcJob: drcJob,
           lastConnectedAt: new Date()
         }
@@ -63,6 +70,8 @@ export class SessionService {
       return this.prisma.user.update({
         where: {email},
         data: {
+          accessToken,
+          name,
           drcJob: drcJob,
           lastConnectedAt: new Date()
         }

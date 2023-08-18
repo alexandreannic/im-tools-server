@@ -3,6 +3,8 @@ import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {SessionService} from '../../feature/session/SessionService'
+import {AppError} from '../../helper/Errors'
+import {UserSession, UserSession} from '../../feature/session/UserSession'
 
 export class ControllerSession extends Controller {
 
@@ -29,14 +31,16 @@ export class ControllerSession extends Controller {
       accessToken: yup.string().required(),
     }).validate(req.body)
     const connectedUser = await this.service.login(user)
-    req.session.user = {
-      name: user.name,
-      accessToken: user.accessToken,
-      admin: connectedUser.admin,
-      email: connectedUser.email,
-      drcJob: connectedUser.drcJob ?? undefined,
-      drcOffice: connectedUser.drcOffice ?? undefined,
+    req.session.user = UserSession.fromUser(connectedUser),
+      res.send(req.session.user)
+  }
+
+  readonly revertConnectAs = async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.session.user?.originalEmail) {
+      throw new AppError.Forbidden('')
     }
+    const user = await this.prisma.user.findFirstOrThrow({where: {email: req.session.user?.originalEmail}})
+    req.session.user = UserSession.fromUser(user)
     res.send(req.session.user)
   }
 
@@ -47,13 +51,8 @@ export class ControllerSession extends Controller {
 
     const user = await this.prisma.user.findFirstOrThrow({where: {email: body.email}})
     req.session.user = {
-      ...req.session.user,
-      accessToken: req.session.user?.accessToken ?? '',
-      name: req.session.user?.name ?? '',
-      admin: user.admin,
-      email: user.email,
-      drcJob: user.drcJob ?? undefined,
-      drcOffice: user.drcOffice ?? undefined,
+      ...UserSession.fromUser(user),
+      originalEmail: req.session.user?.email,
     }
     res.send(req.session.user)
   }

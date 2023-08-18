@@ -83,6 +83,8 @@ model User {
   createdBy       String?
   createdAt       DateTime  @default(now())
   lastConnectedAt DateTime?
+  accessToken     String?
+  name            String?
   drcJob          String?
   drcOffice       String?
   admin           Boolean   @default(false)
