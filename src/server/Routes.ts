@@ -114,12 +114,12 @@ export const getRoutes = (
 
     router.get('/access/me', auth(), errorCatcher(access.searchMine))
     router.get('/access', auth(), errorCatcher(access.search))
-    router.put('/access', auth({adminOnly: true}), errorCatcher(access.create))
-    router.post('/access/:id', auth({adminOnly: true}), errorCatcher(access.update))
+    router.put('/access', auth(), errorCatcher(access.create))
+    router.post('/access/:id', auth(), errorCatcher(access.update))
     router.delete('/access/:id', auth({adminOnly: true}), errorCatcher(access.remove))
 
     router.post('/user/me', auth(), errorCatcher(user.updateMe))
-    router.get('/user', auth({adminOnly: true}), errorCatcher(user.search))
+    router.get('/user', auth(), errorCatcher(user.search))
 
     router.post('/activity-info/activity', auth({adminOnly: true}), errorCatcher(activityInfo.submitActivity))
 

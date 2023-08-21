@@ -4,7 +4,7 @@ import * as yup from 'yup'
 import {PrismaClient} from '@prisma/client'
 import {SessionService} from '../../feature/session/SessionService'
 import {AppError} from '../../helper/Errors'
-import {UserSession, UserSession} from '../../feature/session/UserSession'
+import {UserSession} from '../../feature/session/UserSession'
 
 export class ControllerSession extends Controller {
 
