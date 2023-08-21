@@ -51,4 +51,4 @@ const isOnMainBranch = () => new RegExp(`${config.mainBranch}\s*\n*`).test(execS
   console.log(`Successfully deployed!`)
   // }
 })()
-// toggle 6
+// toggle 7
