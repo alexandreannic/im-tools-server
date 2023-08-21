@@ -4,6 +4,7 @@ import {KoboAnswerParams, KoboId} from '../connector/kobo/KoboClient/type/KoboAn
 import {logger, Logger} from '../../helper/Logger'
 import {KoboSdk} from '../connector/kobo/KoboClient/KoboSdk'
 import {UUID} from '../../core/Type'
+import {Arr, Enum} from '@alexandreannic/ts-utils'
 
 export class KoboApiService {
   constructor(
@@ -41,7 +42,7 @@ export class KoboApiService {
       return Promise.all(res.map(_ => {
         return this.prisma.koboAnswers.updateMany({
           where: {
-            uuid: _.uuid,
+            id: _.id,
             source: serverId
           },
           data: {
@@ -58,7 +59,7 @@ export class KoboApiService {
       return Promise.all(res.map(_ => {
         return this.prisma.koboAnswers.deleteMany({
           where: {
-            uuid: _.uuid,
+            id: _.id,
           },
         })
       }))
@@ -68,6 +69,7 @@ export class KoboApiService {
   readonly syncApiAnswerToDb = async (serverId: string, formId: string) => {
     const sdk = await this.koboSdkGenerator.construct(serverId)
     const remoteAnswers = await sdk.getAnswers(formId).then(_ => _.data)
+
     const localAnswersIndex = await this.prisma.koboAnswers.findMany({where: {formId}, select: {id: true}}).then(_ => {
       return new Set(_.map(_ => _.id))
     })
@@ -112,6 +114,9 @@ export class KoboApiService {
             id: a.id,
           },
           data: {
+            uuid: a.uuid,
+            validationStatus: a.validationStatus,
+            submissionTime: a.submissionTime,
             answers: a.answers,
           }
         })

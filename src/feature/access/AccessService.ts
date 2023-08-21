@@ -1,4 +1,4 @@
-import {FeatureAccessLevel, PrismaClient} from '@prisma/client'
+import {FeatureAccessLevel, Prisma, PrismaClient} from '@prisma/client'
 import {Access, AppFeatureId, KoboDatabaseFeatureParams, WfpDeduplicationAccessParams} from './AccessType'
 import {yup} from '../../helper/Utils'
 import {Enum} from '@alexandreannic/ts-utils'
@@ -47,7 +47,13 @@ export class AccessService {
   })
 
   // @ts-ignore
-  readonly search: SearchByFeature = ({featureId, user}: any) => {
+  readonly search: SearchByFeature = async ({featureId, user}: any) => {
+    // const ids = await this.prisma.$queryRaw<{id: number}[]>(Prisma.sql`
+    //     SELECT DISTINCT id
+    //     FROM "FeatureAccess"
+    //     WHERE "featureId" = '${featureId}'
+    //     ORDER BY "createdAt" DESC
+    // `)
     return this.prisma.featureAccess.findMany({
         distinct: ['id'],
         where: {

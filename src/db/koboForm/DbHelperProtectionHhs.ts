@@ -105,7 +105,7 @@ export class DbHelperProtectionHhs {
           })
           return this.prisma.koboAnswers.update({
             where: {
-              uuid: _.uuid,
+              id: _.id,
             },
             data: {tags: donor}
           })

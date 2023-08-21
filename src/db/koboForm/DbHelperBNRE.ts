@@ -284,9 +284,9 @@ export class DbHelperBNRE {
     }
     const entries = await this.prisma.koboAnswers.findMany({where: {uuid: {in: Enum.keys(mapUuiSettlement)}}}).then(_ => _.map(DbKoboFormHelper.definedJsonType<BNRE>()))
     await Promise.all(entries.map(e => {
-      e.answers.ben_det_settlement = mapUuiSettlement[e.uuid]?.toLowerCase()
+      e.answers.ben_det_settlement = mapUuiSettlement[e.id]?.toLowerCase()
       return this.prisma.koboAnswers.update({
-        where: {uuid: e.uuid},
+        where: {id: e.id},
         data: {answers: {...e.answers as any}}
       })
     }))

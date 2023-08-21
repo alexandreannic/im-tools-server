@@ -268,7 +268,7 @@ export class KoboService {
   readonly updateTags = async ({formId, answerId, tags}: {formId: KoboId, answerId: number, tags: Record<string, any>}) => {
     const answer = await this.prisma.koboAnswers.findMany({
       select: {
-        uuid: true,
+        id: true,
         tags: true,
       },
       where: {
@@ -284,7 +284,7 @@ export class KoboService {
     const newTag = {...answer.tags as any, ...tags}
     await this.prisma.koboAnswers.update({
       where: {
-        uuid: answer.uuid,
+        id: answer.id,
       },
       data: {
         tags: newTag,

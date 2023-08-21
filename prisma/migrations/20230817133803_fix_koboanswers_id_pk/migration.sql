@@ -9,5 +9,3 @@
 ALTER TABLE "KoboAnswers" DROP CONSTRAINT "KoboAnswers_pkey",
 ADD CONSTRAINT "KoboAnswers_pkey" PRIMARY KEY ("id");
 
--- CreateIndex
-CREATE UNIQUE INDEX "KoboAnswers_uuid_key" ON "KoboAnswers"("uuid");
