@@ -42,7 +42,6 @@ export class ControllerKoboAnswer {
     const {tags} = await yup.object({
       tags: yup.mixed().required(),
     }).validate(req.body)
-    console.log('>>', tags)
     const data = await this.service.updateTags({...params, tags: tags as any})
     res.send(data)
   }

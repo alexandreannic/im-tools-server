@@ -17,7 +17,8 @@ export class ControllerActivityInfo {
   readonly submitActivity = async (req: Request, res: Response, next: NextFunction) => {
     const activities = req.body
     try {
-      if (req.session.user?.email !== this.conf.ownerEmail) {
+      // TODO Remove hard email
+      if (req.session.user?.email !== this.conf.ownerEmail && req.session.user?.email !== 'isabel.pearson@drc.ngo') {
         throw new AppError.Forbidden('only_owner_can_submit_ai')
       }
       this.log.info(`Insert ${activities.length} activities`)
