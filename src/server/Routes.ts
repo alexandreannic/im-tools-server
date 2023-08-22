@@ -116,7 +116,7 @@ export const getRoutes = (
     router.get('/access', auth(), errorCatcher(access.search))
     router.put('/access', auth(), errorCatcher(access.create))
     router.post('/access/:id', auth(), errorCatcher(access.update))
-    router.delete('/access/:id', auth({adminOnly: true}), errorCatcher(access.remove))
+    router.delete('/access/:id', auth(), errorCatcher(access.remove))
 
     router.post('/user/me', auth(), errorCatcher(user.updateMe))
     router.get('/user', auth(), errorCatcher(user.search))
@@ -129,7 +129,7 @@ export const getRoutes = (
     router.put('/kobo/form', auth(), errorCatcher(koboForm.create))
     router.get('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
     router.get('/kobo/answer/:formId/by-access', auth(), errorCatcher(koboAnswer.searchByUser))
-    router.post('/kobo/answer/:formId/:answerId/tag', auth(), errorCatcher(koboAnswer.update))
+    router.post('/kobo/answer/:formId/:answerId/tag', auth(), errorCatcher(koboAnswer.updateTag))
 
     router.post('/proxy-request', auth(), errorCatcher(main.proxy))
 

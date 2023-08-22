@@ -199,6 +199,7 @@ const extractQuestionName = (_: Record<string, any>) => {
           'select_one': () => 'undefined | ' + (this.options.skipQuestionType?.includes(x.name) ? 'string' : `Opt<'${lastQuestionNameHavingOptionId}'>`),
           'select_multiple': () => 'undefined | ' + (this.options.skipQuestionType?.includes(x.name) ? 'string[]' : `Opt<'${lastQuestionNameHavingOptionId}'>[]`),
           'integer': () => 'number | undefined',
+          'decimal': () => 'number | undefined',
           'text': () => 'string | undefined',
           'date': () => 'Date | undefined',
         })
