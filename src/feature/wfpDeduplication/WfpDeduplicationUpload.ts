@@ -2,7 +2,7 @@ import {WFPBuildingBlockSdk} from '../connector/wfpBuildingBlock/WfpBuildingBloc
 import {AssistancePrevented, AssistanceProvided, WfpFilters} from '../connector/wfpBuildingBlock/WfpBuildingBlockType'
 import {PrismaClient} from '@prisma/client'
 import {WfpDeduplicationStatus} from '../../db/models/WfpDeduplicationStatus'
-import {addMinutes, parse, subMinutes} from 'date-fns'
+import {addMinutes, addSeconds, parse, subMinutes, subSeconds} from 'date-fns'
 import {ApiPaginate} from '../../core/Type'
 import {appConf, AppConf} from '../../core/conf/AppConf'
 import {WfpBuildingBlockClient} from '../connector/wfpBuildingBlock/WfpBuildingBlockClient'
@@ -187,20 +187,23 @@ export class WfpDeduplicationUpload {
         const updates$ = imports.map(async (_) => {
           const office = possibleOffices.find(oblastCode => _.fileName.includes(oblastCode))
           if (!office) console.warn(`Oblast not found for filename ${_.fileName}`)
-          const where = {
-            createdAt: {
-              gt: subMinutes(_.finishedAt, 10),
-              lt: addMinutes(_.finishedAt, 10),
-            }
+          const prismaSearch: Parameters<typeof this.prisma.mpcaWfpDeduplication.count>[0] = {
+            where: {
+              createdAt: {
+                gt: _.finishedAt,
+                lt: addSeconds(_.finishedAt, 20),
+              },
+            },
+            // take: _.additionalInfo.rowCount,
           }
           if (_.fileName as any === 'HRK_20230331_Raw.xlsx.gpg') {
           }
-          const registedDedupCount = await this.prisma.mpcaWfpDeduplication.count({where})
+          const registedDedupCount = await this.prisma.mpcaWfpDeduplication.count(prismaSearch)
           if (registedDedupCount !== _.additionalInfo.rowCount) {
             console.warn(`Found ${registedDedupCount} rows database but ${_.additionalInfo.rowCount} in in ${_.fileName} at ${_.finishedAt}.`)
           }
           await this.prisma.mpcaWfpDeduplication.updateMany({
-            where,
+            where: prismaSearch.where,
             data: {
               office: office ? officeMapping[office] : undefined,
               fileName: _.fileName,
