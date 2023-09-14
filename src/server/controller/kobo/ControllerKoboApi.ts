@@ -5,7 +5,9 @@ import {getCsv} from '../../../feature/connector/kobo/cleanKoboDb/CleadedKoboDbL
 import {format} from 'date-fns'
 import {KoboSdkGenerator} from '../../../feature/kobo/KoboSdkGenerator'
 import {KoboApiService} from '../../../feature/kobo/KoboApiService'
-import {KoboSyncServer} from '../../../feature/kobo/KoboSyncServer'
+import {ca} from 'date-fns/locale'
+import {KoboSdk} from '../../../feature/connector/kobo/KoboClient/KoboSdk'
+import {appConf} from '../../../core/conf/AppConf'
 
 const apiAnswersFiltersValidation = yup.object({
   start: yup.date(),
@@ -75,10 +77,12 @@ export class ControllerKoboApi {
 
   readonly edit = async (req: Request, res: Response, next: NextFunction) => {
     const {id, formId} = await this.extractParams(req)
-    const answerId = await yup.string().required().validate(req.params.answerId)
-    const sdk = await this.koboSdkGenerator.get(id)
-    const form = await sdk.edit(formId, answerId)
-    res.send(form)
+    const answerId = await yup.number().required().validate(req.params.answerId)
+    const sdk = await this.koboSdkGenerator.construct(id)
+    const link = await sdk.edit(formId, answerId)
+    res.setHeader('Authorization', KoboSdk.makeAuthorizationHeader(appConf.kobo.token))
+    res.redirect(link.url)
+    // res.send(form)
   }
 
   readonly getSchema = async (req: Request, res: Response, next: NextFunction) => {
