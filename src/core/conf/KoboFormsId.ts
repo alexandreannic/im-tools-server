@@ -6,6 +6,8 @@ export const koboServerId = {
 
 export const koboFormsId = {
   prod: {
+    rapidResponseMechanism: 'aMJL9DG8qEcULqTZTKQbrq',
+    shelter_cashForRepair: 'a9CjhyhTKVojCdArKmw9yM',
     mealCfmInternal: 'aN3Y8JeH2fU3GthrWAs9FG',
     mealCfmExternal: 'aJaGLvGEdpYWk5ift8k87y',
     shelterNTA: 'aL8oHMzJJ9soPepvK6YU9E',

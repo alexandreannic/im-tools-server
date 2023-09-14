@@ -17,6 +17,8 @@ interface KoboInterfaceGeneratorParams {
 
 export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) => {
   const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
+    {formName: 'RapidResponseMechanism', formId: koboFormsId.prod.rapidResponseMechanism},
+    {formName: 'Shelter_CashForRepair', formId: koboFormsId.prod.shelter_cashForRepair},
     {
       formName: 'MealCfmInternal', formId: koboFormsId.prod.mealCfmInternal, skipQuestionType: [
         'ben_det_hromada',
