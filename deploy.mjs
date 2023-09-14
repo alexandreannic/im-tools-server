@@ -6,9 +6,7 @@ dotenv.config()
 
 const config = {
   mainBranch: 'master',
-  gitServer: process.env.DEPLOY_URL,
-  username: process.env.DEPLOY_USER,
-  password: process.env.DEPLOY_PWD,
+  gitServer: `${encodeURIComponent(process.env.DEPLOY_USER)}:${encodeURIComponent(process.env.DEPLOY_PWD)}@https://drc-imaa-ukr-tools-api.scm.azurewebsites.net:443/drc-imaa-ukr-tools-api.git`,
 }
 
 const run = (cl) => {
