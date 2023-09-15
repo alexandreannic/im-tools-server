@@ -66,7 +66,18 @@ export class KoboApiService {
     })
   }
 
-  readonly syncApiAnswerToDb = async (serverId: string, formId: string) => {
+  readonly syncAllApiAnswersToDb = async () => {
+    const allForms = await this.prisma.koboForm.findMany()
+    this.log.info(`Synchronize kobo forms:`)
+    for (const form of allForms) {
+      this.log.info(`Synchronizing ${form.name} (${form.id}...`)
+      await this.syncApiAnswersToDb(form.serverId, form.id)
+      this.log.info(`Synchronizing ${form.name} (${form.id} completed.`)
+    }
+    this.log.info(`Synchronize kobo forms completed!`)
+  }
+
+  readonly syncApiAnswersToDb = async (serverId: string, formId: string) => {
     const sdk = await this.koboSdkGenerator.construct(serverId)
     const remoteAnswers = await sdk.getAnswers(formId).then(_ => _.data)
 
@@ -126,5 +137,13 @@ export class KoboApiService {
     await handleDelete()
     await handleCreate()
     await handleUpdate()
+    await this.prisma.koboForm.update({
+      where: {
+        id: formId,
+      },
+      data: {
+        updatedAt: new Date(),
+      }
+    })
   }
 }

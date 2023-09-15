@@ -2,10 +2,6 @@ import {ApiClient} from './core/client/ApiClient'
 import {KoboSdk} from './feature/connector/kobo/KoboClient/KoboSdk'
 import {appConf} from './core/conf/AppConf'
 import {Server} from './server/Server'
-import {EcrecSdk} from './feature/connector/ecrec/EcrecSdk'
-import {LegalaidSdk} from './feature/connector/legalaid/LegalaidSdk'
-import {ServiceEcrec} from './server/services/ServiceEcrec'
-import {ServiceLegalAid} from './server/services/ServiceLegalAid'
 import {ServiceNfi} from './server/services/ServiceNfi'
 import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
@@ -13,9 +9,9 @@ import {PrismaClient} from '@prisma/client'
 import {MpcaPaymentService} from './feature/mpcaPayment/MpcaPaymentService'
 import {DbInit} from './db/DbInit'
 import {logger} from './helper/Logger'
-import {EcrecClient} from './feature/connector/ecrec/EcrecClient'
-import {generateKoboInterface} from './script/KoboFormInterfaceGenerator'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
+import * as cron from 'node-cron'
+import {KoboApiService} from './feature/kobo/KoboApiService'
 
 const initServices = (
   koboClient: KoboSdk,
@@ -94,6 +90,11 @@ const startApp = async () => {
     // legalAidSdk,
     prisma,
   )
+
+  // cron.schedule('* * * * *', () => {
+  //   console.log('hello')
+  await new KoboApiService(prisma).syncAllApiAnswersToDb()
+  // })
 
   new Server(
     conf,
