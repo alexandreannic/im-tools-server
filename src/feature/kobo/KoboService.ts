@@ -182,7 +182,7 @@ export class KoboService {
 
   readonly getFormDetails = async (formId: KoboId) => {
     const dbForm = await this.prisma.koboForm.findFirstOrThrow({where: {id: formId}})
-    const sdk = await this.sdkGenerator.construct(dbForm.serverId)
+    const sdk = await this.sdkGenerator.get(dbForm.serverId)
     return await sdk.getForm(dbForm.id)
   }
 
