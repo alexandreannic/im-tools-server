@@ -3,6 +3,7 @@ import {KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
 import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {logger, Logger} from '../../helper/Logger'
+import {createdBySystem} from '../../db/DbInit'
 
 export class KoboSyncServer {
 
@@ -17,19 +18,27 @@ export class KoboSyncServer {
     const allForms = await this.prisma.koboForm.findMany()
     this.log.info(`Synchronize kobo forms:`)
     for (const form of allForms) {
-      this.log.info(`Synchronizing ${form.name} (${form.id}...`)
-      await this.syncApiForm(form.serverId, form.id)
-      this.log.info(`Synchronizing ${form.name} (${form.id} completed.`)
+      try {
+        this.log.info(`Synchronizing ${form.name} (${form.id}) ...`)
+        await this.syncApiForm(form.serverId, form.id, createdBySystem)
+        this.log.info(`Synchronizing ${form.name} (${form.id}) completed.`)
+      } catch (e) {
+        this.log.error(`Synchronizing ${form.name} (${form.id}) FAILED!`)
+        console.error(e)
+      }
     }
     this.log.info(`Synchronize kobo forms completed!`)
   }
 
-  readonly syncApiForm = async (serverId: UUID, formId: KoboId) => {
+  readonly syncApiForm = async (serverId: UUID, formId: KoboId, updatedBy?: string) => {
     await this.syncApiFormInfo(serverId, formId)
     await this.syncApiFormAnswers(serverId, formId)
     await this.prisma.koboForm.update({
       where: {id: formId},
-      data: {updatedAt: new Date()}
+      data: {
+        updatedAt: new Date(),
+        updatedBy: updatedBy,
+      }
     })
   }
 

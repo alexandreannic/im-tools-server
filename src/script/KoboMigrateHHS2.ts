@@ -1,27 +1,29 @@
 import {ProtHHS_2_1Options} from '../db/generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1Options'
 import {ProtHHS_2_1} from '../db/generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1'
 import {PrismaClient} from '@prisma/client'
-import {KoboApiService} from '../feature/kobo/KoboApiService'
 import {logger, Logger} from '../helper/Logger'
 import {protHHS_2_1Fields} from '../db/generatedKoboInterface/ProtHHS_2_1Fields'
-
-interface Props {
-  prisma: PrismaClient,
-  serverId: string
-  oldFormId: string
-  newFormId: string
-  service?: KoboApiService
-  log?: Logger
-}
+import {KoboSyncServer} from '../feature/kobo/KoboSyncServer'
+import {KoboApiService} from '../feature/kobo/KoboApiService'
 
 export const KoboMigrateHHS2 = ({
-  prisma,
-  serverId,
-  oldFormId,
-  newFormId,
-  service = new KoboApiService(prisma),
-  log = logger('KoboMigrateHHS2'),
-}: Props) => {
+    prisma,
+    serverId,
+    oldFormId,
+    newFormId,
+    service = new KoboApiService(prisma),
+    syncService = new KoboSyncServer(prisma),
+    log = logger('KoboMigrateHHS2'),
+  }: {
+    prisma: PrismaClient,
+    serverId: string
+    oldFormId: string
+    newFormId: string
+    service?: KoboApiService
+    syncService?: KoboSyncServer
+    log?: Logger
+  }
+) => {
 
   const mapAnswers = async () => {
     const res = await service.fetchAnswers(serverId, oldFormId)
@@ -158,7 +160,7 @@ export const KoboMigrateHHS2 = ({
       log.info(`Form ${oldFormId} already created.`)
       return
     }
-    await service.saveApiFormToDb(serverId, newFormId)
+    await syncService.syncApiForm(serverId, newFormId)
     const newKoboApiAnswers = await mapAnswers().then(_ => _.filter(x => !allInsertedIds.has(x.id)))
     if (newKoboApiAnswers.length === 0) {
       log?.info(`Data already inserted.`)

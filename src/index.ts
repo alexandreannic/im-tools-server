@@ -12,6 +12,7 @@ import {logger} from './helper/Logger'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 import * as cron from 'node-cron'
 import {KoboApiService} from './feature/kobo/KoboApiService'
+import {ScheduledTask} from './scheduledTask/ScheduledTask'
 
 const initServices = (
   koboClient: KoboSdk,
@@ -91,10 +92,7 @@ const startApp = async () => {
     prisma,
   )
 
-  // cron.schedule('* * * * *', () => {
-  //   console.log('hello')
-  await new KoboApiService(prisma).syncAllApiAnswersToDb()
-  // })
+  new ScheduledTask(prisma).run()
 
   new Server(
     conf,
