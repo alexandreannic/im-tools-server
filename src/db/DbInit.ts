@@ -6,7 +6,7 @@ import {KoboMigrateHHS2} from '../script/KoboMigrateHHS2'
 import {DrcJob, DrcOffice} from '../core/DrcType'
 import {DbHelperProtectionHhs} from './koboForm/DbHelperProtectionHhs'
 
-const createdBySystem = 'SYSTEM'
+export const createdBySystem = 'SYSTEM'
 
 export class DbInit {
 

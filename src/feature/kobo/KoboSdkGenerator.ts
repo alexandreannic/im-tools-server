@@ -11,7 +11,7 @@ export class KoboSdkGenerator {
   ) {
   }
 
-  readonly construct = lazy(async (koboServerId: UUID) => {
+  readonly get = lazy(async (koboServerId: UUID) => {
     const k = await this.pgClient.koboServer.findFirstOrThrow({where: {id: koboServerId}})
       .catch(() => this.pgClient.koboServer.findFirstOrThrow())
     return new KoboSdk(new ApiClient({

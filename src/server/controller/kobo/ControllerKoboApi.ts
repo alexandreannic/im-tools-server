@@ -5,12 +5,7 @@ import {getCsv} from '../../../feature/connector/kobo/cleanKoboDb/CleadedKoboDbL
 import {format} from 'date-fns'
 import {KoboSdkGenerator} from '../../../feature/kobo/KoboSdkGenerator'
 import {KoboApiService} from '../../../feature/kobo/KoboApiService'
-import {ca} from 'date-fns/locale'
-
-interface AnswersFilters {
-  start?: Date
-  end?: Date
-}
+import {KoboSyncServer} from '../../../feature/kobo/KoboSyncServer'
 
 const answersFiltersValidation = yup.object({
   start: yup.date(),
@@ -22,6 +17,7 @@ export class ControllerKoboApi {
   constructor(
     private pgClient: PrismaClient,
     private service = new KoboApiService(pgClient),
+    private syncService = new KoboSyncServer(pgClient),
     private koboSdkGenerator = new KoboSdkGenerator(pgClient),
   ) {
 
@@ -39,14 +35,14 @@ export class ControllerKoboApi {
     const {id} = await yup.object({
       id: yup.string().required(),
     }).validate(req.params)
-    const sdk = await this.koboSdkGenerator.construct(id)
+    const sdk = await this.koboSdkGenerator.get(id)
     const forms = await sdk.getForms()
     res.send(forms)
   }
 
   readonly getAnswersFromLocalCsv = async (req: Request, res: Response, next: NextFunction) => {
     const filters = await answersFiltersValidation.validate(req.query)
-    const sdk = await this.koboSdkGenerator.construct('746f2270-d15a-11ed-afa1-0242ac120002')
+    const sdk = await this.koboSdkGenerator.get('746f2270-d15a-11ed-afa1-0242ac120002')
     const localForm = await getCsv(sdk)
     const filtered = localForm.filter(_ =>
       (!filters.start || _.end > format(filters.start, 'yyyy-MM-dd')) &&
@@ -57,7 +53,7 @@ export class ControllerKoboApi {
 
   readonly synchronizeAnswersFromKoboServer = async (req: Request, res: Response, next: NextFunction) => {
     const {id, formId} = await this.extractParams(req)
-    await this.service.syncApiAnswerToDb(id, formId)
+    await this.syncService.syncApiForm(id, formId, req.session.user?.email)
     res.send()
   }
 
@@ -75,14 +71,14 @@ export class ControllerKoboApi {
   readonly edit = async (req: Request, res: Response, next: NextFunction) => {
     const {id, formId} = await this.extractParams(req)
     const answerId = await yup.number().required().validate(req.params.answerId)
-    const sdk = await this.koboSdkGenerator.construct(id)
+    const sdk = await this.koboSdkGenerator.get(id)
     const form = await sdk.edit(formId, answerId)
     res.send(form)
   }
 
   readonly getForm = async (req: Request, res: Response, next: NextFunction) => {
     const {id, formId} = await this.extractParams(req)
-    const sdk = await this.koboSdkGenerator.construct(id)
+    const sdk = await this.koboSdkGenerator.get(id)
     const form = await sdk.getForm(formId)
     res.send(form)
   }
@@ -90,7 +86,7 @@ export class ControllerKoboApi {
   readonly getAttachementsWithoutAuth = async (req: Request, res: Response, next: NextFunction) => {
     const {id} = await yup.object({id: yup.string().required()}).validate(req.params)
     const {path} = await yup.object({path: yup.string().required()}).validate(req.query)
-    const sdk = await this.koboSdkGenerator.construct(id)
+    const sdk = await this.koboSdkGenerator.get(id)
     const img = await sdk.getAttachement(path)
     try {
       res.set('Content-Type', 'image/jpeg')
