@@ -30,7 +30,7 @@ export class WfpDeduplicationService {
   readonly searchByUserAccess = async (search: WfpDbSearch, user: UserSession) => {
     const accesses = await this.access.search({featureId: AppFeatureId.wfp_deduplication, user})
     const authorizedOffices = [...new Set(Arr(accesses).flatMap(_ => _.params?.filters?.office!).compact())]
-    const filteredOffices = user.admin
+    const filteredOffices = (user.admin || authorizedOffices.length === 0)
       ? search.offices
       : authorizedOffices.filter(_ => !search.offices || search.offices.includes(_))
     const where = {
