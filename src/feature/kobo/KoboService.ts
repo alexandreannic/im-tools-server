@@ -68,7 +68,7 @@ export class KoboService {
       },
       where: {
         deletedAt: null,
-        end: {
+        submissionTime: {
           gte: filters.start,
           lt: filters.end,
         },
