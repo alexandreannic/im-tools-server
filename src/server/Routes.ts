@@ -135,6 +135,7 @@ export const getRoutes = (
 
     router.get('/kobo-api/local-form', auth(), errorCatcher(koboApi.getAnswersFromLocalCsv))
     router.post('/kobo-api/:id/:formId/sync', auth(), errorCatcher(koboApi.synchronizeAnswersFromKoboServer))
+    router.post('/kobo-api/sync', auth({adminOnly: true}), errorCatcher(koboApi.synchronizeAllAnswersFromKoboServer))
     router.get('/kobo-api/:id/attachment', auth(), errorCatcher(koboApi.getAttachementsWithoutAuth))
     router.get('/kobo-api/:id/:formId/answers', auth(), errorCatcher(koboApi.getAnswers))
     router.get('/kobo-api/:id', auth(), errorCatcher(koboApi.getForms))
