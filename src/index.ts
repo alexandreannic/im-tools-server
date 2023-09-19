@@ -92,7 +92,7 @@ const startApp = async () => {
     prisma,
   )
 
-  new ScheduledTask(prisma).run()
+  new ScheduledTask(prisma).start()
 
   new Server(
     conf,
