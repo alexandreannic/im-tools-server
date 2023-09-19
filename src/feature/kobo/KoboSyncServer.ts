@@ -14,13 +14,13 @@ export class KoboSyncServer {
   ) {
   }
 
-  readonly syncAllApiAnswersToDb = async () => {
+  readonly syncAllApiAnswersToDb = async (updatedBy: string = createdBySystem) => {
     const allForms = await this.prisma.koboForm.findMany()
     this.log.info(`Synchronize kobo forms:`)
     for (const form of allForms) {
       try {
         this.log.info(`Synchronizing ${form.name} (${form.id}) ...`)
-        await this.syncApiForm(form.serverId, form.id, createdBySystem)
+        await this.syncApiForm(form.serverId, form.id, updatedBy)
         this.log.info(`Synchronizing ${form.name} (${form.id}) completed.`)
       } catch (e) {
         this.log.error(`Synchronizing ${form.name} (${form.id}) FAILED!`)
