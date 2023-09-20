@@ -57,12 +57,12 @@ const startApp = async () => {
       }
     })
   )
-  await KoboMigrateHHS2({
-    prisma,
-    serverId: koboServerId.prod,
-    oldFormId: koboFormsId.prod.protectionHh_2,
-    newFormId: koboFormsId.prod.protectionHh_2_1,
-  }).run()
+  // await KoboMigrateHHS2({
+  //   prisma,
+  //   serverId: koboServerId.prod,
+  //   oldFormId: koboFormsId.prod.protectionHh_2,
+  //   newFormId: koboFormsId.prod.protectionHh_2_1,
+  // }).run()
 
   // try {
   //   await new KoboService(prisma).generateXLSForHHS({
