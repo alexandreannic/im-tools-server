@@ -62,7 +62,7 @@ export class KoboSyncServer {
     const handleDelete = async () => {
       const remoteIdsIndex = new Set(remoteAnswers.map(_ => _.id))
       const idsToDelete = [...localAnswersIndex].filter(_ => !remoteIdsIndex.has(_))
-      await this.prisma.koboAnswers.deleteMany({where: {formId, id: {in: idsToDelete}}})
+      await this.prisma.koboAnswers.deleteMany({where: {source: null, formId, id: {in: idsToDelete}}})
     }
 
     const handleCreate = async () => {
@@ -80,7 +80,7 @@ export class KoboSyncServer {
           lastValidatedTimestamp: _.lastValidatedTimestamp,
           validatedBy: _.validatedBy,
           version: _.version,
-          source: serverId,
+          // source: serverId,
           attachments: _.attachments,
         }
         return res
@@ -90,6 +90,27 @@ export class KoboSyncServer {
         skipDuplicates: true,
       })
     }
+
+    const handleUpdate = async () => {
+      const answersToUpdate = remoteAnswers.filter(_ => localAnswersIndex.has(_.id))
+      await Promise.all(answersToUpdate.map(a => {
+        return this.prisma.koboAnswers.update({
+          where: {
+            id: a.id,
+          },
+          data: {
+            uuid: a.uuid,
+            validationStatus: a.validationStatus,
+            submissionTime: a.submissionTime,
+            answers: a.answers,
+          }
+        })
+      }))
+    }
+
+    await handleDelete()
+    await handleCreate()
+    await handleUpdate()
   }
 
   /** @deprecated because it duplicates uuid */
@@ -111,7 +132,8 @@ export class KoboSyncServer {
   }
 
   /** @deprecated because it duplicates uuid */
-  private readonly hardDelete = (uuids: UUID[]) => {
+  private readonly
+  hardDelete = (uuids: UUID[]) => {
     return this.prisma.koboAnswers.findMany({where: {id: {notIn: uuids}}}).then(res => {
       return Promise.all(res.map(_ => {
         return this.prisma.koboAnswers.deleteMany({

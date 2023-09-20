@@ -13,6 +13,8 @@ import {logger} from './helper/Logger'
 import * as cron from 'node-cron'
 import {KoboApiService} from './feature/kobo/KoboApiService'
 import {ScheduledTask} from './scheduledTask/ScheduledTask'
+import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
+import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
 
 const initServices = (
   koboClient: KoboSdk,
@@ -55,12 +57,12 @@ const startApp = async () => {
       }
     })
   )
-  // await KoboMigrateHHS2({
-  //   prisma,
-  //   serverId: koboServerId.prod,
-  //   oldFormId: koboFormsId.prod.protectionHh_2,
-  //   newFormId: koboFormsId.prod.protectionHh_2_1,
-  // }).run()
+  await KoboMigrateHHS2({
+    prisma,
+    serverId: koboServerId.prod,
+    oldFormId: koboFormsId.prod.protectionHh_2,
+    newFormId: koboFormsId.prod.protectionHh_2_1,
+  }).run()
 
   // try {
   //   await new KoboService(prisma).generateXLSForHHS({

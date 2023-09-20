@@ -178,6 +178,7 @@ export const KoboMigrateHHS2 = ({
         submissionTime: _.submissionTime,
         validationStatus: _.validationStatus,
         validatedBy: _.validatedBy,
+        source: `formId-${oldFormId}`,
         lastValidatedTimestamp: _.lastValidatedTimestamp,
         answers: _.answers as any,
       }))
