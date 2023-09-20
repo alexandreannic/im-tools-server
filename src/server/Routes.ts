@@ -127,8 +127,8 @@ export const getRoutes = (
     router.get('/kobo/form', auth(), errorCatcher(koboForm.getAll))
     router.get('/kobo/form/:id', auth(), errorCatcher(koboForm.get))
     router.put('/kobo/form', auth(), errorCatcher(koboForm.create))
-    router.get('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
-    router.get('/kobo/answer/:formId/by-access', auth(), errorCatcher(koboAnswer.searchByUser))
+    router.post('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
+    router.post('/kobo/answer/:formId/by-access', auth(), errorCatcher(koboAnswer.searchByUserAccess))
     router.post('/kobo/answer/:formId/:answerId/tag', auth(), errorCatcher(koboAnswer.updateTag))
 
     router.post('/proxy-request', auth(), errorCatcher(main.proxy))

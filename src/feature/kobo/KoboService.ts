@@ -1,4 +1,4 @@
-import {KoboForm, PrismaClient} from '@prisma/client'
+import {KoboForm, Prisma, PrismaClient} from '@prisma/client'
 import {ApiPaginate, ApiPagination, defaultPagination, toApiPaginate} from '../../core/Type'
 import {DbKoboAnswer, KoboAnswerMetaData, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
@@ -13,6 +13,7 @@ import {UserSession} from '../session/UserSession'
 import {AccessService} from '../access/AccessService'
 import {AppFeatureId} from '../access/AccessType'
 import {AppError} from '../../helper/Errors'
+import * as util from 'util'
 
 export class KoboService {
 
@@ -73,16 +74,18 @@ export class KoboService {
           lt: filters.end,
         },
         formId,
-        // ...filters.filterBy?.reduce((acc, curr) => ({
-        //   answers: {
-        //     path: [curr.column],
-        //     string_contains: curr.value
-        //   }
-        // }), {})
-        // end: {
-        //   gte: filters.start,
-        //   lte: filters.end,
-        // }
+        AND: filters.filterBy?.map((filter) => ({
+          OR: filter.value.map(v => ({
+            answers: {
+              path: [filter.column],
+              ...v ? {
+                ['string_contains']: v
+              } : {
+                equals: Prisma.DbNull,
+              }
+            }
+          }))
+        })),
       }
     }).then(_ => _.map(d => ({
       start: d.start,
@@ -118,7 +121,7 @@ export class KoboService {
         end: end,
         filterBy: [{
           column: 'staff_to_insert_their_DRC_office',
-          value: oblast
+          value: [oblast],
         }]
       }
     }))
