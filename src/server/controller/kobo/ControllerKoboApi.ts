@@ -7,7 +7,7 @@ import {KoboSdkGenerator} from '../../../feature/kobo/KoboSdkGenerator'
 import {KoboApiService} from '../../../feature/kobo/KoboApiService'
 import {KoboSyncServer} from '../../../feature/kobo/KoboSyncServer'
 
-const answersFiltersValidation = yup.object({
+const apiAnswersFiltersValidation = yup.object({
   start: yup.date(),
   end: yup.date(),
 })
@@ -41,7 +41,7 @@ export class ControllerKoboApi {
   }
 
   readonly getAnswersFromLocalCsv = async (req: Request, res: Response, next: NextFunction) => {
-    const filters = await answersFiltersValidation.validate(req.query)
+    const filters = await apiAnswersFiltersValidation.validate(req.query)
     const sdk = await this.koboSdkGenerator.get('746f2270-d15a-11ed-afa1-0242ac120002')
     const localForm = await getCsv(sdk)
     const filtered = localForm.filter(_ =>
@@ -64,7 +64,7 @@ export class ControllerKoboApi {
 
   readonly getAnswers = async (req: Request, res: Response, next: NextFunction) => {
     const {id, formId} = await this.extractParams(req)
-    const filters = await answersFiltersValidation.validate(req.query)
+    const filters = await apiAnswersFiltersValidation.validate(req.query)
     const answers = await this.service.fetchAnswers(id, formId, filters)
     // .then(res => ({
     // ...res,

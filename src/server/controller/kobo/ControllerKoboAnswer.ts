@@ -12,7 +12,8 @@ export interface KoboAnswersFilters {
   ids?: KoboId[]
   filterBy?: {
     column: string
-    value: string
+    value: (string | null | undefined)[]
+    type?: 'array'
   }[]
 }
 
@@ -22,7 +23,8 @@ const answersFiltersValidation: ObjectSchema<KoboAnswersFilters> = yup.object({
   ids: yup.array().of(yup.string().required()).optional(),
   filterBy: yup.array(yup.object({
     column: yup.string().required(),
-    value: yup.string().required(),
+    value: yup.array().of(yup.string().nullable().optional()).required(),
+    type: yup.mixed<'array'>().oneOf(['array']).optional(),
   }))
 })
 
@@ -49,17 +51,17 @@ export class ControllerKoboAnswer {
   /** TODO need to handle public access */
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
     const {formId} = req.params
-    const filters = await answersFiltersValidation.validate(req.query)
-    const paginate = await validateApiPaginate.validate(req.query)
+    const filters = await answersFiltersValidation.validate(req.body)
+    const paginate = await validateApiPaginate.validate(req.body)
     const answers = await this.service.searchAnswers({formId, filters, paginate})
     res.send(answers)
   }
 
-  readonly searchByUser = async (req: Request, res: Response, next: NextFunction) => {
+  readonly searchByUserAccess = async (req: Request, res: Response, next: NextFunction) => {
     const {formId} = req.params
     const user = req.session.user
-    const filters = await answersFiltersValidation.validate(req.query)
-    const paginate = await validateApiPaginate.validate(req.query)
+    const filters = await answersFiltersValidation.validate(req.body)
+    const paginate = await validateApiPaginate.validate(req.body)
     const answers = await this.service.searchAnswersByUsersAccess({formId, filters, paginate, user})
     res.send(answers)
   }
