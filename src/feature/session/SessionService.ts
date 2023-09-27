@@ -80,7 +80,7 @@ export class SessionService {
   }
 
   readonly saveActivity = async ({email, detail}: {email?: string, detail?: string}) => {
-    const user = await this.prisma.user.findUnique({where: {email}})
+    const user = email ? await this.prisma.user.findUnique({where: {email}}) : undefined
     return this.prisma.userActivity.create({
       data: {
         userId: user?.id,
