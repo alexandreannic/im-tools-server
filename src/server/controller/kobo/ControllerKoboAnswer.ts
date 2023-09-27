@@ -39,12 +39,13 @@ export class ControllerKoboAnswer {
   readonly updateTag = async (req: Request, res: Response, next: NextFunction) => {
     const params = await yup.object({
       formId: yup.string().required(),
-      answerId: yup.number().required(),
     }).validate(req.params)
-    const {tags} = await yup.object({
+    const body = await yup.object({
+      answerIds: yup.array().of(yup.string().required()).required(),
       tags: yup.mixed().required(),
     }).validate(req.body)
-    const data = await this.service.updateTags({...params, tags: tags as any})
+
+    const data = await this.service.updateTags({...params, ...body})
     res.send(data)
   }
 

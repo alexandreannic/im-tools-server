@@ -23,7 +23,7 @@ model KoboForm {
   serverId    String
   createdAt   DateTime      @default(now())
   updatedAt   DateTime?
-  updatedBy  String?
+  updatedBy   String?
   uploadedBy  String?
   KoboAnswers KoboAnswers[]
 }
@@ -79,17 +79,26 @@ model MpcaPaymentToolAnswers {
 }
 
 model User {
-  id              String    @id @default(uuid())
-  email           String    @unique
+  id              String         @id @default(uuid())
+  email           String         @unique
   createdBy       String?
-  createdAt       DateTime  @default(now())
+  createdAt       DateTime       @default(now())
   lastConnectedAt DateTime?
   accessToken     String?
   name            String?
   drcJob          String?
   drcOffice       String?
-  admin           Boolean   @default(false)
+  admin           Boolean        @default(false)
   officer         String?
+  activities      UserActivity[]
+}
+
+model UserActivity {
+  id     String   @id @default(uuid())
+  at     DateTime @default(now())
+  user   User?    @relation(fields: [userId], references: [id])
+  detail String?
+  userId String?
 }
 
 model MpcaWfpDeduplicationIdMapping {

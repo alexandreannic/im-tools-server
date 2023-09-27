@@ -1,6 +1,6 @@
 import {KoboForm, Prisma, PrismaClient} from '@prisma/client'
 import {ApiPaginate, ApiPagination, defaultPagination, toApiPaginate} from '../../core/Type'
-import {DbKoboAnswer, KoboAnswerMetaData, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
+import {DbKoboAnswer, KoboAnswerId, KoboAnswerMetaData, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
 import XlsxPopulate from 'xlsx-populate'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
@@ -268,31 +268,29 @@ export class KoboService {
     workbook.toFileAsync(`/Users/alexandreac/Workspace/_humanitarian/im-tools-server/${fileName}.xlsx`, {password})
   }
 
-  readonly updateTags = async ({formId, answerId, tags}: {formId: KoboId, answerId: number, tags: Record<string, any>}) => {
-    const answer = await this.prisma.koboAnswers.findMany({
+  readonly updateTags = async ({formId, answerIds, tags}: {formId: KoboId, answerIds: KoboAnswerId[], tags: Record<string, any>}) => {
+    const answers = await this.prisma.koboAnswers.findMany({
       select: {
         id: true,
         tags: true,
       },
       where: {
         formId,
-        id: '' + answerId
-      }
-    }).then(_ => {
-      if (_.length !== 1) {
-        return Promise.reject(new AppError.InternalServerError(`${_.length} answer(s) for form ${formId} and id ${answerId}. Expected 1.`))
-      }
-      return _
-    }).then(_ => _[0])
-    const newTag = {...answer.tags as any, ...tags}
-    await this.prisma.koboAnswers.update({
-      where: {
-        id: answer.id,
-      },
-      data: {
-        tags: newTag,
+        id: {
+          in: answerIds
+        }
       }
     })
-    return newTag
+    await Promise.all(answers.map(answer => {
+      const newTag = {...answer.tags as any, ...tags}
+      return this.prisma.koboAnswers.update({
+        where: {
+          id: answer.id,
+        },
+        data: {
+          tags: newTag,
+        }
+      })
+    }))
   }
 }
