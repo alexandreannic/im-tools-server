@@ -56,4 +56,12 @@ export class ControllerSession extends Controller {
     }
     res.send(req.session.user)
   }
+
+  readonly track = async (req: Request, res: Response, next: NextFunction) => {
+    const body = await yup.object({
+      detail: yup.string().optional(),
+    }).validate(req.body)
+    await this.service.saveActivity({email: req.session.user?.email, detail: body.detail})
+    res.send()
+  }
 }
