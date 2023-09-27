@@ -102,7 +102,7 @@ export const getRoutes = (
   try {
     router.get('/', errorCatcher(main.htmlStats))
 
-    router.post('/session/track', auth(), errorCatcher(session.track))
+    router.post('/session/track', errorCatcher(session.track))
     router.post('/session/login', errorCatcher(session.login))
     router.post('/session/connect-as', auth({adminOnly: true}), errorCatcher(session.connectAs))
     router.post('/session/connect-as-revert', auth(), errorCatcher(session.revertConnectAs))
