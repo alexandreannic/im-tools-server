@@ -1,5 +1,5 @@
 import {MpcaPaymentTool, MpcaPaymentToolAnswers, PrismaClient} from '@prisma/client'
-import {UUID} from '../../core/Type'
+import {UUID} from '../../../core/Type'
 import {MpcaPaymentEntity, MpcaPaymentUpdate} from './MpcaPayment'
 
 const mapPayment = ({answers, ..._}: MpcaPaymentTool & {answers: MpcaPaymentToolAnswers[]}): MpcaPaymentEntity => ({

@@ -1,4 +1,4 @@
-import {ProtHHS_2_1} from './ProtHHS_2_1'
+import {Protection_Hhs2_1} from './Protection_Hhs2_1'
 
 
 const extractQuestionName = (_: Record<string, any>) => {
@@ -11,7 +11,7 @@ const extractQuestionName = (_: Record<string, any>) => {
   return output
 }
 
-export const mapProtHHS_2_1 = (_: Record<keyof ProtHHS_2_1, any>): ProtHHS_2_1 => ({
+export const mapProtection_Hhs2_1 = (_: Record<keyof Protection_Hhs2_1, any>): Protection_Hhs2_1 => ({
 	..._,
 	how_many_ind: _.how_many_ind ? +_.how_many_ind : undefined,
 	hh_age_1: _.hh_age_1 ? +_.hh_age_1 : undefined,
@@ -90,4 +90,4 @@ export const mapProtHHS_2_1 = (_: Record<keyof ProtHHS_2_1, any>): ProtHHS_2_1 =
 	what_are_the_reasons_preventing_children_in_your_household_from_regularly_attending_education_services: _.what_are_the_reasons_preventing_children_in_your_household_from_regularly_attending_education_services?.split(' '),
 	what_are_your_main_concerns_regarding_your_accommodation: _.what_are_your_main_concerns_regarding_your_accommodation?.split(' '),
 	what_are_the_barriers_to_accessing_health_services: _.what_are_the_barriers_to_accessing_health_services?.split(' '),
-}) as ProtHHS_2_1
+}) as Protection_Hhs2_1

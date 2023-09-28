@@ -14,14 +14,21 @@ export interface KoboAnswerStatus {
   SubmittedViaWeb: 'submitted_via_web'
 }
 
-export type KoboAnswerAttachements = any
+export type KoboAttachment = any
+// export type KoboAttachment = {
+//   download_url: string
+//   filename: string
+//   download_small_url: string
+//   id: string
+// }
+
 export type KoboAnswerGeolocation = any
 export type KoboAnswerTags = any
 export type KoboAnswerNotes = any
 
 export type KoboAnswerMetaData = Pick<ApiKoboAnswerMetaData, 'start' | 'end'> & {
   version: ApiKoboAnswerMetaData['__version__']
-  attachments: KoboAnswerAttachements
+  attachments?: KoboAttachment[]
   geolocation: ApiKoboAnswerMetaData['_geolocation']
   submissionTime: ApiKoboAnswerMetaData['_submission_time']
   id: ApiKoboAnswerMetaData['_id']
@@ -52,7 +59,7 @@ interface ApiKoboAnswerMetaData {
   __version__: string,
   _xform_id_string: string,
   _uuid: UUID,
-  _attachments: KoboAnswerAttachements[],
+  _attachments?: KoboAttachment[],
   _status: KoboAnswerStatus,
   _geolocation: KoboAnswerGeolocation,
   _submission_time: Date,
@@ -73,7 +80,7 @@ interface ApiKoboAnswerMetaData {
 // }
 export type KoboAnswer<T extends Record<string, any> = Record<string, any>> = KoboAnswerMetaData & {answers: T}
 
-export type KoboAnswer2<T extends Record<string, any> = Record<string, string | undefined>> = (KoboAnswerMetaData & T)
+export type KoboAnswerFlat<T extends Record<string, any> = Record<string, string | undefined>> = (KoboAnswerMetaData & T)
 
 export type DbKoboAnswer<T extends Record<string, any> = Record<string, any>> = KoboAnswer<T> & {formId: KoboId}
 

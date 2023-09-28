@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from 'express'
 import * as y from 'yup'
-import {MpcaPaymentService} from '../../feature/mpcaPayment/MpcaPaymentService'
+import {MpcaPaymentService} from '../../feature/mpca/mpcaPayment/MpcaPaymentService'
 
 export class ControllerMpcaPayment {
 

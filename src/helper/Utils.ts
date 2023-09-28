@@ -1,5 +1,5 @@
 import {v4} from 'uuid'
-import {format} from 'date-fns'
+import {addMonths, differenceInMonths, format, isAfter, isBefore, startOfMonth} from 'date-fns'
 import {ca} from 'date-fns/locale'
 import * as _yup from 'yup'
 
@@ -139,6 +139,20 @@ export const PromiseSequence = async <T>(promises: Iterable<T | PromiseLike<T>>)
     res.push(await p)
   }
   return res
+}
+
+export const getOverlapMonths = (startDate1: Date, endDate1: Date, startDate2: Date, endDate2: Date) => {
+  const start1 = startOfMonth(startDate1)
+  const end1 = startOfMonth(endDate1)
+  const start2 = startOfMonth(startDate2)
+  const end2 = startOfMonth(endDate2)
+
+  const overlapStart = isBefore(start1, start2) ? start2 : start1
+  const overlapEnd = isAfter(end1, end2) ? end2 : end1
+
+  const overlapMonths = differenceInMonths(addMonths(overlapEnd, 1), overlapStart)
+
+  return overlapMonths > 0 ? overlapMonths : 0
 }
 
 // const x = Promise.resolve([

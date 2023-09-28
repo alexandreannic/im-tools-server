@@ -14,6 +14,12 @@ import {AccessService} from '../access/AccessService'
 import {AppFeatureId} from '../access/AccessType'
 import {AppError} from '../../helper/Errors'
 import * as util from 'util'
+import {appConf} from '../../core/conf/AppConf'
+
+export interface KoboAnswerFilter {
+  filters?: KoboAnswersFilters,
+  paginate?: ApiPagination
+}
 
 export class KoboService {
 
@@ -54,11 +60,11 @@ export class KoboService {
 
   readonly searchAnswers = ({
     formId,
-    filters,
+    filters = {},
     paginate = defaultPagination,
   }: {
     formId: string,
-    filters: KoboAnswersFilters,
+    filters?: KoboAnswersFilters,
     paginate?: ApiPagination
   }): Promise<ApiPaginate<DbKoboAnswer>> => {
     return this.prisma.koboAnswers.findMany({
@@ -115,7 +121,7 @@ export class KoboService {
       'dnipro',
     ]
     const requests = oblasts.map(oblast => this.searchAnswers({
-      formId: koboFormsId.prod.protectionHh_2_1,
+      formId: koboFormsId.prod.protection_Hhs2_1,
       filters: {
         start: start,
         end: end,
@@ -126,7 +132,7 @@ export class KoboService {
       }
     }))
     const requestAll = this.searchAnswers({
-      formId: koboFormsId.prod.protectionHh_2_1,
+      formId: koboFormsId.prod.protection_Hhs2_1,
       filters: {start: start, end: end}
     })
     await Promise.all([requestAll, ...requests]).then(_ => _.map(_ => _.data)).then(([
@@ -140,41 +146,41 @@ export class KoboService {
       return [
         this.generateXLSFromAnswers({
           fileName: filePattern('all'),
-          formId: koboFormsId.prod.protectionHh_2_1,
+          formId: koboFormsId.prod.protection_Hhs2_1,
           langIndex: 0,
           data: all,
         }),
         this.generateXLSFromAnswers({
           fileName: filePattern('chernihivska'),
-          formId: koboFormsId.prod.protectionHh_2_1,
+          formId: koboFormsId.prod.protection_Hhs2_1,
           langIndex: 0,
           data: chernihiv,
           password: 'HHDataCEJ$!', //113
         }),
         this.generateXLSFromAnswers({
           fileName: filePattern('lvivska'),
-          formId: koboFormsId.prod.protectionHh_2_1,
+          formId: koboFormsId.prod.protection_Hhs2_1,
           langIndex: 0,
           data: lviv,
           password: 'YW!(78', // 143
         }),
         this.generateXLSFromAnswers({
           fileName: filePattern('kharkivska'),
-          formId: koboFormsId.prod.protectionHh_2_1,
+          formId: koboFormsId.prod.protection_Hhs2_1,
           langIndex: 0,
           data: kharkiv,
           password: 'ZK38^&', // 59
         }),
         this.generateXLSFromAnswers({
           fileName: filePattern('mykolaivska'),
-          formId: koboFormsId.prod.protectionHh_2_1,
+          formId: koboFormsId.prod.protection_Hhs2_1,
           langIndex: 0,
           data: mykolaiv,
           password: 'b53d', // 104
         }),
         this.generateXLSFromAnswers({
           fileName: filePattern('dnipropetrovska'),
-          formId: koboFormsId.prod.protectionHh_2_1,
+          formId: koboFormsId.prod.protection_Hhs2_1,
           langIndex: 0,
           data: dnipro,
           password: 'PL09!@', // 47
@@ -265,7 +271,7 @@ export class KoboService {
       'fontColor': '6e7781',
     })
 
-    workbook.toFileAsync(`/Users/alexandreac/Workspace/_humanitarian/im-tools-server/${fileName}.xlsx`, {password})
+    workbook.toFileAsync(appConf.rootProjectDir + `/${fileName}.xlsx`, {password})
   }
 
   readonly updateTags = async ({formId, answerIds, tags}: {formId: KoboId, answerIds: KoboAnswerId[], tags: Record<string, any>}) => {

@@ -1,12 +1,12 @@
 import {PrismaClient} from '@prisma/client'
-import {ProtHHS_2_1Options} from '../generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1Options'
 import {DbKoboFormHelper} from './Helper'
-import {ProtHHS_2_1} from '../generatedKoboInterface/ProtHHS_2_1/ProtHHS_2_1'
 import {Enum, map} from '@alexandreannic/ts-utils'
 import {endOfDay, endOfMonth, parse, startOfMonth} from 'date-fns'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
+import {Protection_Hhs2_1Options} from '../generatedKoboInterface/Protection_Hhs2_1/Protection_Hhs2_1Options'
+import {Protection_Hhs2_1} from '../generatedKoboInterface/Protection_Hhs2_1/Protection_Hhs2_1'
 
-type Office = typeof ProtHHS_2_1Options['staff_to_insert_their_DRC_office']
+type Office = typeof Protection_Hhs2_1Options['staff_to_insert_their_DRC_office']
 
 /**
  * From Romane reporting file
@@ -72,20 +72,20 @@ export class DbHelperProtectionHhs {
     const end = endOfDay(endOfMonth(parse(month, 'yyyy-MM', new Date())))
     const data = await this.prisma.koboAnswers.findMany({
       where: {
-        formId: koboFormsId.prod.protectionHh_2_1,
+        formId: koboFormsId.prod.protection_Hhs2_1,
         end: {
           gte: start,
           lt: end,
         },
       }
-    }).then(_ => _.map(DbKoboFormHelper.definedJsonType<ProtHHS_2_1>()))
+    }).then(_ => _.map(DbKoboFormHelper.definedJsonType<Protection_Hhs2_1>()))
     await Promise.all(data
       .filter(_ => !!_.answers.staff_to_insert_their_DRC_office)
       .map(_ => {
         if (!reporting[month]) {
           throw new Error(`Month ${month} not handled.`)
         }
-        return map(reporting[month][_.answers.staff_to_insert_their_DRC_office], reporting => {
+        return map(reporting[month][_.answers.staff_to_insert_their_DRC_office!], reporting => {
           const donor: {ipt: Donor[], ai?: Donor} = {ipt: []}
           Enum.entries(reporting).forEach(([k, v], donorIndex) => {
             if (v.ipt === 1)

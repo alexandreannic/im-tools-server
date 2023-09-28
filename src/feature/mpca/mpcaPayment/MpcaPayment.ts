@@ -1,4 +1,4 @@
-import {KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
+import {KoboId} from '../../connector/kobo/KoboClient/type/KoboAnswer'
 
 export interface MpcaPaymentEntity {
   id: string

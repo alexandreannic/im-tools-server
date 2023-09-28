@@ -21,6 +21,7 @@ import {AppError} from '../helper/Errors'
 import {appConf} from '../core/conf/AppConf'
 import apicache from 'apicache'
 import {ControllerProxy} from './controller/ControllerProxy'
+import {ControllerMpca} from './controller/ControllerMpca'
 
 export interface AuthenticatedRequest extends Request {
   user?: UserSession
@@ -60,9 +61,8 @@ export const getRoutes = (
   //   legalAidSdk,
   //   logger,
   // )
-  const mpcaPayment = new ControllerMpcaPayment(
-    services.mpcaPayment
-  )
+  const mpcaPayment = new ControllerMpcaPayment(services.mpcaPayment)
+  const mpca = new ControllerMpca(prisma)
   const main = new ControllerMain(services.stats)
   const koboForm = new ControllerKoboForm(prisma)
   const koboServer = new ControllerKoboServer(prisma)
@@ -144,6 +144,7 @@ export const getRoutes = (
     router.get('/kobo-api/:id/:formId', cache('24 hour'), auth(), errorCatcher(koboApi.getForm))
     router.get('/kobo-api/:id/:formId/:answerId/edit-url', auth(), errorCatcher(koboApi.edit))
 
+    router.post('/mpca/search', auth(), cache('24 hour'), errorCatcher(mpca.search))
     router.put('/mpca-payment', auth(), errorCatcher(mpcaPayment.create))
     router.post('/mpca-payment/:id', auth(), errorCatcher(mpcaPayment.update))
     router.get('/mpca-payment', auth(), errorCatcher(mpcaPayment.getAll))

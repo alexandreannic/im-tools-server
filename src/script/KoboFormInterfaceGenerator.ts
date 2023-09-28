@@ -10,75 +10,74 @@ interface KoboInterfaceGeneratorParams {
   outDir: string,
   formName: string,
   formId: string,
-  skipQuestionType?: string[]
+  skipQuestionTyping?: string[]
   overrideOptionsByQuestion?: Record<string, Record<string, string[]>>
   overrideAllOptions?: Record<string, string[]>
 }
 
 export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) => {
   const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
-    {formName: 'RapidResponseMechanism', formId: koboFormsId.prod.rapidResponseMechanism},
-    {formName: 'Shelter_CashForRepair', formId: koboFormsId.prod.shelter_cashForRepair},
+    {formName: 'Bn_cashForRentApplication', formId: koboFormsId.prod.bn_cashForRentApplication},
+    {formName: 'Bn_RapidResponse', formId: koboFormsId.prod.bn_RapidResponse},
+    {formName: 'Shelter_cashForRepair', formId: koboFormsId.prod.shelter_cashForRepair},
     {
-      formName: 'MealCfmInternal', formId: koboFormsId.prod.mealCfmInternal, skipQuestionType: [
+      formName: 'Meal_CfmInternal', formId: koboFormsId.prod.mealCfmInternal, skipQuestionTyping: [
         'ben_det_hromada',
         'ben_det_raion',
       ]
     },
     {
-      formName: 'MealCfmExternal', formId: koboFormsId.prod.mealCfmExternal, skipQuestionType: [
-        'ben_det_hromada',
-        'ben_det_raion',
-      ]
-    },
-    // {formName: 'BNRE', formId: 'aKgX4MNs6gCemDQKPeXxY8'},
-    // {formName: 'MealVisitMonitoring', formId: koboFormsId.prod.mealVisitMonitoring,},
-    {
-      formName: 'Shelter_NTA', formId: koboFormsId.prod.shelterNTA, skipQuestionType: [
+      formName: 'Meal_CfmExternal', formId: koboFormsId.prod.mealCfmExternal, skipQuestionTyping: [
         'ben_det_hromada',
         'ben_det_raion',
       ]
     },
     {
-      formName: 'Shelter_TA', formId: koboFormsId.prod.shelterTA, skipQuestionType: [
+      formName: 'Shelter_NTA', formId: koboFormsId.prod.shelter_NTA, skipQuestionTyping: [
         'ben_det_hromada',
         'ben_det_raion',
       ]
     },
-    // {
-    //   formName: 'ProtHHS_2_1',
-    //   formId: 'aQDZ2xhPUnNd43XzuQucVR',
-    //   overrideAllOptions: {
-    //     other_specify: ['Other'],
-    //   },
-    //   overrideOptionsByQuestion: {
-    //     what_are_the_barriers_to_accessing_health_services: {
-    //       safety_risks_associated_with_access_to_presence_at_health_facility: ['Safety risks associated with access to/presence at health facility'],
-    //     },
-    //     what_are_your_main_concerns_regarding_your_accommodation: {
-    //       'risk_of_eviction': [`Risk of eviction`],
-    //       'accommodations_condition': [`Accommodation’s condition`],
-    //       'overcrowded_lack_of_privacy': [`Overcrowded/Lack of privacy`],
-    //       'lack_of_functioning_utilities': [`Lack of functioning utilities`],
-    //       'lack_of_connectivity': [`Lack of connectivity`],
-    //       'security_and_safety_risks': [`Security and safety risks`],
-    //       'lack_of_financial_compensation_or_rehabilitation_for_damage_or_destruction_of_housing': [`Lack of support for damaged housing`],
-    //     },
-    //     what_is_the_type_of_your_household: {
-    //       'one_person_household': [`One person household`],
-    //       'couple_without_children': [`Couple without children`],
-    //       'couple_with_children': [`Couple with children`],
-    //       'mother_with_children': [`Mother with children`],
-    //       'father_with_children': [`Father with children`],
-    //       'extended_family': [`Extended family`],
-    //     }
-    //   }
-    // },
-    // {formName: 'MPCA_NFI', formId: 'a4Sx3PrFMDAMZEGsyzgJJg'},
-    // {formName: 'MPCA_NFI_NAA', formId: 'aBGVXW2N26DaLehmKneuyB'},
-    // {formName: 'MPCA_NFI_Myko', formId: 'a8WAWB9Yxu2jkgk4Ei8GTk'},
-    // {formName: 'MPCA_NFI_Old', formId: 'a3h8Ykmp2C8NFiw5DDGBLz'},
-    // {formName: 'ProtHHS_2_0', formId: 'aRHsewShwZhXiy8jrBj9zf'},
+    {
+      formName: 'Shelter_TA', formId: koboFormsId.prod.shelter_TA, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Protection_Hhs2_1',
+      formId: koboFormsId.prod.protection_Hhs2_1,
+      overrideAllOptions: {
+        other_specify: ['Other'],
+      },
+      overrideOptionsByQuestion: {
+        what_are_the_barriers_to_accessing_health_services: {
+          safety_risks_associated_with_access_to_presence_at_health_facility: ['Safety risks associated with access to/presence at health facility'],
+        },
+        what_are_your_main_concerns_regarding_your_accommodation: {
+          'risk_of_eviction': [`Risk of eviction`],
+          'accommodations_condition': [`Accommodation’s condition`],
+          'overcrowded_lack_of_privacy': [`Overcrowded/Lack of privacy`],
+          'lack_of_functioning_utilities': [`Lack of functioning utilities`],
+          'lack_of_connectivity': [`Lack of connectivity`],
+          'security_and_safety_risks': [`Security and safety risks`],
+          'lack_of_financial_compensation_or_rehabilitation_for_damage_or_destruction_of_housing': [`Lack of support for damaged housing`],
+        },
+        what_is_the_type_of_your_household: {
+          'one_person_household': [`One person household`],
+          'couple_without_children': [`Couple without children`],
+          'couple_with_children': [`Couple with children`],
+          'mother_with_children': [`Mother with children`],
+          'father_with_children': [`Father with children`],
+          'extended_family': [`Extended family`],
+        }
+      }
+    },
+    {formName: 'Bn_Re', formId: koboFormsId.prod.bn_Re},
+    {formName: 'Bn_OldMpcaNfi', formId: koboFormsId.prod.bn_OldMpcaNfi},
+    {formName: 'Bn_OldMpcaNfiNaa', formId: koboFormsId.prod.bn_OldMpcaNfiNaa},
+    {formName: 'Bn_OldMpcaNfiMyko', formId: koboFormsId.prod.bn_OldMpcaNfiMyko},
+    {formName: 'Protection_Hhs2', formId: koboFormsId.prod.protection_Hhs2},
   ]
   return Promise.all(forms.map(f => new KoboInterfaceGenerator(koboSdk, {
     outDir,
@@ -198,8 +197,8 @@ const extractQuestionName = (_: Record<string, any>) => {
       .map(x => {
         const lastQuestionNameHavingOptionId = Arr(indexOptionId[x.select_from_list_name ?? '']).last?.name
         const basicQuestionTypeMapping = (lastQuestionNameHavingOptionId?: string) => ({
-          'select_one': () => 'undefined | ' + (this.options.skipQuestionType?.includes(x.name) ? 'string' : `Opt<'${lastQuestionNameHavingOptionId}'>`),
-          'select_multiple': () => 'undefined | ' + (this.options.skipQuestionType?.includes(x.name) ? 'string[]' : `Opt<'${lastQuestionNameHavingOptionId}'>[]`),
+          'select_one': () => 'undefined | ' + (this.options.skipQuestionTyping?.includes(x.name) ? 'string' : `Opt<'${lastQuestionNameHavingOptionId}'>`),
+          'select_multiple': () => 'undefined | ' + (this.options.skipQuestionTyping?.includes(x.name) ? 'string[]' : `Opt<'${lastQuestionNameHavingOptionId}'>[]`),
           'integer': () => 'number | undefined',
           'decimal': () => 'number | undefined',
           'text': () => 'string | undefined',
@@ -216,7 +215,7 @@ const extractQuestionName = (_: Record<string, any>) => {
 
           }
         }, () => 'string')
-        return (x.label ? `  // [${x.type}] ${x.label[0]}\n` : '')
+        return (x.label ? `  // [${x.type}] ${x.label[0]?.replace(/\s/g, ' ')}\n` : '')
           + `  ${x.name ?? x.$autoname}: ${type},`
       })
     return `import {${this.options.formName}Options} from './${this.options.formName}Options'\n\n`
@@ -228,7 +227,7 @@ const extractQuestionName = (_: Record<string, any>) => {
     const indexOptionId = Arr(survey).reduceObject<Record<string, string>>(_ => [_.select_from_list_name ?? '', _.name])
     const res: Record<string, Record<string, string>> = {}
     choices.forEach(choice => {
-      if (this.options.skipQuestionType?.includes(indexOptionId[choice.list_name])) return
+      if (this.options.skipQuestionTyping?.includes(indexOptionId[choice.list_name])) return
       const questionName = indexOptionId[choice.list_name]
       if (!res[questionName]) {
         res[questionName] = {}
@@ -263,6 +262,6 @@ const extractQuestionName = (_: Record<string, any>) => {
   )
   await generateKoboInterface(
     koboSdk,
-    '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/db/generatedKoboInterface',
+    appConf.rootProjectDir + '/src/db/generatedKoboInterface',
   )
 })()

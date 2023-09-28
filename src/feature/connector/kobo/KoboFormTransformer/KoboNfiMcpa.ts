@@ -116,7 +116,7 @@ export const mapNfisCount = (n: Partial<NFIs<string>>): NFIs<number> => {
 }
 
 export const koboTransformerNfiMcpa = new KoboTransformer<KoboNfiMcpa>(
-  koboFormsId.prod.fcrmMpca,
+  koboFormsId.prod.bn_OldMpcaNfi,
   {
     oblast: 'module_eligibility_screening/oblast',
     program: 'group_xp17b32/Programme',

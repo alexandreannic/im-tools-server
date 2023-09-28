@@ -6,15 +6,11 @@ import {ServiceNfi} from './server/services/ServiceNfi'
 import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
-import {MpcaPaymentService} from './feature/mpcaPayment/MpcaPaymentService'
+import {MpcaPaymentService} from './feature/mpca/mpcaPayment/MpcaPaymentService'
 import {DbInit} from './db/DbInit'
 import {logger} from './helper/Logger'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
-import * as cron from 'node-cron'
-import {KoboApiService} from './feature/kobo/KoboApiService'
 import {ScheduledTask} from './scheduledTask/ScheduledTask'
-import {KoboMigrateHHS2} from './script/KoboMigrateHHS2'
-import {koboFormsId, koboServerId} from './core/conf/KoboFormsId'
 
 const initServices = (
   koboClient: KoboSdk,
