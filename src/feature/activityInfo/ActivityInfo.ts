@@ -5,6 +5,7 @@ import {Arr, fnSwitch} from '@alexandreannic/ts-utils'
 import fs from 'fs'
 import {capitalizeFirstLetter} from '../../helper/Utils'
 import columnsListMap = AiProtectionHhs.columnsListMap
+import {appConf} from '../../core/conf/AppConf'
 
 export const runAi = {
   washRMM: () => runAI({
@@ -64,7 +65,7 @@ const runAI = async ({
   excludedQuestionPatternOptionsBecauseToLongOrIrrelevant = [],
   filterSpecificOptions = {},
   skipQuestionsPattern = [],
-  outputDir = '/Users/alexandreac/Workspace/_humanitarian/im-tools-server/src/feature/activityInfo/generatedModels',
+  outputDir = appConf.rootProjectDir + '/src/feature/activityInfo/generatedModels',
 }: {
   optionsLimit?: number
   ignoredQuestions?: string[]

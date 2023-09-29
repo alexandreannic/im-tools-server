@@ -41,8 +41,8 @@ export class DbInit {
       await KoboMigrateHHS2({
         prisma: this.prisma,
         serverId: koboServerId.prod,
-        oldFormId: koboFormsId.prod.protectionHh_2,
-        newFormId: koboFormsId.prod.protectionHh_2_1,
+        oldFormId: koboFormsId.prod.protection_Hhs2,
+        newFormId: koboFormsId.prod.protection_Hhs2_1,
       }).run()
   }
 
@@ -128,7 +128,7 @@ export class DbInit {
         level: FeatureAccessLevel.Write,
         featureId: AppFeatureId.kobo_database,
         params: KoboDatabaseFeatureParams.create({
-          koboFormId: koboFormsId.prod.mpcaEmergencyRegistration,
+          koboFormId: koboFormsId.prod.bn_RapidResponse,
           filters: {}
         }),
       },

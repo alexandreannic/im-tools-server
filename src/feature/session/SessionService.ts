@@ -85,6 +85,7 @@ export class SessionService {
       data: {
         userId: user?.id,
         detail,
+        at: new Date(),
       }
     })
   }

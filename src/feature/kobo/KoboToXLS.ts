@@ -4,6 +4,7 @@ import XlsxPopulate from 'xlsx-populate'
 import {convertNumberIndexToLetter} from '../../helper/Utils'
 import {PrismaClient} from '@prisma/client'
 import {KoboService} from './KoboService'
+import {appConf} from '../../core/conf/AppConf'
 
 /** @deprecated??*/
 export class KoboToXLS {
@@ -57,7 +58,7 @@ export class KoboToXLS {
       'fontColor': '6e7781',
     })
 
-    workbook.toFileAsync(`/Users/alexandreac/Workspace/_humanitarian/im-tools-server/${fileName}.xlsx`, {password})
+    workbook.toFileAsync(appConf.rootProjectDir + `/${fileName}.xlsx`, {password})
   }
 
   private readonly styleDateColumn = (allColumns: string[], columnName: string) => {

@@ -7,6 +7,7 @@ import {AppFeatureId} from '../access/AccessType'
 import {Arr} from '@alexandreannic/ts-utils'
 import {PromisePool} from '@supercharge/promise-pool'
 import {appConf} from '../../core/conf/AppConf'
+import {WfpDeduplicationHelper} from './WfpDeduplicationType'
 
 export interface WfpDbSearch {
   limit?: number
@@ -24,7 +25,6 @@ export class WfpDeduplicationService {
     private access: AccessService = new AccessService(prisma),
     private conf = appConf,
   ) {
-
   }
 
   readonly searchByUserAccess = async (search: WfpDbSearch, user: UserSession) => {
@@ -33,12 +33,16 @@ export class WfpDeduplicationService {
     const filteredOffices = (user.admin || authorizedOffices.length === 0)
       ? search.offices
       : authorizedOffices.filter(_ => !search.offices || search.offices.includes(_))
+    return this.search({...search, offices: filteredOffices})
+  }
+
+  readonly search = async (search: WfpDbSearch = {}) => {
     const where = {
       createdAt: {
         gte: search.createdAtStart,
         lte: search.createdAtEnd,
       },
-      office: {in: filteredOffices},
+      office: {in: search.offices},
       beneficiary: {
         taxId: {in: search.taxId}
       },
@@ -61,7 +65,7 @@ export class WfpDeduplicationService {
         }
       }),
     ])
-    return DbHelper.toPaginate(totalSize)(data)
+    return DbHelper.toPaginate(totalSize)(data.map(WfpDeduplicationHelper.map))
   }
 
   readonly uploadTaxId = async (filePath: string) => {

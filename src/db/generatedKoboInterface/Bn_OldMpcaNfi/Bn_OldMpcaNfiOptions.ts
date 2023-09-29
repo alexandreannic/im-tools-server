@@ -1,16 +1,24 @@
-export const BNREOptions = {
-back_office: {
-	'lwo': `Lviv (LWO)`,
-	'chj': `Chernihiv (CHJ)`,
-	'dnk': `Dnipro (DNK)`,
-	'hrk': `Kharkiv (HRK)`,
-	'nlv': `Mykloaiv (NLV)`
+export const Bn_OldMpcaNfiOptions = {
+Programme: {
+	'mpca': `MPCA`,
+	'mpca___nfi': `MPCA + NFI`,
+	'nfi': `NFI`,
+	'cash_for_rent': `Cash-for-rent`,
+	'mpca___cash_for_rent': `MPCA + Cash-for-rent`
 },
-back_enum: {
-	'oleksandr_havrylov': `Oleksandr Havrylov`,
-	'ievgen_kylymenniy': `Ievgen Kylymenniy`,
-	'oleksandr_shmunk': `Oleksandr Shmunk`,
-	'inna_kovalchuk': `Inna Kovalchuk`,
+DRC_project: {
+	'bha_project': `BHA - UKR-000284`
+},
+drc_base: {
+	'lwo': `Lviv (LWO)`,
+	'cwc': `Chernivtsi (CWC)`,
+	'chj': `Chernihiv (CEJ)`,
+	'plv': `Poltava (PLV)`,
+	'dnk': `Dnipro (DNK)`,
+	'iev': `Kyiv (IEV)`,
+	'hrk': `Kharkiv (HRK)`
+},
+staff_names: {
 	'dmytro_ivanov': `Dmytro Ivanov`,
 	'henadii_petrychenko': `Henadii Petrychenko`,
 	'nadiia_yudaieva': `Nadiia Yudaieva`,
@@ -20,14 +28,13 @@ back_enum: {
 	'viktoriia_lytvynova': `Viktoriia Lytvynova`,
 	'valerii_vietrov': `Valerii Vietrov`,
 	'daria_kokalia': `Daria Kokalia`,
-	'artem_chernukha_1': `Artem Chernukha`,
-	'lwo_ex1': `Extra 1`,
-	'lwo_ex2': `Extra 2`,
-	'polina_prusakova': `Polina Prusakova`,
-	'nlv_ex1': `Extra 1`,
-	'nlv_ex2': `Extra 2`,
+	'oleks_havrylov': `Oleks Havrylov`,
+	'vlad_zhukov': `Vlad Zhukov`,
+	'artem_chernukha': `Artem Chernukha`,
+	'maryna_dullovska': `Maryna Dullovska`,
 	'oleh_vyshnevskyi': `Oleh Vyshevskyi`,
 	'alina_bondarenko': `Alina Bondarenko`,
+	'danylo_palagno': `Danylo Palagno`,
 	'serhii_dolzhenko': `Serhii Dolzhenko`,
 	'viktoria_klymenko': `Viktoria Klymenko`,
 	'andrii_zahoruyev': `Andrii Zahoruyev`,
@@ -37,15 +44,11 @@ back_enum: {
 	'olha_osmukha': `Olha Osmukha`,
 	'halyna_diachenko': `Halyna Diachenko`,
 	'mariia_kozachko': `Mariia Kozachko`,
-	'dnk_ex1': `Extra 1`,
-	'dnk_ex2': `Extra 2`,
 	'yurii_volkov': `Yurii Volkov`,
 	'andrii_zagoruiev': `Andrii Zagoruiev`,
 	'olena_sydorenko': `Olena Sydorenko`,
 	'svitlana_smyrnova': `Svitlana Smyrnova`,
-	'tetiana_konovshii': `Tetiana Konovshii`,
-	'hrk_ex1': `Extra 1`,
-	'hrk_ex2': `Extra 2`,
+	'hennadii_kotsar': `Hennadii Kotsar`,
 	'dmytro_chernukha': `Dmytro Chernukha`,
 	'anastasiia_reshynska': `Anastasiia Reshynska`,
 	'nataliia_pushenko': `Nataliia Pushenko`,
@@ -54,67 +57,19 @@ back_enum: {
 	'tetiana_kolot': `Tetiana Kolot`,
 	'katerina_severin': `Katerina Severin`,
 	'maksim_sedun': `Maksim Sedun`,
-	'ivan_volynkin': `Ivan Volynkin`,
-	'chj_ex1': `Extra 1`,
-	'chj_ex2': `Extra 2`
+	'ivan_volynkin': `Ivan Volynkin`
 },
-back_donor: {
-	'uhf_chj': `UHF-4`,
-	'uhf_dnk': `UHF-4`,
-	'uhf_hrk': `UHF-4`,
-	'uhf_lwo': `UHF-4`,
-	'uhf_nlv': `UHF-4`,
-	'bha_lwo': `BHA`,
-	'bha_chj': `BHA`,
-	'bha_dnk': `BHA`,
-	'bha_hrk': `BHA`,
-	'bha_nlv': `BHA`,
-	'echo_chj': `ECHO`,
-	'echo_dnk': `ECHO`,
-	'echo_hrk': `ECHO`,
-	'echo_lwo': `ECHO`,
-	'echo_nlv': `ECHO`,
-	'novo_nlv': `Novo Nordisk`,
-	'okf_lwo': `OKF`,
-	'pool_chj': `Pooled Funds`,
-	'pool_dnk': `Pooled Funds`,
-	'pool_hrk': `Pooled Funds`,
-	'pool_lwo': `Pooled Funds`,
-	'pool_nlv': `Pooled Funds`
+BHA_area: {
+	'bha_area_idp': `IDP Host or Other Locations - high concentration of IDPs or conflict-affected persons.`,
+	'bha_area_conflict': `Conflict-Affected location - within 40KM of contact line.`,
+	'bha_area_formally': `Formally Occupied Area - formally occupied area since Feb. 2022.`,
+	'bha_area_evacuee': `Evacuee Hotspot - primary location of arrival from NGCA's.`
 },
-back_prog_type: {
-	'mpca_lwo': `MPCA`,
-	'nfi_lwo': `NFI`,
-	'cfr_lwo': `Cash for Rent`,
-	'cfe_lwo': `Cash for Education`,
-	'iwk_lwo': `Infant Winterclothing Kit`,
-	'ihk_lwo': `Infant Hygiene Kit`,
-	'esk_lwo': `Emergency Shelter Kit`,
-	'mpca_nlv': `MPCA`,
-	'nfi_nlv': `NFI`,
-	'esk_nlv': `Emergency Shelter Kit`,
-	'mpca_dnk': `MPCA`,
-	'nfi_dnk': `NFI`,
-	'cfr_dnk': `Cash for Rent`,
-	'esk_dnk': `Emergency Shelter Kit`,
-	'mpca_hrk': `MPCA`,
-	'nfi_hrk': `NFI`,
-	'esk_hrk': `Emergency Shelter Kit`,
-	'mpca_chj': `MPCA`,
-	'nfi_chj': `NFI`,
-	'cfr_chj': `Cash for Rent`,
-	'esk_chj': `Emergency Shelter Kit`
+confirm_truth: {
+	'1': `Yes`,
+	'2': `No`
 },
-pay_det_tax_exempt: {
-	'yes': `A = Yes`,
-	'no': `B = No`
-},
-back_refer_who: {
-	'prot': `A = Protection`,
-	'legal': `B = Legal`,
-	'shelter': `C = Shelter`
-},
-ben_det_prev_oblast: {
+oblast: {
 	'cherkaska': `Cherkaska`,
 	'chernihivska': `Chernihivska`,
 	'chernivetska': `Chernivetska`,
@@ -141,7 +96,7 @@ ben_det_prev_oblast: {
 	'zaporizka': `Zaporizka`,
 	'zhytomyrska': `Zhytomyrska`
 },
-ben_det_raion: {
+raion: {
 	'zvenyhorodskyi': `Zvenyhorodskyi`,
 	'zolotoniskyi': `Zolotoniskyi`,
 	'umanskyi': `Umanskyi`,
@@ -272,7 +227,7 @@ ben_det_raion: {
 	'korostenskyi': `Korostenskyi`,
 	'novohrad-volynskyi': `Novohrad-Volynskyi`
 },
-ben_det_hromada: {
+hromada: {
 	'abrykosivska': `Abrykosivska`,
 	'abrykosivska_2': `Abrykosivska`,
 	'adzhamska': `Adzhamska`,
@@ -2044,87 +1999,307 @@ ben_det_hromada: {
 	'zymohirivska': `Zymohirivska`,
 	'zymynska': `Zymynska`
 },
-ben_det_res_stat: {
-	'idp': `A = Internally Displaced Person (IDP)`,
-	'long_res': `B = Long - Term Resident`,
-	'ret': `C = Returnee`,
-	'ref_asy': `D = Refugee/asylum seeker`
+status: {
+	'status_idp': `Internally Displaced Person (IDP)`,
+	'status_conflict': `Conflict-Affected person`,
+	'status_returnee': `Returnee`,
+	'status_refugee': `Refugee/asylum seeker`
 },
-hh_char_hh_det_gender: {
-	'male': `A = Male`,
-	'female': `B = Female`
+Does_the_beneficiary_have_an_i: {
+	'yes': `Yes`,
+	'no': `No`
 },
-hh_char_civ_stat: {
-	'single': `A = Single (Never Married)`,
-	'dom_part': `B = Not Married but Living in Domestic Partnership`,
-	'married': `C = Married`,
-	'div_sep': `D = Divorced/Seperated`,
-	'widow': `E = Widowed`,
-	'abandoned': `F = Abandoned`
+Other_ID_identification: {
+	'national_passport__book': `National Passport (book)`,
+	'national_passport__card': `National Passport (card)`,
+	'national_passport__diia_app': `National Passport (Diia app)`,
+	'passport__ussr_red_book': `Passport (USSR red book)`,
+	'passport_for_international_travel': `Passport for international travel`,
+	'certificate_issued_on_birth': `Certificate issued on birth`,
+	'birth_certificate': `Birth certificate`,
+	'driver_s_license': `Driver’s license`,
+	'pensioner_certificate': `Pensioner certificate`,
+	'other': `Other`
 },
-hh_char_dis_select: {
-	'diff_see': `A = Have difficulty seeing, even if wearing glasses`,
-	'diff_hear': `B = Have difficulty hearing, even if using a hearing aid`,
-	'diff_walk': `C = Have difficulty walking or climbing steps`,
-	'diff_rem': `D = Have difficulty remembering or concentrating`,
-	'diff_care': `E = Have difficulty with self-care such as washing all over or dressing`,
-	'diff_comm': `F = Have difficulty communicating, for example understanding or being understood`,
-	'diff_none': `G = None of the above apply`
+gender_respondent: {
+	'1': `Female`,
+	'2': `Male`
 },
-hh_char_dis_level: {
-	'zero': `A = No, no difficulty`,
-	'one': `B = Yes, some difficulty`,
-	'two': `C = Yes, a lot of difficulty`,
-	'fri': `D = Cannot do at all`
+Are_you_the_head_of_your_house: {
+	'1': `Yes`,
+	'2': `No`
 },
-shelter_damage: {
-	'no_damage': `No Structural Damage`,
-	'minor_damage': `Minor Damage (light or medium damages such as broken windows and doors, minor roof damage)`,
-	'heavy_damage': `Heavy Damage`
+sex: {
+	'1': `Male`,
+	'2': `Female`
 },
-cfr_curr_accom: {
-	'rent': `A = Renting Accommodation`,
-	'host': `B = Living with Friends/Family/Host`,
-	'own_prop': `C = Living in Own Property`,
-	'coll_cen': `D = Living in Collective Center`,
-	'homeless': `E = Homeless`,
-	'other_accom': `F = Other`
+child_hhh_confirm: {
+	'1': `Yes`,
+	'2': `No`
 },
-cfr_rent_stat: {
-	'secure': `A = Secure for Medium/Long Term`,
-	'unable_pay': `B = Currently Unable to Pay Rent/Contribute to Collective Costs`,
-	'dan_unable_pay': `C = In Danger of Being Unable to Pay Rent/Contribute to Collective Costs`,
-	'unsuit_accom': `D = Accommodation Unsuitable for my needs`,
-	'eviction': `E = Eviction/Removal for Other Reasons`
+GenderHH: {
+	'female': `Female`,
+	'male': `Male`,
+	'nogender': `Does not wish to identify`
 },
-cfr_accom_int: {
-	'remain': `A = Remain in Current Place`,
-	'rent': `B = Find Rental Accommodation`,
-	'not_sure': `C = Not Sure/Don’t Know`
+Does_anyone_in_your_elect_all_that_apply: {
+	'eyesight': `Eyesight`,
+	'hearing': `Hearing`,
+	'mobility': `Mobility`,
+	'difficulty_to_carry_heavy_weights': `Difficulty to carry heavy weights`,
+	'memory_and_concentration': `Memory and concentration`,
+	'self_care__such_as_washing_all_over_or_d': `Self-care, such as washing all over or dressing`,
+	'communication': `Communication`
 },
-cfr_accom_cond_heat: {
-	'always': `A = Always`,
-	'not_always': `B = Not always on but comes daily`,
-	'intermittent': `C = Comes on intermittent days`,
-	'rarely': `D = Rarely`,
-	'never': `E = Never`
+Kits_to_be_provided: {
+	'hkmv_____________': `HKMV Family hygiene kit for IDPs on the move`,
+	'hkf_______________': `HKF Hygiene kit`,
+	'nfkf_______nfi': `NFKF Family NFI Kit`,
+	'ks_____': `KS Family kitchen set`,
+	'bk_baby_kit1': `BK1 Baby Hygiene Kit 1`,
+	'bk_baby_kit2': `BK2 Baby Hygiene Kit 2`,
+	'bk_baby_kit3': `BK3 Baby Hygiene Kit 3`,
+	'bk_baby_kit4': `BK4 Baby Hygiene Kit 4`,
+	'wkb1___________1': `WKB1 Baby Winterization Kit 1`,
+	'wkb2___________2': `WKB2 Baby Winterization Kit 2`,
+	'wkb3___________3': `WKB3 Baby Winterization Kit 3`,
+	'wkb4___________4': `WKB4 Baby Winterization Kit 4`,
+	'bln_': `BLN High Thermal Blankets`,
+	'__': `Solar lamps`
 },
-pay_det_id_type: {
-	'nat_pass_card': `A = National Passport (card)`,
-	'nat_pass_book': `B = National Passport (book)`,
-	'nat_pass_diia': `C = National Passport (Diia app)`,
-	'pass_ussr_red': `D = Passport (USSR red book)`,
-	'pass_int': `E = Passport for international travel`,
-	'birth_certificate': `F = Birth certificate`,
-	'driver_lic': `G = Driver’s license`,
-	'pen_cert': `H = Pensioner certificate`,
-	'oth_id': `I = Other Form of ID`,
-	'no_id': `J = No ID`
+exclusion_1: {
+	'1': `Proceed to next step`
 },
-pay_det_pay_meth: {
-	'raiff_trans': `A = Remittance Raiffaisen AVAL`,
-	'ukrpost': `B = Ukrposhta`,
-	'bank_card': `C = Bank card`,
-	'other_pay': `D = Other Payment Method`,
-	'none_pay': `E = None of the above fit my needs`
+exclusion_2: {
+	'1': `Proceed to next step`
+},
+vul_screen: {
+	'1': `Proceed to next step`
+},
+safe_shelter_001: {
+	'1': `At a collective/transit center`,
+	'2': `I'm hosted by relatives or friends`,
+	'3': `I'm hosted by people I didn’t know before`,
+	'4': `I'm renting an apartment`,
+	'5': `I'm at hotel/hostel`,
+	'6': `I'm at my own house`,
+	'7': `I don’t have housing yet - I don't know where I'll be living`
+},
+Has_this_location_been_damaged: {
+	'1': `Yes`,
+	'2': `No`
+},
+idp_host_shelter_damaged: {
+	'1': `Yes`,
+	'2': `No`
+},
+main_reason_damaged_shelter: {
+	'1': `Yes`,
+	'2': `No`
+},
+displaced_ngca: {
+	'1': `Yes, totally or partially damaged`,
+	'2': `Not damaged`
+},
+For_DRC_staff_only_Was_this_: {
+	'1': `Yes`,
+	'2': `No`
+},
+Is_this_household_female_heade: {
+	'1': `Yes`,
+	'2': `No`
+},
+single_PWD: {
+	'1': `Yes`,
+	'2': `No`
+},
+large_hh: {
+	'1': `Yes`,
+	'2': `No`
+},
+child_elderly: {
+	'1': `Yes`,
+	'2': `No`
+},
+child_pwd: {
+	'1': `Yes`,
+	'2': `No`
+},
+plw: {
+	'1': `Yes`,
+	'2': `No`
+},
+displaced_30days: {
+	'1': `Yes`,
+	'2': `No`
+},
+child_custody: {
+	'1': `Yes`,
+	'2': `No`
+},
+damaged_inclusion_criteria: {
+	'1': `Yes`,
+	'2': `No`
+},
+internal_referral: {
+	'1': `Yes`,
+	'2': `No`
+},
+internal_referral_specific: {
+	'1': `DRC Protection`,
+	'2': `DRC NFI`,
+	'3': `DRC Legal`,
+	'4': `DRC Shelter`
+},
+mpca_eligible_inclusion_area: {
+	'1': `Proceed to next step`
+},
+protection_referral: {
+	'1': `Proceed to next step`
+},
+mpca_yes_ehh: {
+	'1': `Proceed to next step`
+},
+mpca_eligible_vul: {
+	'1': `Proceed to next step`
+},
+Is_this_household_currently_re: {
+	'renting': `Renting`,
+	'planning': `Planning to rent`,
+	'no_support': `No support`
+},
+idp_certificate: {
+	'1': `Yes`,
+	'2': `No`
+},
+resident_permit: {
+	'1': `Yes`,
+	'2': `No`
+},
+For_staff_member_ONL_cabinet_of_ministers: {
+	'1': `Yes`,
+	'2': `No`
+},
+area_of_origin: {
+	'cherkaska': `Cherkaska`,
+	'chernihivska': `Chernihivska`,
+	'chernivetska': `Chernivetska`,
+	'dnipropetrovska': `Dnipropetrovska`,
+	'donetska': `Donetska`,
+	'ivano_frankivska': `Ivano-Frankivska`,
+	'kharkivska': `Kharkivska`,
+	'khersonska': `Khersonska`,
+	'khmelnytska': `Khmelnytska`,
+	'kirovohradska': `Kirovohradska`,
+	'kyivska': `Kyivska`,
+	'luhanska': `Luhanska`,
+	'lvivska': `Lvivska`,
+	'mykolaivska': `Mykolaivska`,
+	'odeska': `Odeska`,
+	'poltavska': `Poltavska`,
+	'rivnenska': `Rivnenska`,
+	'sevastopilska': `Sevastopilska`,
+	'sumska': `Sumska`,
+	'ternopilska': `Ternopilska`,
+	'vinnytska': `Vinnytska`,
+	'volynska': `Volynska`,
+	'zakarpatska': `Zakarpatska`,
+	'zaporizka': `Zaporizka`,
+	'zhytomyrska': `Zhytomyrska`
+},
+What_is_your_preferred_payment: {
+	'raiffaisen_1': `Remittance Raiffaisen AVAL`,
+	'ukrposhta': `Ukrposhta`,
+	'bank_card': `Bank card`,
+	'none': `None of the above fit my needs`
+},
+reason: {
+	'1': `No ATMs/Banks in the locality`,
+	'2': `No physical ability to get to an ATM/bank branch (for health reasons)`,
+	'3': `No transport possibilities to get to ATM/bank branch (no public transport)`,
+	'4': `No financial possibility to reach ATM / bank branch`,
+	'other': `Other`
+},
+Are_you_currently_enrolled_in_: {
+	'1': `Yes`,
+	'2': `No`
+},
+Have_you_received_yo_in_the_last_3_months: {
+	'1': `Yes`,
+	'2': `No`
+},
+Are_you_able_to_provide_inform: {
+	'1': `Yes`,
+	'2': `No`
+},
+Please_select_all_th_urrently_enrolled_in: {
+	'sp_edopomoga': `IDP and conflict-affected people Emergency Support Programme (e-Dopomoga)`,
+	'sp_epidtrymka': `ePidtrymka`,
+	'sp_entrepreneur_idps': `Compensation to entrepreneur for the employment of idps`,
+	'sp_idp_shelter': `IDP Shelter support programe`,
+	'sp_prykhystok': `Host Shelter Subsidy and Rent support (Prykhystok)`,
+	'sp_unicef': `Emergency Hot Spot Payment Programe`,
+	'sp_returnees': `Cash Support for Returnees`,
+	'sp2_meb': `Guaranteed Minimum Income`,
+	'sp2_pensions': `Pensions`,
+	'sp2_hus': `The Housing and Utility Subsidy program (HUS)`,
+	'sp2_child_birth': `Universal Child Birth Grant`,
+	'sp2_child_support': `Child Support`,
+	'sp2_child_pwd': `Assistance for children with severe disabilities and/or other health issues`,
+	'sp2_child_guardian': `Assistance for children over whom guardianship or guardianship is established`,
+	'sp2_health': `Sickness Benefit`,
+	'sp2_unemployment': `Unemployment`,
+	'sp2_caregiver': `Caregiver's allowance (old age)`,
+	'sp2_social_pension': `Social Pension (old age)`,
+	'sp2_pwd': `Disability person`,
+	'sp2_funeral_grant': `Funeral Grant`,
+	'sp2_maternity_benefits': `Maternity benefits`,
+	'sp2_childcare': `Childcare Benefit (non-contributory)`,
+	'sp2_educational_social': `Educational social benefits`,
+	'sp2_survivors_pension': `Survivor's pension`,
+	'sp2_state_social': `State social assistance (support to the pension fund)`
+},
+Were_you_enrolled_to_before_February_2022: {
+	'1': `Yes`,
+	'2': `No`
+},
+We_would_now_like_to_ask_you_s: {
+	'1': `Yes`,
+	'2': `No`
+},
+consent_document: {
+	'1': `Yes`,
+	'2': `No`
+},
+Does_the_respondent_have_perso: {
+	'1': `Yes`,
+	'2': `No`
+},
+not_eligible_note: {
+	'1': `Yes`,
+	'2': `No`
+},
+not_eligible_note2: {
+	'1': `Yes`,
+	'no': `No`
+},
+cfr_no_mpca: {
+	'1': `Yes`,
+	'2': `No`
+},
+cfr_no_mpca_2: {
+	'1': `Yes`,
+	'2': `No`
+},
+Are_you_currently_pa_any_shelter_repairs: {
+	'1': `Yes`,
+	'2': `No`
+},
+Do_you_anticipate_th_r_repairs_next_month: {
+	'1': `Yes`,
+	'2': `No`
+},
+consent_to_esign: {
+	'1': `Yes`,
+	'2': `No`
 }}

@@ -6,6 +6,7 @@ dotenv.config()
 const e = env(process.env)
 
 export const appConf = {
+  rootProjectDir: e(defaultValue(__dirname))('ROOT_PROJECT_DIR'),
   disableScheduledTask: e(bool, defaultValue(false))('DISABLED_SCHEDULED_TASK'),
   production: e(_ => _?.toLowerCase() === 'production', defaultValue(true))('NODE_ENV'),
   port: e(int, defaultValue(80))('PORT'),
@@ -41,6 +42,9 @@ export const appConf = {
   },
   activityInfo: {
     apiToken: e(required)('ACTIVITY_INFO_API_TOKEN')
+  },
+  params: {
+    assistanceAmountUAH: (d: Date) => d.getTime() > new Date(2023, 9, 1).getTime() ? 3600 : 2220
   }
 }
 

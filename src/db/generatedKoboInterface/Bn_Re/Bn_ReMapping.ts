@@ -1,4 +1,4 @@
-import {BNRE} from './BNRE'
+import {Bn_Re} from './Bn_Re'
 
 
 const extractQuestionName = (_: Record<string, any>) => {
@@ -11,7 +11,7 @@ const extractQuestionName = (_: Record<string, any>) => {
   return output
 }
 
-export const mapBNRE = (_: Record<keyof BNRE, any>): BNRE => ({
+export const mapBn_Re = (_: Record<keyof Bn_Re, any>): Bn_Re => ({
 	..._,
 	back_prog_type: _.back_prog_type?.split(' '),
 	ben_det_ph_number: _.ben_det_ph_number ? +_.ben_det_ph_number : undefined,
@@ -29,6 +29,8 @@ export const mapBNRE = (_: Record<keyof BNRE, any>): BNRE => ({
 	nfi_dist_wkb2: _.nfi_dist_wkb2 ? +_.nfi_dist_wkb2 : undefined,
 	nfi_dist_wkb3: _.nfi_dist_wkb3 ? +_.nfi_dist_wkb3 : undefined,
 	nfi_dist_wkb4: _.nfi_dist_wkb4 ? +_.nfi_dist_wkb4 : undefined,
+	nfi_kit_cc: _.nfi_kit_cc ? +_.nfi_kit_cc : undefined,
+	nfi_bed: _.nfi_bed ? +_.nfi_bed : undefined,
 	estimate_sqm_damage: _.estimate_sqm_damage ? +_.estimate_sqm_damage : undefined,
 	cfr_accom_cond_occ_rat: _.cfr_accom_cond_occ_rat ? +_.cfr_accom_cond_occ_rat : undefined,
-}) as BNRE
+}) as Bn_Re
