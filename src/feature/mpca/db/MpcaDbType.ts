@@ -1,5 +1,5 @@
 import {OblastISO, OblastName} from '../../../core/oblastIndex'
-import {DrcDonor, DrcProject} from '../../../core/DrcType'
+import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcType'
 import {Bn_Re} from '../../../db/generatedKoboInterface/Bn_Re/Bn_Re'
 import {KoboAttachment} from '../../connector/kobo/KoboClient/type/KoboAnswer'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
@@ -21,6 +21,7 @@ export enum MpcaProgram {
 export interface MpcaRow {
   id: string
   source: MpcaRowSource
+  office?: DrcOffice
   oblast?: OblastName
   oblastIso?: OblastISO
   date: Date
