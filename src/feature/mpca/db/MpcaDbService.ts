@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {KoboMappedAnswersService} from '../../kobo/KoboMappedAnswersService'
 import {_Arr, Arr, fnSwitch} from '@alexandreannic/ts-utils'
-import {DrcDonor, DrcProject} from '../../../core/DrcType'
+import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcType'
 import {OblastIndex} from '../../../core/oblastIndex'
 import {KoboAnswerFilter} from '../../kobo/KoboService'
 import {ApiPaginate, toApiPaginate} from '../../../core/Type'
@@ -106,6 +106,13 @@ export class MpcaDbService {
           source: MpcaRowSource.BNRE,
           id: _.id,
           date: _.submissionTime,
+          office: fnSwitch(_.back_office!, {
+            chj: DrcOffice.Chernihiv,
+            dnk: DrcOffice.Dnipro,
+            hrk: DrcOffice.Kharkiv,
+            lwo: DrcOffice.Lviv,
+            nlv: DrcOffice.Mykolaiv,
+          }, () => undefined),
           oblast: fnSwitch(_.ben_det_oblast!, OblastIndex.koboOblastIndex, () => undefined),
           oblastIso: fnSwitch(_.ben_det_oblast!, OblastIndex.koboOblastIndexIso, () => undefined),
           prog: Arr(_.back_prog_type)?.map(prog => fnSwitch(prog.split('_')[0], {
@@ -114,8 +121,10 @@ export class MpcaDbService {
             'mpca': MpcaProgram.MPCA,
           }, () => undefined)).compact(),
           hhSize: _.ben_det_hh_size,
-          men: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 18 && p.hh_char_hh_det_gender === 'male').length,
-          women: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 18 && p.hh_char_hh_det_gender === 'female').length,
+          elderlyMen: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 50 && p.hh_char_hh_det_gender === 'male').length,
+          elderlyWomen: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 50 && p.hh_char_hh_det_gender === 'female').length,
+          men: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 18 && p.hh_char_hh_det_age < 50 && p.hh_char_hh_det_gender === 'male').length,
+          women: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 18 && p.hh_char_hh_det_age < 50 && p.hh_char_hh_det_gender === 'female').length,
           boys: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age < 18 && p.hh_char_hh_det_gender === 'male').length,
           girls: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age < 18 && p.hh_char_hh_det_gender === 'female').length,
           ...fnSwitch(_.back_donor!, {
@@ -190,6 +199,13 @@ export class MpcaDbService {
           prog: [MpcaProgram.CashForRent],
           oblast: fnSwitch(_.ben_det_oblast ?? (_ as any).ben_det_oblastgov!, OblastIndex.koboOblastIndex, () => undefined),
           oblastIso: fnSwitch(_.ben_det_oblast ?? (_ as any).ben_det_oblastgov!, OblastIndex.koboOblastIndexIso, () => undefined),
+          office: fnSwitch(_.back_office!, {
+            dnk: DrcOffice.Dnipro,
+            hrk: DrcOffice.Kharkiv,
+            nlv: DrcOffice.Mykolaiv,
+            cej: DrcOffice.Chernihiv,
+            umy: DrcOffice.Sumy,
+          }, () => undefined),
           id: _.id,
           date: _.submissionTime,
           donor: undefined,
@@ -234,6 +250,7 @@ export class MpcaDbService {
     }).then(_ => {
       return _.data.map(_ => {
         const group = [..._.hh_char_hh_det_l ?? [], {hh_char_hh_det_age_l: _.hh_char_hhh_age_l, hh_char_hh_det_gender_l: _.hh_char_hhh_gender_l}]
+        const oblast = fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndex, () => _.submissionTime.getMonth() === 5 ? 'Mykolaivska' : undefined)
         return ({
           source: MpcaRowSource.RRM,
           prog: Arr(_.back_prog_type ?? _.back_prog_type_l).map(prog => fnSwitch(prog.split('_')[0], {
@@ -241,6 +258,22 @@ export class MpcaDbService {
             'cfe': MpcaProgram.CashForEducation,
             'mpca': MpcaProgram.MPCA,
           }, () => undefined)).compact(),
+          office: (() => {
+            if (_.back_office_l)
+              return fnSwitch(_.back_office_l, {
+                chj: DrcOffice.Chernihiv,
+                dnk: DrcOffice.Dnipro,
+                hrk: DrcOffice.Kharkiv,
+                lwo: DrcOffice.Lviv,
+                nlv: DrcOffice.Mykolaiv,
+              }, () => undefined)
+            return fnSwitch(oblast!, {
+              Kharkivska: DrcOffice.Kharkiv,
+              Khersonska: DrcOffice.Kharkiv,
+              Mykolaivska: DrcOffice.Kharkiv,
+              Donetska: DrcOffice.Kharkiv,
+            }, () => undefined)
+          })(),
           ...(() => {
             if (_.back_donor)
               return fnSwitch(_.back_donor, {
@@ -249,7 +282,7 @@ export class MpcaDbService {
                 bha: {donor: DrcDonor.BHA, project: DrcProject['BHA (UKR-000284)'],},
                 novo: {donor: DrcDonor.NONO, project: DrcProject['Novo-Nordisk (UKR-000274)'],},
                 pooled: {donor: DrcDonor.POFU, project: DrcProject['Pooled Funds (UKR-000270)'],},
-              })
+              }, () => undefined)
             else if (_.back_donor_l)
               return fnSwitch(_.back_donor_l, {
                 uhf_chj: {donor: DrcDonor.UHF, project: DrcProject[`UHF4 (UKR-000314)`]},
@@ -274,9 +307,9 @@ export class MpcaDbService {
                 pool_hrk: {donor: DrcDonor.POFU, project: DrcProject[`Pooled Funds (UKR-000270)`]},
                 pool_lwo: {donor: DrcDonor.POFU, project: DrcProject[`Pooled Funds (UKR-000270)`]},
                 pool_nlv: {donor: DrcDonor.POFU, project: DrcProject[`Pooled Funds (UKR-000270)`]},
-              })
+              }, () => undefined)
           })(),
-          oblast: fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndex, () => _.submissionTime.getMonth() === 5 ? 'Mykolaivska' : undefined),
+          oblast,
           oblastIso: fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndexIso, () => _.submissionTime.getMonth() === 5 ? 'UA48' : undefined),
           // amountUahSupposed: _.ass_inc_mpca_ben_l as any,
           id: _.id,
@@ -286,8 +319,10 @@ export class MpcaDbService {
           firstName: _.ben_det_first_name ?? _.ben_det_first_name,
           patronyme: _.ben_det_pat_name ?? _.ben_det_pat_name,
           hhSize: _.ben_det_hh_size ?? _.ben_det_hh_size_l,
-          men: group?.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 18 && p.hh_char_hh_det_gender_l === 'male').length,
-          women: group?.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 18 && p.hh_char_hh_det_gender_l === 'female').length,
+          elderlyMen: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 50 && p.hh_char_hh_det_gender_l === 'male').length,
+          elderlyWomen: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 50 && p.hh_char_hh_det_gender_l === 'female').length,
+          men: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 18 && p.hh_char_hh_det_age_l < 50 && p.hh_char_hh_det_gender_l === 'male').length,
+          women: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 18 && p.hh_char_hh_det_age_l < 50 && p.hh_char_hh_det_gender_l === 'female').length,
           boys: group?.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l < 18 && p.hh_char_hh_det_gender_l === 'male').length,
           girls: group?.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l < 18 && p.hh_char_hh_det_gender_l === 'female').length,
           passportSerie: _.pay_det_pass_ser ?? _.pay_det_pass_ser_l,
@@ -316,6 +351,7 @@ export class MpcaDbService {
     }).then(_ => {
       return _.data.map(_ => {
         const group = [..._.group_in3fh72 ?? [], {GenderHH: _.gender_respondent, AgeHH: _.agex}]
+        const oblast = fnSwitch(_.oblast!, OblastIndex.koboOblastIndex, () => undefined)
         return ({
           source: MpcaRowSource.OldBNRE,
           id: _.id,
@@ -327,7 +363,24 @@ export class MpcaDbService {
             'cash_for_rent': [MpcaProgram.CashForRent],
             'mpca___cash_for_rent': [MpcaProgram.MPCA, MpcaProgram.CashForRent],
           }, () => undefined),
-          oblast: fnSwitch(_.oblast!, OblastIndex.koboOblastIndex, () => undefined),
+          office: fnSwitch(_.drc_base!, {
+            chj: DrcOffice.Chernihiv,
+            hrk: DrcOffice.Kharkiv,
+            dnk: DrcOffice.Dnipro,
+            lwo: DrcOffice.Lviv,
+            cwc: DrcOffice.Lviv,
+            iev: DrcOffice.Kyiv,
+            plv: DrcOffice.Poltava,
+          }, () => undefined),
+          // office: fnSwitch(oblast!, {
+          //   Lvivska: DrcOffice.Lviv,
+          //   Chernivetska: DrcOffice.Lviv,
+          //   Zaporizka: DrcOffice.Dnipro,
+          //   Dnipropetrovska: DrcOffice.Dnipro,
+          //   Chernihivska: DrcOffice.Chernihiv,
+          //   Kharkivska: DrcOffice.Kharkiv,
+          // }, () => undefined),
+          oblast,
           oblastIso: fnSwitch(_.oblast!, OblastIndex.koboOblastIndexIso, () => undefined),
           donor: DrcDonor.BHA,
           project: DrcProject['BHA (UKR-000284)'],
@@ -337,8 +390,10 @@ export class MpcaDbService {
             status_returnee: 'ret',
             status_refugee: 'ref_asy',
           }),
-          men: group.filter(p => p.AgeHH && p.AgeHH >= 18 && p.GenderHH === 'male').length,
-          women: group.filter(p => p.AgeHH && p.AgeHH >= 18 && p.GenderHH === 'female').length,
+          elderlyMen: group.filter(p => p.AgeHH && p.AgeHH >= 50 && p.GenderHH === 'male').length,
+          elderlyWomen: group.filter(p => p.AgeHH && p.AgeHH >= 50 && p.GenderHH === 'female').length,
+          men: group.filter(p => p.AgeHH && p.AgeHH >= 18 && p.AgeHH < 50 && p.GenderHH === 'male').length,
+          women: group.filter(p => p.AgeHH && p.AgeHH >= 18 && p.AgeHH < 50 && p.GenderHH === 'female').length,
           boys: group.filter(p => p.AgeHH && p.AgeHH < 18 && p.GenderHH === 'male').length,
           girls: group.filter(p => p.AgeHH && p.AgeHH < 18 && p.GenderHH === 'female').length,
           lastName: _.patron,
