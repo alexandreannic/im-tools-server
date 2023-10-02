@@ -3,6 +3,7 @@ export enum DrcOffice {
   Sumy = 'Sumy',
   Mykolaiv = 'Mykolaiv',
   Lviv = 'Lviv',
+  Chernivtsi = 'Chernivtsi',
   Chernihiv = 'Chernihiv',
   Kharkiv = 'Kharkiv',
   Dnipro = 'Dnipro',

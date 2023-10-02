@@ -9,6 +9,7 @@ import {WfpDeduplicationService} from '../../wfpDeduplication/WfpDeduplicationSe
 import {appConf} from '../../../core/conf/AppConf'
 import {MpcaProgram, MpcaRow, MpcaRowSource} from './MpcaDbType'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
+import {format} from 'date-fns'
 
 export class MpcaDbService {
   constructor(
@@ -268,9 +269,11 @@ export class MpcaDbService {
                 nlv: DrcOffice.Mykolaiv,
               }, () => undefined)
             return fnSwitch(oblast!, {
+              Chernihivska: DrcOffice.Chernihiv,
               Kharkivska: DrcOffice.Kharkiv,
-              Khersonska: DrcOffice.Kharkiv,
-              Mykolaivska: DrcOffice.Kharkiv,
+              Khersonska: DrcOffice.Mykolaiv,
+              Mykolaivska: DrcOffice.Mykolaiv,
+              Lvivska: DrcOffice.Lviv,
               Donetska: DrcOffice.Kharkiv,
             }, () => undefined)
           })(),
@@ -368,7 +371,7 @@ export class MpcaDbService {
             hrk: DrcOffice.Kharkiv,
             dnk: DrcOffice.Dnipro,
             lwo: DrcOffice.Lviv,
-            cwc: DrcOffice.Lviv,
+            cwc: DrcOffice.Chernivtsi,
             iev: DrcOffice.Kyiv,
             plv: DrcOffice.Poltava,
           }, () => undefined),
@@ -399,7 +402,13 @@ export class MpcaDbService {
           lastName: _.patron,
           firstName: _.name_resp,
           patronyme: _.last_resp,
-          hhSize: _.Total_Family,
+          hhSize: (() => {
+            const isWierdCasesWhereGroupIsAboveTotalAndHhhIsRepeated = _.Total_Family && _.group_in3fh72 && _.Total_Family < _.group_in3fh72.length
+            if (isWierdCasesWhereGroupIsAboveTotalAndHhhIsRepeated) {
+              return _.group_in3fh72!.length
+            }
+            return _.Total_Family
+          })(),
           passportSerie: _.passport_serial,
           passportNum: _.passport_number,
           taxId: _.ITN,
