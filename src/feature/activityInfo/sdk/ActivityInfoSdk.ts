@@ -1,7 +1,7 @@
 import {AIID, Database, Form, FormDescs} from '../model/ActivityInfo'
 import {makeid} from '../../../helper/Utils'
 import {appConf} from '../../../core/conf/AppConf'
-import {AiProtectionHhs} from '../playground/AiProtectionHhs'
+import {AiProtectionHhs} from '../sandbox/AiProtectionHhs'
 
 interface ActicityInfoBody {
   [key: string]: any

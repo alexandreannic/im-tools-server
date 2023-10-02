@@ -1,16 +1,16 @@
-import {AiProtectionHhs} from './playground/AiProtectionHhs'
-import {ActivityInfoSdk} from './sdk/ActivityInfoSdk'
-import {activityInfoForms, AIID, FormDesc, FormDescs} from './model/ActivityInfo'
+import {AiProtectionHhs} from '../sandbox/AiProtectionHhs'
+import {ActivityInfoSdk} from '../sdk/ActivityInfoSdk'
+import {activityInfoForms, AIID, FormDesc, FormDescs} from '../model/ActivityInfo'
 import {Arr, fnSwitch} from '@alexandreannic/ts-utils'
 import fs from 'fs'
-import {capitalizeFirstLetter} from '../../helper/Utils'
+import {capitalizeFirstLetter} from '../../../helper/Utils'
 import columnsListMap = AiProtectionHhs.columnsListMap
-import {appConf} from '../../core/conf/AppConf'
+import {appConf} from '../../../core/conf/AppConf'
 
-export const runAi = {
-  washRMM: () => runAI({
+export const AiGenerateDatabaseInterface = {
+  washRMM: () => generateDatabaseInterface({
     optionsLimit: 200000,
-    formId: activityInfoForms.washRMM,
+    formId: activityInfoForms.washRmm,
     name: 'washRMM',
     ignoredQuestions: [
       'Total Reached (All Population Groups)',
@@ -38,6 +38,26 @@ export const runAi = {
         return _.includes('Danish Refugee Council')
       }
     }
+  }),
+  mpcaRmm: () => generateDatabaseInterface({
+    optionsLimit: 200,
+    formId: activityInfoForms.mpcaRmm,
+    name: 'mpcaRmm',
+    ignoredQuestions: [],
+    skipQuestionsPattern: [],
+    excludedQuestionPatternOptionsBecauseToLongOrIrrelevant: [
+      /Sub-Implementing Partner/,
+      /OblastIndex/,
+      /Raion/,
+      /Hormada/,
+      /Settlement/,
+    ],
+    pickSpecificOptionK2Id: {},
+    filterSpecificOptions: {
+      'Partner Organization': _ => {
+        return _.includes('Danish Refugee Council')
+      },
+    }
   })
 }
 
@@ -56,7 +76,7 @@ interface AIFormInformation {
   required?: boolean
 }
 
-const runAI = async ({
+const generateDatabaseInterface = async ({
   formId,
   name,
   optionsLimit = 20,
@@ -65,7 +85,7 @@ const runAI = async ({
   excludedQuestionPatternOptionsBecauseToLongOrIrrelevant = [],
   filterSpecificOptions = {},
   skipQuestionsPattern = [],
-  outputDir = appConf.rootProjectDir + '/src/feature/activityInfo/generatedModels',
+  outputDir = appConf.rootProjectDir + '/src/feature/activityInfo/databaseInterface/output',
 }: {
   optionsLimit?: number
   ignoredQuestions?: string[]

@@ -55,6 +55,7 @@ export enum DrcProject {
   'SIDA 518-570A' = 'SIDA 518-570A',
   'UHF3 (UKR-000276)' = 'UHF3 (UKR-000276)',
   'UHF4 (UKR-000314)' = 'UHF4 (UKR-000314)',
+  'UHF6' = 'UHF6',
   'UNHCR (UKR-000308)' = 'UNHCR (UKR-000308)',
   'DANIDA (UKR-000267)' = 'DANIDA (UKR-000267)',
   'Dutch I (UKR-000294)' = 'Dutch I (UKR-000294)',
