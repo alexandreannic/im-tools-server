@@ -30,7 +30,7 @@ export class ControllerKoboForm {
   readonly get = async (req: Request, res: Response, next: NextFunction) => {
     const {id} = await yup.object({
       id: yup.string().required(),
-    }).validate(req.body)
+    }).validate(req.params)
     const data = await this.service.get(id)
     res.send(data)
   }

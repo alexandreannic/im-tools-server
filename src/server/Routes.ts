@@ -141,7 +141,7 @@ export const getRoutes = (
     router.get('/kobo-api/:id/attachment', auth(), errorCatcher(koboApi.getAttachementsWithoutAuth))
     router.get('/kobo-api/:id/:formId/answers', auth(), errorCatcher(koboApi.getAnswers))
     router.get('/kobo-api/:id', auth(), errorCatcher(koboApi.getForms))
-    router.get('/kobo-api/:id/:formId', cache('24 hour'), auth(), errorCatcher(koboApi.getForm))
+    router.get('/kobo-api/:id/:formId', cache('24 hour'), auth(), errorCatcher(koboApi.getSchema))
     router.get('/kobo-api/:id/:formId/:answerId/edit-url', auth(), errorCatcher(koboApi.edit))
 
     router.post('/mpca/search', auth(), cache('24 hour'), errorCatcher(mpca.search))
