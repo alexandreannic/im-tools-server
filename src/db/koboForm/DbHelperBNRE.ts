@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {Enum} from '@alexandreannic/ts-utils'
 import {DbKoboFormHelper} from './Helper'
-import {Bn_Re} from '../generatedKoboInterface/Bn_Re/Bn_Re'
+import {Bn_Re} from '../../script/output/kobo/Bn_Re/Bn_Re'
 
 export class DbHelperBNRE {
 

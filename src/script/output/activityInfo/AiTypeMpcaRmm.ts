@@ -1,6 +1,6 @@
-type Opt<T extends keyof typeof optionsMpcaRmm> = keyof (typeof optionsMpcaRmm)[T]
+export namespace AiTypeMpcaRmm {type Opt<T extends keyof typeof options> = keyof (typeof options)[T]
 
-export interface MpcaRmm {
+export interface Type {
   'Partner Organization': Opt<'Partner Organization'>,
   'Sub-Implementing Partner'?: string,
   'Implementing Partner 2'?: Opt<'Implementing Partner 2'>,
@@ -18,7 +18,6 @@ export interface MpcaRmm {
   'Population Group': Opt<'Population Group'>,
   'Population Group Breakdown'?: Opt<'Population Group Breakdown'>,
   'Reporting Month': string,
-  'MPCA Indicators'?: Opt<'MPCA Indicators'>,
   'Amount of cash in USD distributed through multi-purpose cash assistance': number,
   'Total # of people assisted with multi-purpose cash assistance': number,
   'Durations': Opt<'Durations'>,
@@ -34,41 +33,40 @@ export interface MpcaRmm {
   'People with disability': number
 }
 
-export const mapMpcaRmm = (a: MpcaRmm) => ({
-  'cwlisfnlfieffp29': 'cr4xx3dlbs86w9y2' + ':' + optionsMpcaRmm['Partner Organization'][a['Partner Organization']!],
-  'c13acl2ldwx9fxad': a['Sub-Implementing Partner'],
-  'cw3h6thle79zd6f3': 'cr4xx3dlbs86w9y2' + ':' + optionsMpcaRmm['Implementing Partner 2'][a['Implementing Partner 2']!],
-  'cp7lssmle7a12zo4': 'cr4xx3dlbs86w9y2' + ':' + optionsMpcaRmm['Implementing Partner 3'][a['Implementing Partner 3']!],
-  'ckl2m0ile7a26xb5': 'cr4xx3dlbs86w9y2' + ':' + optionsMpcaRmm['Implementing Partner 4'][a['Implementing Partner 4']!],
-  'cclzwc2leh13jb22': 'cacmfplleguhh3k2' + ':' + optionsMpcaRmm['Donor'][a['Donor']!],
-  'c505o85ldwx9fx98': optionsMpcaRmm['Report to a planned project'][a['Report to a planned project']!],
-  'c191uhrle427lx33': 'c2n9vw2ldebiwjit' + ':' + optionsMpcaRmm['MPCA plan'][a['MPCA plan']!],
-  'cfgnuegle7g7ukve': 'c700rjplbuo1fjq5m' + ':' + optionsMpcaRmm['Hromada'][a['Hromada']!],
-  'cpvvi44le881vjm3': a['Raion'],
-  'cljxvvxle7gi6g4i': a['Settlement'],
-  'cflrymjle7gk1ajj': 'cl69o0lldbf4rtk2' + ':' + optionsMpcaRmm['Collective Centre'][a['Collective Centre']!],
-  'c27qe39ldwysw901m': optionsMpcaRmm['Location Type'][a['Location Type']!],
-  'chpf5f9ldwx9fxbl': optionsMpcaRmm['Response Theme'][a['Response Theme']!],
-  'coi2y1dlfpvfyyfp': optionsMpcaRmm['Population Group'][a['Population Group']!],
-  'cpa0ue1lgmb4tq83': 'c5z4vp8lfthhzi58' + ':' + optionsMpcaRmm['Population Group Breakdown'][a['Population Group Breakdown']!],
-  'cxcopxgldwx9fxbk': a['Reporting Month'],
-  'cr2i8deldwxe1oc15': 'ciqkzlzldwx5b2i3' + ':' + optionsMpcaRmm['MPCA Indicators'][a['MPCA Indicators']!],
-  'crxa3laldwyqgkd18': a['Amount of cash in USD distributed through multi-purpose cash assistance'],
-  'c9julx3ldwx9fxcv': a['Total # of people assisted with multi-purpose cash assistance'],
-  'c89zu18ldwz1yqw1v': optionsMpcaRmm['Durations'][a['Durations']!],
-  'ch3spf7lespt7ph2': a['Number of people assisted with ONE round of assistance'],
-  'c5gj2t7lespu5la3': a['Number of people assisted with TWO rounds of assistance'],
-  'cjqnxv5lespud2q4': a['Number of people assisted with THREE rounds of assistance'],
-  'c976cgildwx9fxcw': a['Girls'],
-  'cwt948tldwx9fxcx': a['Boys'],
-  'c6wbzmjldwx9fxcy': a['Adult Women'],
-  'ceoot78ldwx9fxcz': a['Adult Men'],
-  'cf0wt88ldwx9fxc10': a['Elderly Women'],
-  'cw3runsldwx9fxc11': a['Elderly Men'],
-  'cp0f9feldwx9fxc12': a['People with disability']
+export const map = (a: Type) => ({
+  'cwlisfnlfieffp29': a['Partner Organization'] === undefined ? undefined : 'cr4xx3dlbs86w9y2' + ':' + options['Partner Organization'][a['Partner Organization']!],
+  'c13acl2ldwx9fxad': a['Sub-Implementing Partner'] === undefined ? undefined : a['Sub-Implementing Partner'],
+  'cw3h6thle79zd6f3': a['Implementing Partner 2'] === undefined ? undefined : 'cr4xx3dlbs86w9y2' + ':' + options['Implementing Partner 2'][a['Implementing Partner 2']!],
+  'cp7lssmle7a12zo4': a['Implementing Partner 3'] === undefined ? undefined : 'cr4xx3dlbs86w9y2' + ':' + options['Implementing Partner 3'][a['Implementing Partner 3']!],
+  'ckl2m0ile7a26xb5': a['Implementing Partner 4'] === undefined ? undefined : 'cr4xx3dlbs86w9y2' + ':' + options['Implementing Partner 4'][a['Implementing Partner 4']!],
+  'cclzwc2leh13jb22': a['Donor'] === undefined ? undefined : 'cacmfplleguhh3k2' + ':' + options['Donor'][a['Donor']!],
+  'c505o85ldwx9fx98': a['Report to a planned project'] === undefined ? undefined : options['Report to a planned project'][a['Report to a planned project']!],
+  'c191uhrle427lx33': a['MPCA plan'] === undefined ? undefined : 'c2n9vw2ldebiwjit' + ':' + options['MPCA plan'][a['MPCA plan']!],
+  'cfgnuegle7g7ukve': a['Hromada'] === undefined ? undefined : 'c700rjplbuo1fjq5m' + ':' + options['Hromada'][a['Hromada']!],
+  'cpvvi44le881vjm3': a['Raion'] === undefined ? undefined : a['Raion'],
+  'cljxvvxle7gi6g4i': a['Settlement'] === undefined ? undefined : a['Settlement'],
+  'cflrymjle7gk1ajj': a['Collective Centre'] === undefined ? undefined : 'cl69o0lldbf4rtk2' + ':' + options['Collective Centre'][a['Collective Centre']!],
+  'c27qe39ldwysw901m': a['Location Type'] === undefined ? undefined : options['Location Type'][a['Location Type']!],
+  'chpf5f9ldwx9fxbl': a['Response Theme'] === undefined ? undefined : options['Response Theme'][a['Response Theme']!],
+  'coi2y1dlfpvfyyfp': a['Population Group'] === undefined ? undefined : options['Population Group'][a['Population Group']!],
+  'cpa0ue1lgmb4tq83': a['Population Group Breakdown'] === undefined ? undefined : 'c5z4vp8lfthhzi58' + ':' + options['Population Group Breakdown'][a['Population Group Breakdown']!],
+  'cxcopxgldwx9fxbk': a['Reporting Month'] === undefined ? undefined : a['Reporting Month'],
+  'crxa3laldwyqgkd18': a['Amount of cash in USD distributed through multi-purpose cash assistance'] === undefined ? undefined : a['Amount of cash in USD distributed through multi-purpose cash assistance'],
+  'c9julx3ldwx9fxcv': a['Total # of people assisted with multi-purpose cash assistance'] === undefined ? undefined : a['Total # of people assisted with multi-purpose cash assistance'],
+  'c89zu18ldwz1yqw1v': a['Durations'] === undefined ? undefined : options['Durations'][a['Durations']!],
+  'ch3spf7lespt7ph2': a['Number of people assisted with ONE round of assistance'] === undefined ? undefined : a['Number of people assisted with ONE round of assistance'],
+  'c5gj2t7lespu5la3': a['Number of people assisted with TWO rounds of assistance'] === undefined ? undefined : a['Number of people assisted with TWO rounds of assistance'],
+  'cjqnxv5lespud2q4': a['Number of people assisted with THREE rounds of assistance'] === undefined ? undefined : a['Number of people assisted with THREE rounds of assistance'],
+  'c976cgildwx9fxcw': a['Girls'] === undefined ? undefined : a['Girls'],
+  'cwt948tldwx9fxcx': a['Boys'] === undefined ? undefined : a['Boys'],
+  'c6wbzmjldwx9fxcy': a['Adult Women'] === undefined ? undefined : a['Adult Women'],
+  'ceoot78ldwx9fxcz': a['Adult Men'] === undefined ? undefined : a['Adult Men'],
+  'cf0wt88ldwx9fxc10': a['Elderly Women'] === undefined ? undefined : a['Elderly Women'],
+  'cw3runsldwx9fxc11': a['Elderly Men'] === undefined ? undefined : a['Elderly Men'],
+  'cp0f9feldwx9fxc12': a['People with disability'] === undefined ? undefined : a['People with disability']
 })
 
-export const optionsMpcaRmm = {
+export const options = {
   'Partner Organization': {
     "Danish Refugee Council": 'cv9umq8lehiq43f103'
   },
@@ -1332,10 +1330,6 @@ export const optionsMpcaRmm = {
     "Chernihivska": 'cgpyucjlfthnui812',
     "Kyiv": 'c544genlfthnui813'
   },
-  'MPCA Indicators': {
-    "MPC": 'cqwdvqeldwx6iu82',
-    "MPC": 'covnjwmldwx6iu83'
-  },
   'Durations': {
     "One month": 'cyk0t5pldwz1yqw1u',
     "Two months": 'cr7jdswldwz2cvc1w',
@@ -1346,3 +1340,4 @@ export const optionsMpcaRmm = {
   }
 }
 
+}

@@ -49,6 +49,26 @@ export class ActivityInfoSdk {
   constructor(private api = new Api()) {
   }
 
+  static readonly buildRequest = ({
+    activityIdPrefix,
+    activity,
+    activityIndex,
+    formId,
+  }: {
+    activityIdPrefix: string
+    activity: any
+    activityIndex: number
+    formId: string
+  }) => {
+    return {
+      'changes': [{
+        'formId': formId,
+        'recordId': activityIdPrefix + ('' + activityIndex).padStart(3, '0'),
+        'parentRecordId': null,
+        'fields': activity
+      }]
+    }
+  }
   readonly softDeleteRecord = (formId: string, recordId: string) => {
     return this.api.postNoJSON(`/resources/update`, {
       body: {

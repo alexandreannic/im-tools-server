@@ -3,9 +3,9 @@ import {DbKoboFormHelper} from './Helper'
 import {Enum, map} from '@alexandreannic/ts-utils'
 import {endOfDay, endOfMonth, parse, startOfMonth} from 'date-fns'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
-import {Protection_Hhs2_1Options} from '../generatedKoboInterface/Protection_Hhs2_1/Protection_Hhs2_1Options'
-import {Protection_Hhs2_1} from '../generatedKoboInterface/Protection_Hhs2_1/Protection_Hhs2_1'
 import {DrcProject} from '../../core/DrcType'
+import {Protection_Hhs2_1Options} from '../../script/output/kobo/Protection_Hhs2_1/Protection_Hhs2_1Options'
+import {Protection_Hhs2_1} from '../../script/output/kobo/Protection_Hhs2_1/Protection_Hhs2_1'
 
 type Office = typeof Protection_Hhs2_1Options['staff_to_insert_their_DRC_office']
 

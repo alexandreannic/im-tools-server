@@ -155,6 +155,10 @@ export const getOverlapMonths = (startDate1: Date, endDate1: Date, startDate2: D
   return overlapMonths > 0 ? overlapMonths : 0
 }
 
+export const capitalize = (_: string) => {
+  return _.charAt(0).toUpperCase() + _.slice(1)
+}
+
 // const x = Promise.resolve([
 //   async () => 1,
 //   async () => '1',

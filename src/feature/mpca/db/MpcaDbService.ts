@@ -9,7 +9,8 @@ import {WfpDeduplicationService} from '../../wfpDeduplication/WfpDeduplicationSe
 import {appConf} from '../../../core/conf/AppConf'
 import {MpcaProgram, MpcaRow, MpcaRowSource} from './MpcaDbType'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
-import {format} from 'date-fns'
+import {Bn_ReOptions} from '../../../script/output/kobo/Bn_Re/Bn_ReOptions'
+import {Bn_RapidResponseOptions} from '../../../script/output/kobo/Bn_RapidResponse/Bn_RapidResponseOptions'
 
 export class MpcaDbService {
   constructor(
@@ -61,7 +62,7 @@ export class MpcaDbService {
   }
 
   private readonly redirectDonor = (row: MpcaRow): MpcaRow => {
-    if ((row.source === MpcaRowSource.RRM || row.source === MpcaRowSource.BNRE)
+    if ((row.source === MpcaRowSource.RapidResponseMechansim || row.source === MpcaRowSource.BasicNeedRegistration)
       && row.donor === DrcDonor.POFU
       && fnSwitch(row.oblast!, {
         Chernihivska: false,
@@ -77,7 +78,7 @@ export class MpcaDbService {
       row.project = DrcProject['BHA (UKR-000284)']
     }
 
-    if (!row.donor && row.source === MpcaRowSource.RRM && fnSwitch(row.oblast!, {
+    if (!row.donor && row.source === MpcaRowSource.RapidResponseMechansim && fnSwitch(row.oblast!, {
       Chernihivska: false,
       Kharkivska: true,
       Donetska: true,
@@ -104,7 +105,7 @@ export class MpcaDbService {
       return _.data.map(_ => {
         const group = [..._.hh_char_hh_det ?? [], {hh_char_hh_det_age: _.hh_char_hhh_age, hh_char_hh_det_gender: _.hh_char_hhh_gender}]
         return {
-          source: MpcaRowSource.BNRE,
+          source: MpcaRowSource.BasicNeedRegistration,
           id: _.id,
           date: _.submissionTime,
           office: fnSwitch(_.back_office!, {
@@ -116,6 +117,8 @@ export class MpcaDbService {
           }, () => undefined),
           oblast: fnSwitch(_.ben_det_oblast!, OblastIndex.koboOblastIndex, () => undefined),
           oblastIso: fnSwitch(_.ben_det_oblast!, OblastIndex.koboOblastIndexIso, () => undefined),
+          raion: Bn_ReOptions.ben_det_raion[_.ben_det_raion!],
+          hromada: Bn_ReOptions.ben_det_hromada[_.ben_det_hromada!],
           prog: Arr(_.back_prog_type)?.map(prog => fnSwitch(prog.split('_')[0], {
             'cfr': MpcaProgram.CashForRent,
             'cfe': MpcaProgram.CashForEducation,
@@ -253,7 +256,7 @@ export class MpcaDbService {
         const group = [..._.hh_char_hh_det_l ?? [], {hh_char_hh_det_age_l: _.hh_char_hhh_age_l, hh_char_hh_det_gender_l: _.hh_char_hhh_gender_l}]
         const oblast = fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndex, () => _.submissionTime.getMonth() === 5 ? 'Mykolaivska' : undefined)
         return ({
-          source: MpcaRowSource.RRM,
+          source: MpcaRowSource.RapidResponseMechansim,
           prog: Arr(_.back_prog_type ?? _.back_prog_type_l).map(prog => fnSwitch(prog.split('_')[0], {
             'cfr': MpcaProgram.CashForRent,
             'cfe': MpcaProgram.CashForEducation,
@@ -314,6 +317,8 @@ export class MpcaDbService {
           })(),
           oblast,
           oblastIso: fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndexIso, () => _.submissionTime.getMonth() === 5 ? 'UA48' : undefined),
+          raion: Bn_RapidResponseOptions.ben_det_raion_l[_.ben_det_raion_l!],
+          hromada: Bn_RapidResponseOptions.ben_det_hromada_l[_.ben_det_hromada_l!],
           // amountUahSupposed: _.ass_inc_mpca_ben_l as any,
           id: _.id,
           date: _.submissionTime,

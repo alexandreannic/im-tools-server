@@ -1,12 +1,12 @@
 import {KoboAnswerFilter, KoboService} from './KoboService'
 import {PrismaClient} from '@prisma/client'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
-import {mapBn_Re} from '../../db/generatedKoboInterface/Bn_Re/Bn_ReMapping'
 import {ApiPaginate} from '../../core/Type'
-import {mapShelter_cashForRepair} from '../../db/generatedKoboInterface/Shelter_cashForRepair/Shelter_cashForRepairMapping'
-import {mapBn_OldMpcaNfi} from '../../db/generatedKoboInterface/Bn_OldMpcaNfi/Bn_OldMpcaNfiMapping'
-import {mapBn_RapidResponse} from '../../db/generatedKoboInterface/Bn_RapidResponse/Bn_RapidResponseMapping'
 import {DbKoboAnswer, KoboAnswerFlat} from '../connector/kobo/KoboClient/type/KoboAnswer'
+import {mapBn_Re} from '../../script/output/kobo/Bn_Re/Bn_ReMapping'
+import {mapShelter_cashForRepair} from '../../script/output/kobo/Shelter_cashForRepair/Shelter_cashForRepairMapping'
+import {mapBn_OldMpcaNfi} from '../../script/output/kobo/Bn_OldMpcaNfi/Bn_OldMpcaNfiMapping'
+import {mapBn_RapidResponse} from '../../script/output/kobo/Bn_RapidResponse/Bn_RapidResponseMapping'
 
 export class KoboMappedAnswersService {
 
