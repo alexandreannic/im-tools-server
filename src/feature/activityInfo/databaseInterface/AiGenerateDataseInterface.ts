@@ -1,16 +1,16 @@
-import {AiProtectionHhs} from './playground/AiProtectionHhs'
-import {ActivityInfoSdk} from './sdk/ActivityInfoSdk'
-import {activityInfoForms, AIID, FormDesc, FormDescs} from './model/ActivityInfo'
+import {AiProtectionHhs} from '../sandbox/AiProtectionHhs'
+import {ActivityInfoSdk} from '../sdk/ActivityInfoSdk'
+import {activityInfoForms, AIID, FormDesc, FormDescs} from '../model/ActivityInfo'
 import {Arr, fnSwitch} from '@alexandreannic/ts-utils'
 import fs from 'fs'
-import {capitalizeFirstLetter} from '../../helper/Utils'
+import {capitalize, capitalizeFirstLetter} from '../../../helper/Utils'
 import columnsListMap = AiProtectionHhs.columnsListMap
-import {appConf} from '../../core/conf/AppConf'
+import {appConf} from '../../../core/conf/AppConf'
 
-export const runAi = {
-  washRMM: () => runAI({
+export const ActivityInfoBuildType = {
+  washRMM: () => generateDatabaseInterface({
     optionsLimit: 200000,
-    formId: activityInfoForms.washRMM,
+    formId: activityInfoForms.washRmm,
     name: 'washRMM',
     ignoredQuestions: [
       'Total Reached (All Population Groups)',
@@ -18,11 +18,12 @@ export const runAi = {
     skipQuestionsPattern: [
       /Collective Sites/,
       /Total Reached \(No Disaggregation\)/,
-    ],
-    excludedQuestionPatternOptionsBecauseToLongOrIrrelevant: [
-      /Sub-Implementing Partner/,
-      /OblastIndex/,
+      /Oblast/,
       /Raion/,
+      /Implementing Partner/,
+    ],
+    skipQuestionsOptions: [
+      /Sub-Implementing Partner/,
       /Hormada/,
       /Settlement/,
     ],
@@ -30,13 +31,41 @@ export const runAi = {
       cg7insdlee1c3h0s: 'cbc6ncylee1d4ulu',
       c6q8ni3lepq77hp3: 'cocmup7lepq89f38',
     },
-    filterSpecificOptions: {
+    filterOptions: {
       'Organisation': _ => {
         return _.includes('Danish Refugee Council')
       },
       'Implementing Partner': _ => {
         return _.includes('Danish Refugee Council')
       }
+    }
+  }),
+  generalProtectionRmm: () => generateDatabaseInterface({
+    formId: activityInfoForms.generalProtectionRmm,
+    name: 'generalProtectionRmm',
+  }),
+  mpcaRmm: () => generateDatabaseInterface({
+    optionsLimit: 200,
+    formId: activityInfoForms.mpcaRmm,
+    name: 'mpcaRmm',
+    ignoredQuestions: [],
+    skipQuestionsPattern: [
+      /MPCA Indicators/,
+      // /Implementing Partner/,
+      // /MPCA Indicators/,
+    ],
+    skipQuestionsOptions: [
+      /Sub-Implementing Partner/,
+      /OblastIndex/,
+      /Raion/,
+      /Hormada/,
+      /Settlement/,
+    ],
+    pickSpecificOptionK2Id: {},
+    filterOptions: {
+      'Partner Organization': _ => {
+        return _.includes('Danish Refugee Council')
+      },
     }
   })
 }
@@ -56,16 +85,16 @@ interface AIFormInformation {
   required?: boolean
 }
 
-const runAI = async ({
+const generateDatabaseInterface = async ({
   formId,
   name,
   optionsLimit = 20,
   ignoredQuestions = [],
   pickSpecificOptionK2Id = {},
-  excludedQuestionPatternOptionsBecauseToLongOrIrrelevant = [],
-  filterSpecificOptions = {},
+  skipQuestionsOptions = [],
+  filterOptions = {},
   skipQuestionsPattern = [],
-  outputDir = appConf.rootProjectDir + '/src/feature/activityInfo/generatedModels',
+  outputDir = appConf.rootProjectDir + '/src/script/output/activityInfo',
 }: {
   optionsLimit?: number
   ignoredQuestions?: string[]
@@ -73,8 +102,8 @@ const runAI = async ({
   name: string,
   skipQuestionsPattern?: RegExp[]
   pickSpecificOptionK2Id?: Record<AIID, AIID>
-  excludedQuestionPatternOptionsBecauseToLongOrIrrelevant?: RegExp[],
-  filterSpecificOptions?: Record<string, (label: string) => boolean>
+  skipQuestionsOptions?: RegExp[],
+  filterOptions?: Record<string, (label: string) => boolean>
   outputDir?: string
 }) => {
   name = capitalizeFirstLetter(name)
@@ -129,7 +158,7 @@ const runAI = async ({
     }
     const optionDefId = pickSpecificOptionK2Id[optionId] ?? columnsListMap[optionId]?.listId ?? getRandomOptions()
     const options = await x.fetchColumns(optionId, optionDefId)
-    const filter = filterSpecificOptions[e.label]
+    const filter = filterOptions[e.label]
     return {
       formId: e.id,
       optionId,
@@ -140,6 +169,7 @@ const runAI = async ({
 
   const print = async () => {
     const forms = getElements(formDesc, [formId])
+    console.log(forms)
     const options = await Promise.all(forms
       .filter(_ => _.type === 'reference' && !pickSpecificOptionK2Id[_.id])
       .map(_ => getOptions(formDesc, _))
@@ -162,15 +192,17 @@ const runAI = async ({
   const sanitalizeNonASCIIChar = (_: string) => _.replace(/[^\x00-\x7F]/g, ' ')
 
   const generate = (data: AIFormInformation[]) => {
-    fs.writeFileSync(outputDir + '/' + name + '.ts',
+    fs.writeFileSync(outputDir + '/AiType' + capitalize(name) + '.ts',
+      `export namespace AiType${capitalize(name)} {` +
       generateInterface(data) + '\n\n' +
       generateMappingFn(data) + '\n\n' +
-      generateOptions(data) + '\n\n'
+      generateOptions(data) + '\n\n' +
+      '}'
     )
   }
 
   const generateOptions = (d: AIFormInformation[]) => {
-    return `export const options${name} = {\n`
+    return `export const options = {\n`
       + d.filter(_ => !!_.options).map(q => ``
         + `  '${q.label}': {\n`
         + `    ${q.options?.map(o => `"${o.label}": '${o.id}'`).join(',\n    ')}`
@@ -180,29 +212,29 @@ const runAI = async ({
   }
 
   const isFetchingQuestionOptionBlocked = (label: string) => {
-    return !!excludedQuestionPatternOptionsBecauseToLongOrIrrelevant.find(_ => _.test(label))
+    return !!skipQuestionsOptions.find(_ => _.test(label))
   }
 
   const generateMappingFn = (d: AIFormInformation[]) => {
-    return `export const map${name} = (a: ${name}) => ({\n`
+    return `export const map = (a: Type) => ({\n`
       + d.map(q => {
         const mapValue = fnSwitch(q.type, {
           'enumerated': () => {
-            return `options${name}['${q.label}'][a['${q.label}']!]`
+            return `options['${q.label}'][a['${q.label}']!]`
           },
           'reference': () => {
-            return `'${q.optionsId}' + ':' + options${name}['${q.label}'][a['${q.label}']!]`
+            return `'${q.optionsId}' + ':' + options['${q.label}'][a['${q.label}']!]`
           },
         }, _ => `a['${q.label}']`)
-        return `  '${q.id}': ${mapValue}`
+        return `  '${q.id}': a['${q.label}'] === undefined ? undefined : ${mapValue}`
       }).join(',\n')
       + '\n})'
   }
 
   const generateInterface = (d: AIFormInformation[]) => {
     return ``
-      + `type Opt<T extends keyof typeof options${name}> = keyof (typeof options${name})[T]\n\n`
-      + `export interface ${name} {\n`
+      + `type Opt<T extends keyof typeof options> = keyof (typeof options)[T]\n\n`
+      + `export interface Type {\n`
       + d.map(q => {
         const type = fnSwitch(q.type, {
           reference: `Opt<'${q.label}'>`,

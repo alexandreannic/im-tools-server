@@ -182,7 +182,7 @@ export interface Bn_Re {
   calc_gen_mpca_inc: string,
   // [note] **You have met the critera for inclusion in the cash assistance programme. We will conduct further internal checks and revert to you with a final result.** <span style="color: red">Do not read this out to the household</span>
   ass_inc_mpca_inc: string,
-  // [note] The provisional calculated total benefit for this household (HH Size × UAH 2,220 × 3 Months) will be UAH <span style="color: red">Do not read this out to the household</span>
+  // [note] The provisional calculated total benefit for this household (HH Size × UAH 3,600 × 3 Months) will be UAH <span style="color: red">Do not read this out to the household</span>
   ass_inc_mpca_ben: string,
   // [note] **Unfortunately based upon our criteria, you do not qualify for the cash assistance program as you do not meet the threshold for vulnerability.**
   ass_inc_mpca_not_vul: string,

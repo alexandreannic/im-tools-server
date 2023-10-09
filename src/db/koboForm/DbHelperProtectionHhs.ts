@@ -3,56 +3,80 @@ import {DbKoboFormHelper} from './Helper'
 import {Enum, map} from '@alexandreannic/ts-utils'
 import {endOfDay, endOfMonth, parse, startOfMonth} from 'date-fns'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
-import {Protection_Hhs2_1Options} from '../generatedKoboInterface/Protection_Hhs2_1/Protection_Hhs2_1Options'
-import {Protection_Hhs2_1} from '../generatedKoboInterface/Protection_Hhs2_1/Protection_Hhs2_1'
+import {DrcProject} from '../../core/DrcType'
+import {Protection_Hhs2_1Options} from '../../script/output/kobo/Protection_Hhs2_1/Protection_Hhs2_1Options'
+import {Protection_Hhs2_1} from '../../script/output/kobo/Protection_Hhs2_1/Protection_Hhs2_1'
 
 type Office = typeof Protection_Hhs2_1Options['staff_to_insert_their_DRC_office']
 
 /**
  * From Romane reporting file
  */
-export enum Donor {
-  'BHA_UKR000284' = 'BHA UKR-000284',
-  'OKF_UKR000309' = 'OKF UKR-000309',
-  'ECHO_UKR000322' = 'ECHO UKR-000322',
-  'UHF_IV_UKR000314' = 'UHF IV UKR-000314',
-  'NN2_UKR000298' = 'NN2 UKR-000298',
-}
+// export enum Donor {
+//   'BHA_UKR000284' = 'BHA UKR-000284',
+//   'OKF_UKR000309' = 'OKF UKR-000309',
+//   'ECHO_UKR000322' = 'ECHO UKR-000322',
+//   'UHF_IV_UKR000314' = 'UHF IV UKR-000314',
+//   'NN2_UKR000298' = 'NN2 UKR-000298',
+// }
 
 type ReportingmDonorMap = Partial<Record<
   keyof Office,
-  Partial<Record<Donor, {ai?: number, ipt?: number}>>>
+  Partial<Record<DrcProject, {ai?: number, ipt?: number}>>>
 >
 
 const reportingUntilUHF4Approval: ReportingmDonorMap = {
   'lviv': {
-    [Donor.BHA_UKR000284]: {ai: .5, ipt: 1,},
-    [Donor.OKF_UKR000309]: {ai: .5, ipt: 1,},
+    [DrcProject['OKF (UKR-000309)']]: {ai: 1, ipt: 1,},
   },
   'chernihiv': {
-    [Donor.BHA_UKR000284]: {ipt: 1, ai: 1},
+    [DrcProject['UHF4 (UKR-000314)']]: {ipt: 1, ai: 1},
+  },
+  'sumy': {
+    [DrcProject['UHF4 (UKR-000314)']]: {ipt: 1, ai: 1},
   },
   'dnipro': {
-    [Donor.BHA_UKR000284]: {ipt: 1, ai: 1},
+    [DrcProject['UHF4 (UKR-000314)']]: {ipt: 1, ai: 1},
   },
   'kharkiv': {
-    [Donor.BHA_UKR000284]: {ipt: 1},
-    [Donor.UHF_IV_UKR000314]: {ai: 1, ipt: 1},
+    [DrcProject['UHF4 (UKR-000314)']]: {ipt: .5, ai: .5},
+    [DrcProject['UHF6']]: {ipt: .5, ai: .5},
   },
   'mykolaiv': {
-    [Donor.UHF_IV_UKR000314]: {ai: 1, ipt: 1},
-    [Donor.NN2_UKR000298]: {ipt: 1},
+    [DrcProject['UHF4 (UKR-000314)']]: {ai: 1, ipt: 1},
   },
 }
 
-const reporting: Record<'2023-06' | '2023-07', ReportingmDonorMap> = {
+const reporting202309: ReportingmDonorMap = {
+  'lviv': {
+    [DrcProject['OKF (UKR-000309)']]: {ai: 1, ipt: 1,},
+  },
+  'chernihiv': {
+    [DrcProject['UHF4 (UKR-000314)']]: {ipt: 1, ai: 1},
+  },
+  'dnipro': {
+    [DrcProject['UHF4 (UKR-000314)']]: {ipt: 1, ai: 1},
+  },
+  'kharkiv': {
+    [DrcProject['BHA (UKR-000284)']]: {ipt: 1},
+    [DrcProject['UHF4 (UKR-000314)']]: {ai: 1, ipt: 1},
+  },
+  'mykolaiv': {
+    [DrcProject['UHF4 (UKR-000314)']]: {ai: 1, ipt: 1},
+    [DrcProject['Novo-Nordisk (UKR-000274)']]: {ipt: 1},
+  },
+}
+
+const reporting: Record<string, ReportingmDonorMap> = {
   '2023-06': reportingUntilUHF4Approval,
-  '2023-07': reportingUntilUHF4Approval
+  '2023-07': reportingUntilUHF4Approval,
+  '2023-08': reportingUntilUHF4Approval,
+  '2023-09': reporting202309,
 }
 
 export interface DbProtectionHhs2Tags {
-  reportingAiDonor?: Donor
-  reportingIptDonor?: Donor
+  reportingAiDonor?: DrcProject
+  reportingIptDonor?: DrcProject
 }
 
 export class DbHelperProtectionHhs {
@@ -63,6 +87,8 @@ export class DbHelperProtectionHhs {
   readonly assignDonorsForHhs = async (months: (keyof typeof reporting)[] = [
     '2023-06',
     '2023-07',
+    '2023-08',
+    '2023-09',
   ]) => {
     return Promise.all(months.map(this.assignDonor))
   }
@@ -78,7 +104,7 @@ export class DbHelperProtectionHhs {
           lt: end,
         },
       }
-    }).then(_ => _.map(DbKoboFormHelper.definedJsonType<Protection_Hhs2_1>()))
+    }).then(_ => _.map(DbKoboFormHelper.setTagPropertyTsType<Protection_Hhs2_1>()))
     await Promise.all(data
       .filter(_ => !!_.answers.staff_to_insert_their_DRC_office)
       .map(_ => {
@@ -86,7 +112,7 @@ export class DbHelperProtectionHhs {
           throw new Error(`Month ${month} not handled.`)
         }
         return map(reporting[month][_.answers.staff_to_insert_their_DRC_office!], reporting => {
-          const donor: {ipt: Donor[], ai?: Donor} = {ipt: []}
+          const donor: {ipt: DrcProject[], ai?: DrcProject} = {ipt: []}
           Enum.entries(reporting).forEach(([k, v], donorIndex) => {
             if (v.ipt === 1)
               donor.ipt.push(k)

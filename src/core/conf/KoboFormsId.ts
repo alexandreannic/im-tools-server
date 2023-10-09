@@ -20,6 +20,9 @@ export const koboFormsId = {
     protection_Hhs2_1: 'aQDZ2xhPUnNd43XzuQucVR',
     protection_Hhs2: 'aRHsewShwZhXiy8jrBj9zf',
     protection_Hhs1: 'aFU8x6tHksveU2c3hK7RUG',
+    protection_communityMonitoring: 'aQHBhYgevdzw8TR2Vq2ZdR',
+    protection_groupSession: 'a8Tn94arrSaH2FQBhUa9Zo',
+    protection_pss: 'a52hN5iiCW73mxqqfmEAfp',
   },
   dev: {
     fcrmMpca: 'aQRGMGocoAhcMLaHDh2Tbn',

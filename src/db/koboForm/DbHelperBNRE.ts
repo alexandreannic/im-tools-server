@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {Enum} from '@alexandreannic/ts-utils'
 import {DbKoboFormHelper} from './Helper'
-import {Bn_Re} from '../generatedKoboInterface/Bn_Re/Bn_Re'
+import {Bn_Re} from '../../script/output/kobo/Bn_Re/Bn_Re'
 
 export class DbHelperBNRE {
 
@@ -282,7 +282,7 @@ export class DbHelperBNRE {
       '8c258d2c-7e75-44c9-8c4a-e0fa115c623d': 'Apostolove',
       '492703f8-34c9-442f-ac83-78570f182b86': 'Apostolove',
     }
-    const entries = await this.prisma.koboAnswers.findMany({where: {uuid: {in: Enum.keys(mapUuiSettlement)}}}).then(_ => _.map(DbKoboFormHelper.definedJsonType<Bn_Re>()))
+    const entries = await this.prisma.koboAnswers.findMany({where: {uuid: {in: Enum.keys(mapUuiSettlement)}}}).then(_ => _.map(DbKoboFormHelper.setTagPropertyTsType<Bn_Re>()))
     await Promise.all(entries.map(e => {
       e.answers.ben_det_settlement = mapUuiSettlement[e.id]?.toLowerCase()
       return this.prisma.koboAnswers.update({

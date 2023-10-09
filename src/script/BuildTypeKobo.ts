@@ -5,6 +5,7 @@ import * as fs from 'fs'
 import {koboFormsId} from '../core/conf/KoboFormsId'
 import {ApiClient} from '../core/client/ApiClient'
 import {appConf} from '../core/conf/AppConf'
+import {KoboId} from '../feature/connector/kobo/KoboClient/type/KoboAnswer'
 
 interface KoboInterfaceGeneratorParams {
   outDir: string,
@@ -17,6 +18,24 @@ interface KoboInterfaceGeneratorParams {
 
 export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) => {
   const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
+    {
+      formName: 'Protection_communityMonitoring', formId: koboFormsId.prod.protection_communityMonitoring, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Protection_groupSession', formId: koboFormsId.prod.protection_groupSession, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Protection_pss', formId: koboFormsId.prod.protection_groupSession, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
     {formName: 'Bn_cashForRentApplication', formId: koboFormsId.prod.bn_cashForRentApplication},
     {formName: 'Bn_RapidResponse', formId: koboFormsId.prod.bn_RapidResponse},
     {formName: 'Shelter_cashForRepair', formId: koboFormsId.prod.shelter_cashForRepair},
@@ -122,7 +141,7 @@ class KoboInterfaceGenerator {
   readonly generate = async () => {
     const form = await this.sdk.getForm(this.options.formId)
     const survey = this.fixDuplicateName(form.content.survey)
-    const mainInterface = this.generateInterface(survey)
+    const mainInterface = this.generateInterface(survey, this.options.formId)
     const options = this.generateOptionsType(survey, form.content.choices)
     const mapping = this.generateFunctionMapping(survey)
     const location = this.options.outDir + '/' + this.options.formName
@@ -186,7 +205,7 @@ const extractQuestionName = (_: Record<string, any>) => {
     return survey.filter(_ => _.type === 'begin_repeat')
   }
 
-  readonly generateInterface = (survey: KoboApiForm['content']['survey']) => {
+  readonly generateInterface = (survey: KoboApiForm['content']['survey'], formId: KoboId) => {
     const indexOptionId = Arr(survey).groupBy(_ => _.select_from_list_name)
     const repeatItems = this.getBeginRepeatQuestion(survey)
     const properties = survey
@@ -220,6 +239,7 @@ const extractQuestionName = (_: Record<string, any>) => {
       })
     return `import {${this.options.formName}Options} from './${this.options.formName}Options'\n\n`
       + `type Opt<T extends keyof typeof ${this.options.formName}Options> = keyof (typeof ${this.options.formName}Options)[T]\n\n`
+      + `// Form id: ${formId}\n`
       + `export interface ${this.options.formName} {\n${properties.join('\n')}\n}`
   }
 
@@ -262,6 +282,6 @@ const extractQuestionName = (_: Record<string, any>) => {
   )
   await generateKoboInterface(
     koboSdk,
-    appConf.rootProjectDir + '/src/db/generatedKoboInterface',
+    appConf.rootProjectDir + '/src/script/output/kobo',
   )
 })()

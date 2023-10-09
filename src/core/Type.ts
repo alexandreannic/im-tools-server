@@ -28,3 +28,14 @@ export const validateApiPaginate = yup.object({
   offset: yup.number().default(defaultPagination.offset),
   limit: yup.number().default(defaultPagination.limit),
 })
+
+export interface Person {
+  age?: number
+  gender?: Gender
+}
+
+export enum Gender {
+  Male = 'Male',
+  Female = 'Female',
+  Other = 'Other',
+}

@@ -1,14 +1,15 @@
 import {OblastISO, OblastName} from '../../../core/oblastIndex'
 import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcType'
-import {Bn_Re} from '../../../db/generatedKoboInterface/Bn_Re/Bn_Re'
 import {KoboAttachment} from '../../connector/kobo/KoboClient/type/KoboAnswer'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
+import {Bn_Re} from '../../../script/output/kobo/Bn_Re/Bn_Re'
+import {Person} from '../../../core/Type'
 
 export enum MpcaRowSource {
-  RRM = 'RRM',
+  RapidResponseMechansim = 'RapidResponseMechansim',
   CashForRent = 'CashForRent',
   CashForRepairRegistration = 'CashForRepairRegistration',
-  BNRE = 'BNRE',
+  BasicNeedRegistration = 'BasicNeedRegistration',
   OldBNRE = 'OldBNRE',
 }
 
@@ -23,6 +24,8 @@ export interface MpcaRow {
   source: MpcaRowSource
   office?: DrcOffice
   oblast?: OblastName
+  raion?: string
+  hromada?: string
   oblastIso?: OblastISO
   date: Date
   prog?: MpcaProgram[]
@@ -45,8 +48,9 @@ export interface MpcaRow {
   idFileURL?: KoboAttachment
   phone?: string
   deduplication?: WfpDeduplication
-  girls?: number
-  boys?: number
-  men?: number
-  women?: number
+  persons?: Person[]
+  // girls?: number
+  // boys?: number
+  // men?: number
+  // women?: number
 }
