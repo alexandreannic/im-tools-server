@@ -3,6 +3,7 @@ import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcType'
 import {KoboAttachment} from '../../connector/kobo/KoboClient/type/KoboAnswer'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
 import {Bn_Re} from '../../../script/output/kobo/Bn_Re/Bn_Re'
+import {Person} from '../../../core/Type'
 
 export enum MpcaRowSource {
   RapidResponseMechansim = 'RapidResponseMechansim',
@@ -47,8 +48,9 @@ export interface MpcaRow {
   idFileURL?: KoboAttachment
   phone?: string
   deduplication?: WfpDeduplication
-  girls?: number
-  boys?: number
-  men?: number
-  women?: number
+  persons?: Person[]
+  // girls?: number
+  // boys?: number
+  // men?: number
+  // women?: number
 }

@@ -159,6 +159,13 @@ export const capitalize = (_: string) => {
   return _.charAt(0).toUpperCase() + _.slice(1)
 }
 
+export namespace Utils {
+  export const safeNumber: {
+    (_: undefined | string | number, defaultValue?: undefined): number | undefined
+    (_: undefined | string | number, defaultValue: number): number
+  } = (_, defaultValue) => (isNaN(_ as number) ? defaultValue : +_!) as number
+}
+
 // const x = Promise.resolve([
 //   async () => 1,
 //   async () => '1',
