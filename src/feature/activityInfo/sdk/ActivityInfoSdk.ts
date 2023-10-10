@@ -1,7 +1,7 @@
 import {AIID, Database, Form, FormDescs} from '../model/ActivityInfo'
 import {makeid} from '../../../helper/Utils'
 import {appConf} from '../../../core/conf/AppConf'
-import {AiProtectionHhs} from '../playground/AiProtectionHhs'
+import {AiProtectionHhs} from '../sandbox/AiProtectionHhs'
 
 interface ActicityInfoBody {
   [key: string]: any
@@ -49,6 +49,26 @@ export class ActivityInfoSdk {
   constructor(private api = new Api()) {
   }
 
+  static readonly buildRequest = ({
+    activityIdPrefix,
+    activity,
+    activityIndex,
+    formId,
+  }: {
+    activityIdPrefix: string
+    activity: any
+    activityIndex: number
+    formId: string
+  }) => {
+    return {
+      'changes': [{
+        'formId': formId,
+        'recordId': activityIdPrefix + ('' + activityIndex).padStart(3, '0'),
+        'parentRecordId': null,
+        'fields': activity
+      }]
+    }
+  }
   readonly softDeleteRecord = (formId: string, recordId: string) => {
     return this.api.postNoJSON(`/resources/update`, {
       body: {

@@ -4,12 +4,14 @@ import {_Arr, Arr, fnSwitch} from '@alexandreannic/ts-utils'
 import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcType'
 import {OblastIndex} from '../../../core/oblastIndex'
 import {KoboAnswerFilter} from '../../kobo/KoboService'
-import {ApiPaginate, toApiPaginate} from '../../../core/Type'
+import {ApiPaginate, Gender, toApiPaginate} from '../../../core/Type'
 import {WfpDeduplicationService} from '../../wfpDeduplication/WfpDeduplicationService'
 import {appConf} from '../../../core/conf/AppConf'
 import {MpcaProgram, MpcaRow, MpcaRowSource} from './MpcaDbType'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
-import {format} from 'date-fns'
+import {Bn_ReOptions} from '../../../script/output/kobo/Bn_Re/Bn_ReOptions'
+import {Bn_RapidResponseOptions} from '../../../script/output/kobo/Bn_RapidResponse/Bn_RapidResponseOptions'
+import {Utils} from '../../../helper/Utils'
 
 export class MpcaDbService {
   constructor(
@@ -61,7 +63,7 @@ export class MpcaDbService {
   }
 
   private readonly redirectDonor = (row: MpcaRow): MpcaRow => {
-    if ((row.source === MpcaRowSource.RRM || row.source === MpcaRowSource.BNRE)
+    if ((row.source === MpcaRowSource.RapidResponseMechansim || row.source === MpcaRowSource.BasicNeedRegistration)
       && row.donor === DrcDonor.POFU
       && fnSwitch(row.oblast!, {
         Chernihivska: false,
@@ -77,7 +79,7 @@ export class MpcaDbService {
       row.project = DrcProject['BHA (UKR-000284)']
     }
 
-    if (!row.donor && row.source === MpcaRowSource.RRM && fnSwitch(row.oblast!, {
+    if (!row.donor && row.source === MpcaRowSource.RapidResponseMechansim && fnSwitch(row.oblast!, {
       Chernihivska: false,
       Kharkivska: true,
       Donetska: true,
@@ -104,7 +106,7 @@ export class MpcaDbService {
       return _.data.map(_ => {
         const group = [..._.hh_char_hh_det ?? [], {hh_char_hh_det_age: _.hh_char_hhh_age, hh_char_hh_det_gender: _.hh_char_hhh_gender}]
         return {
-          source: MpcaRowSource.BNRE,
+          source: MpcaRowSource.BasicNeedRegistration,
           id: _.id,
           date: _.submissionTime,
           office: fnSwitch(_.back_office!, {
@@ -116,18 +118,27 @@ export class MpcaDbService {
           }, () => undefined),
           oblast: fnSwitch(_.ben_det_oblast!, OblastIndex.koboOblastIndex, () => undefined),
           oblastIso: fnSwitch(_.ben_det_oblast!, OblastIndex.koboOblastIndexIso, () => undefined),
+          raion: Bn_ReOptions.ben_det_raion[_.ben_det_raion!],
+          hromada: Bn_ReOptions.ben_det_hromada[_.ben_det_hromada!],
           prog: Arr(_.back_prog_type)?.map(prog => fnSwitch(prog.split('_')[0], {
             'cfr': MpcaProgram.CashForRent,
             'cfe': MpcaProgram.CashForEducation,
             'mpca': MpcaProgram.MPCA,
           }, () => undefined)).compact(),
           hhSize: _.ben_det_hh_size,
-          elderlyMen: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 50 && p.hh_char_hh_det_gender === 'male').length,
-          elderlyWomen: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 50 && p.hh_char_hh_det_gender === 'female').length,
-          men: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 18 && p.hh_char_hh_det_age < 50 && p.hh_char_hh_det_gender === 'male').length,
-          women: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 18 && p.hh_char_hh_det_age < 50 && p.hh_char_hh_det_gender === 'female').length,
-          boys: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age < 18 && p.hh_char_hh_det_gender === 'male').length,
-          girls: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age < 18 && p.hh_char_hh_det_gender === 'female').length,
+          persons: group.map(p => ({
+            age: Utils.safeNumber(p.hh_char_hh_det_age),
+            gender: fnSwitch(p.hh_char_hh_det_gender!, {
+              female: Gender.Female,
+              male: Gender.Male,
+            }, () => void 0)
+          })),
+          // elderlyMen: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 50 && p.hh_char_hh_det_gender === 'male').length,
+          // elderlyWomen: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 50 && p.hh_char_hh_det_gender === 'female').length,
+          // men: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 18 && p.hh_char_hh_det_age < 50 && p.hh_char_hh_det_gender === 'male').length,
+          // women: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 18 && p.hh_char_hh_det_age < 50 && p.hh_char_hh_det_gender === 'female').length,
+          // boys: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age < 18 && p.hh_char_hh_det_gender === 'male').length,
+          // girls: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age < 18 && p.hh_char_hh_det_gender === 'female').length,
           ...fnSwitch(_.back_donor!, {
             uhf_chj: {donor: DrcDonor.UHF, project: DrcProject['UHF4 (UKR-000314)'],},
             uhf_dnk: {donor: DrcDonor.UHF, project: DrcProject['UHF4 (UKR-000314)'],},
@@ -253,7 +264,7 @@ export class MpcaDbService {
         const group = [..._.hh_char_hh_det_l ?? [], {hh_char_hh_det_age_l: _.hh_char_hhh_age_l, hh_char_hh_det_gender_l: _.hh_char_hhh_gender_l}]
         const oblast = fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndex, () => _.submissionTime.getMonth() === 5 ? 'Mykolaivska' : undefined)
         return ({
-          source: MpcaRowSource.RRM,
+          source: MpcaRowSource.RapidResponseMechansim,
           prog: Arr(_.back_prog_type ?? _.back_prog_type_l).map(prog => fnSwitch(prog.split('_')[0], {
             'cfr': MpcaProgram.CashForRent,
             'cfe': MpcaProgram.CashForEducation,
@@ -261,13 +272,14 @@ export class MpcaDbService {
           }, () => undefined)).compact(),
           office: (() => {
             if (_.back_office_l)
-              return fnSwitch(_.back_office_l, {
+              return fnSwitch(_.back_office_l!, {
                 chj: DrcOffice.Chernihiv,
                 dnk: DrcOffice.Dnipro,
                 hrk: DrcOffice.Kharkiv,
                 lwo: DrcOffice.Lviv,
                 nlv: DrcOffice.Mykolaiv,
-              }, () => undefined)
+                umy: DrcOffice.Sumy,
+              })
             return fnSwitch(oblast!, {
               Chernihivska: DrcOffice.Chernihiv,
               Kharkivska: DrcOffice.Kharkiv,
@@ -314,6 +326,8 @@ export class MpcaDbService {
           })(),
           oblast,
           oblastIso: fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndexIso, () => _.submissionTime.getMonth() === 5 ? 'UA48' : undefined),
+          raion: Bn_RapidResponseOptions.ben_det_raion_l[_.ben_det_raion_l!],
+          hromada: Bn_RapidResponseOptions.ben_det_hromada_l[_.ben_det_hromada_l!],
           // amountUahSupposed: _.ass_inc_mpca_ben_l as any,
           id: _.id,
           date: _.submissionTime,
@@ -322,12 +336,19 @@ export class MpcaDbService {
           firstName: _.ben_det_first_name ?? _.ben_det_first_name,
           patronyme: _.ben_det_pat_name ?? _.ben_det_pat_name,
           hhSize: _.ben_det_hh_size ?? _.ben_det_hh_size_l,
-          elderlyMen: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 50 && p.hh_char_hh_det_gender_l === 'male').length,
-          elderlyWomen: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 50 && p.hh_char_hh_det_gender_l === 'female').length,
-          men: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 18 && p.hh_char_hh_det_age_l < 50 && p.hh_char_hh_det_gender_l === 'male').length,
-          women: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 18 && p.hh_char_hh_det_age_l < 50 && p.hh_char_hh_det_gender_l === 'female').length,
-          boys: group?.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l < 18 && p.hh_char_hh_det_gender_l === 'male').length,
-          girls: group?.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l < 18 && p.hh_char_hh_det_gender_l === 'female').length,
+          persons: group.map(p => ({
+            age: Utils.safeNumber(p.hh_char_hh_det_age_l),
+            gender: fnSwitch(p.hh_char_hh_det_gender_l!, {
+              female: Gender.Female,
+              male: Gender.Male,
+            }, () => void 0)
+          })),
+          // elderlyMen: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 50 && p.hh_char_hh_det_gender_l === 'male').length,
+          // elderlyWomen: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 50 && p.hh_char_hh_det_gender_l === 'female').length,
+          // men: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 18 && p.hh_char_hh_det_age_l < 50 && p.hh_char_hh_det_gender_l === 'male').length,
+          // women: group.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l >= 18 && p.hh_char_hh_det_age_l < 50 && p.hh_char_hh_det_gender_l === 'female').length,
+          // boys: group?.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l < 18 && p.hh_char_hh_det_gender_l === 'male').length,
+          // girls: group?.filter(p => p.hh_char_hh_det_age_l && p.hh_char_hh_det_age_l < 18 && p.hh_char_hh_det_gender_l === 'female').length,
           passportSerie: _.pay_det_pass_ser ?? _.pay_det_pass_ser_l,
           passportNum: _.pay_det_pass_num ?? _.pay_det_pass_num_l,
           taxId: _.pay_det_tax_id_num ?? _.pay_det_tax_id_num_l,
@@ -393,12 +414,16 @@ export class MpcaDbService {
             status_returnee: 'ret',
             status_refugee: 'ref_asy',
           }),
-          elderlyMen: group.filter(p => p.AgeHH && p.AgeHH >= 50 && p.GenderHH === 'male').length,
-          elderlyWomen: group.filter(p => p.AgeHH && p.AgeHH >= 50 && p.GenderHH === 'female').length,
-          men: group.filter(p => p.AgeHH && p.AgeHH >= 18 && p.AgeHH < 50 && p.GenderHH === 'male').length,
-          women: group.filter(p => p.AgeHH && p.AgeHH >= 18 && p.AgeHH < 50 && p.GenderHH === 'female').length,
-          boys: group.filter(p => p.AgeHH && p.AgeHH < 18 && p.GenderHH === 'male').length,
-          girls: group.filter(p => p.AgeHH && p.AgeHH < 18 && p.GenderHH === 'female').length,
+          persons: group.map(p => ({
+            age: Utils.safeNumber(p.AgeHH),
+            gender: fnSwitch(p.GenderHH!, {female: Gender.Female, male: Gender.Male, nogender: Gender.Other}, () => void 0)
+          })),
+          // elderlyMen: group.filter(p => p.AgeHH && p.AgeHH >= 50 && p.GenderHH === 'male').length,
+          // elderlyWomen: group.filter(p => p.AgeHH && p.AgeHH >= 50 && p.GenderHH === 'female').length,
+          // men: group.filter(p => p.AgeHH && p.AgeHH >= 18 && p.AgeHH < 50 && p.GenderHH === 'male').length,
+          // women: group.filter(p => p.AgeHH && p.AgeHH >= 18 && p.AgeHH < 50 && p.GenderHH === 'female').length,
+          // boys: group.filter(p => p.AgeHH && p.AgeHH < 18 && p.GenderHH === 'male').length,
+          // girls: group.filter(p => p.AgeHH && p.AgeHH < 18 && p.GenderHH === 'female').length,
           lastName: _.patron,
           firstName: _.name_resp,
           patronyme: _.last_resp,
