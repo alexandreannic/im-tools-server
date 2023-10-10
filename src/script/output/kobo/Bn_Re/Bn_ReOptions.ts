@@ -4,9 +4,12 @@ back_office: {
 	'chj': `Chernihiv (CHJ)`,
 	'dnk': `Dnipro (DNK)`,
 	'hrk': `Kharkiv (HRK)`,
-	'nlv': `Mykloaiv (NLV)`
+	'nlv': `Mykloaiv (NLV)`,
+	'umy': `Sumy (UMY)`
 },
 back_enum: {
+	'anna_artiukh': `Anna Artiukh`,
+	'oksana_podolianko': `Oksana Podolianko`,
 	'oleksandr_havrylov': `Oleksandr Havrylov`,
 	'ievgen_kylymenniy': `Ievgen Kylymenniy`,
 	'oleksandr_shmunk': `Oleksandr Shmunk`,
@@ -82,9 +85,11 @@ back_donor: {
 	'pool_dnk': `Pooled Funds`,
 	'pool_hrk': `Pooled Funds`,
 	'pool_lwo': `Pooled Funds`,
-	'pool_nlv': `Pooled Funds`
+	'pool_nlv': `Pooled Funds`,
+	'sdc_umy': `SDC`
 },
 back_prog_type: {
+	'mpca_umy': `MPCA`,
 	'mpca_lwo': `MPCA`,
 	'nfi_lwo': `NFI`,
 	'cfr_lwo': `Cash for Rent`,

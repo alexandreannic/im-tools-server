@@ -2,6 +2,7 @@ import {Bn_RapidResponseOptions} from './Bn_RapidResponseOptions'
 
 type Opt<T extends keyof typeof Bn_RapidResponseOptions> = keyof (typeof Bn_RapidResponseOptions)[T]
 
+// Form id: aMJL9DG8qEcULqTZTKQbrq
 export interface Bn_RapidResponse {
   start: string,
   end: string,

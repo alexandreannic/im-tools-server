@@ -2,6 +2,7 @@ import {Bn_cashForRentApplicationOptions} from './Bn_cashForRentApplicationOptio
 
 type Opt<T extends keyof typeof Bn_cashForRentApplicationOptions> = keyof (typeof Bn_cashForRentApplicationOptions)[T]
 
+// Form id: aBupWbhtUmA7so3532tYLa
 export interface Bn_cashForRentApplication {
   start: string,
   end: string,

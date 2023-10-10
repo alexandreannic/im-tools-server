@@ -98,9 +98,12 @@ back_office_l: {
 	'chj': `Chernihiv (CHJ)`,
 	'dnk': `Dnipro (DNK)`,
 	'hrk': `Kharkiv (HRK)`,
-	'nlv': `Mykloaiv (NLV)`
+	'nlv': `Mykloaiv (NLV)`,
+	'umy': `Sumy (UMY)`
 },
 back_enum_l: {
+	'anna_artiukh': `Anna Artiukh`,
+	'oksana_podolianko': `Oksana Podolianko`,
 	'oleksandr_havrylov': `Oleksandr Havrylov`,
 	'ievgen_kylymenniy': `Ievgen Kylymenniy`,
 	'oleksandr_shmunk': `Oleksandr Shmunk`,

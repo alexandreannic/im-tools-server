@@ -272,13 +272,14 @@ export class MpcaDbService {
           }, () => undefined)).compact(),
           office: (() => {
             if (_.back_office_l)
-              return fnSwitch(_.back_office_l, {
+              return fnSwitch(_.back_office_l!, {
                 chj: DrcOffice.Chernihiv,
                 dnk: DrcOffice.Dnipro,
                 hrk: DrcOffice.Kharkiv,
                 lwo: DrcOffice.Lviv,
                 nlv: DrcOffice.Mykolaiv,
-              }, () => undefined)
+                umy: DrcOffice.Sumy,
+              })
             return fnSwitch(oblast!, {
               Chernihivska: DrcOffice.Chernihiv,
               Kharkivska: DrcOffice.Kharkiv,
@@ -413,7 +414,10 @@ export class MpcaDbService {
             status_returnee: 'ret',
             status_refugee: 'ref_asy',
           }),
-          persons: group.map(p => ({age: Utils.safeNumber(p.AgeHH), gender: fnSwitch(p.GenderHH!, {female: Gender.Female, male: Gender.Male, nogender: Gender.Other}, () => void 0)})),
+          persons: group.map(p => ({
+            age: Utils.safeNumber(p.AgeHH),
+            gender: fnSwitch(p.GenderHH!, {female: Gender.Female, male: Gender.Male, nogender: Gender.Other}, () => void 0)
+          })),
           // elderlyMen: group.filter(p => p.AgeHH && p.AgeHH >= 50 && p.GenderHH === 'male').length,
           // elderlyWomen: group.filter(p => p.AgeHH && p.AgeHH >= 50 && p.GenderHH === 'female').length,
           // men: group.filter(p => p.AgeHH && p.AgeHH >= 18 && p.AgeHH < 50 && p.GenderHH === 'male').length,
