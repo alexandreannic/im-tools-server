@@ -170,7 +170,7 @@ export class WfpDeduplicationUpload {
   }
 
   private setOblast = async () => {
-    const possibleOffices = ['HRK', 'NLV', 'CEJ', 'DNK', 'CWC', 'NLK', 'LWO', 'CHJ']
+    const possibleOffices = ['HRK', 'NLV', 'CEJ', 'DNK', 'CWC', 'NLK', 'LWO', 'CHJ', 'UMY']
     const officeMapping: Record<string, DrcOffice> = {
       'HRK': DrcOffice.Kharkiv,
       'NLV': DrcOffice.Mykolaiv,
@@ -180,6 +180,7 @@ export class WfpDeduplicationUpload {
       'NLK': DrcOffice.Mykolaiv,
       'LWO': DrcOffice.Lviv,
       'CHJ': DrcOffice.Chernihiv,
+      'UMY': DrcOffice.Sumy,
     }
     await this.runOnAll({
       req: this.wfpSdk.getImportFiles,

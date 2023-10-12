@@ -19,6 +19,15 @@ interface KoboInterfaceGeneratorParams {
 export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) => {
   const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
     {
+      formName: 'Partnership_partnersDatabase', formId: koboFormsId.prod.partnership_partnersDatabase,
+    },
+    {
+      formName: 'Partnership_assessment', formId: koboFormsId.prod.partnership_assessment,
+    },
+    {
+      formName: 'Partnership_initialQuestionnaire', formId: koboFormsId.prod.partnership_initialQuestionnaire,
+    },
+    {
       formName: 'Protection_communityMonitoring', formId: koboFormsId.prod.protection_communityMonitoring, skipQuestionTyping: [
         'ben_det_hromada',
         'ben_det_raion',

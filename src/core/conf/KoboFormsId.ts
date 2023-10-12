@@ -23,6 +23,9 @@ export const koboFormsId = {
     protection_communityMonitoring: 'aQHBhYgevdzw8TR2Vq2ZdR',
     protection_groupSession: 'a8Tn94arrSaH2FQBhUa9Zo',
     protection_pss: 'a52hN5iiCW73mxqqfmEAfp',
+    partnership_partnersDatabase: 'aLs32U5Qc9HfQ5mxQtsEML',
+    partnership_initialQuestionnaire: 'a6u7CBysEz746Hdx6pVLzp',
+    partnership_assessment: 'aLD2Xc9cKSY22c5cAP5utT',
   },
   dev: {
     fcrmMpca: 'aQRGMGocoAhcMLaHDh2Tbn',

@@ -71,7 +71,7 @@ const reporting: Record<string, ReportingmDonorMap> = {
   '2023-06': reportingUntilUHF4Approval,
   '2023-07': reportingUntilUHF4Approval,
   '2023-08': reportingUntilUHF4Approval,
-  '2023-09': reporting202309,
+  // '2023-09': reporting202309,
 }
 
 export interface DbProtectionHhs2Tags {
@@ -88,7 +88,6 @@ export class DbHelperProtectionHhs {
     '2023-06',
     '2023-07',
     '2023-08',
-    '2023-09',
   ]) => {
     return Promise.all(months.map(this.assignDonor))
   }
@@ -109,7 +108,7 @@ export class DbHelperProtectionHhs {
       .filter(_ => !!_.answers.staff_to_insert_their_DRC_office)
       .map(_ => {
         if (!reporting[month]) {
-          throw new Error(`Month ${month} not handled.`)
+          return
         }
         return map(reporting[month][_.answers.staff_to_insert_their_DRC_office!], reporting => {
           const donor: {ipt: DrcProject[], ai?: DrcProject} = {ipt: []}
