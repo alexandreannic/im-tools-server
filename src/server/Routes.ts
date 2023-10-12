@@ -84,7 +84,7 @@ export const getRoutes = (
     try {
       const email = req.session.user?.email
       if (!email) {
-        throw new AppError.Forbidden('auth_user_not_connected' + JSON.stringify(appConf))
+        throw new AppError.Forbidden('auth_user_not_connected')
       }
       const user = await prisma.user.findFirst({where: {email}})
       if (!user) {
@@ -142,7 +142,7 @@ export const getRoutes = (
     router.get('/kobo-api/:id/:formId/answers', auth(), errorCatcher(koboApi.getAnswers))
     router.get('/kobo-api/:id', auth(), errorCatcher(koboApi.getForms))
     router.get('/kobo-api/:id/:formId', cache('24 hour'), auth(), errorCatcher(koboApi.getSchema))
-    router.get('/kobo-api/:id/:formId/:answerId/edit-url', auth(), errorCatcher(koboApi.edit))
+    router.get('/kobo-api/:id/:formId/:answerId/edit-url', errorCatcher(koboApi.edit))
 
     router.post('/mpca/search', auth(), cache('24 hour'), errorCatcher(mpca.search))
     router.put('/mpca-payment', auth(), errorCatcher(mpcaPayment.create))
