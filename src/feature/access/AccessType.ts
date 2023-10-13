@@ -1,5 +1,5 @@
 import {KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
-import {DrcOffice} from '../../core/DrcType'
+import {DrcOffice} from '../../core/DrcUa'
 import {FeatureAccess} from '@prisma/client'
 
 export enum AppFeatureId {

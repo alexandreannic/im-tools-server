@@ -1,4 +1,4 @@
-import {DrcOffice} from '../../core/DrcType'
+import {DrcOffice} from '../../core/DrcUa'
 import {getOverlapMonths} from '../../helper/Utils'
 import {MpcaWfpDeduplication} from '@prisma/client'
 import {appConf} from '../../core/conf/AppConf'

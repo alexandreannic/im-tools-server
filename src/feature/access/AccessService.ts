@@ -3,7 +3,7 @@ import {Access, AppFeatureId, KoboDatabaseFeatureParams, WfpDeduplicationAccessP
 import {yup} from '../../helper/Utils'
 import {Enum} from '@alexandreannic/ts-utils'
 import {InferType} from 'yup'
-import {DrcOffice} from '../../core/DrcType'
+import {DrcOffice} from '../../core/DrcUa'
 import {UserSession} from '../session/UserSession'
 import {UUID} from '../../core/Type'
 
