@@ -5,6 +5,9 @@ import {getCsv} from '../../../feature/connector/kobo/cleanKoboDb/CleadedKoboDbL
 import {format} from 'date-fns'
 import {KoboSdkGenerator} from '../../../feature/kobo/KoboSdkGenerator'
 import {KoboApiService} from '../../../feature/kobo/KoboApiService'
+import {ca} from 'date-fns/locale'
+import {KoboSdk} from '../../../feature/connector/kobo/KoboClient/KoboSdk'
+import {appConf} from '../../../core/conf/AppConf'
 import {KoboSyncServer} from '../../../feature/kobo/KoboSyncServer'
 
 const apiAnswersFiltersValidation = yup.object({
@@ -77,8 +80,11 @@ export class ControllerKoboApi {
     const {id, formId} = await this.extractParams(req)
     const answerId = await yup.string().required().validate(req.params.answerId)
     const sdk = await this.koboSdkGenerator.get(id)
-    const form = await sdk.edit(formId, answerId)
-    res.send(form)
+    const link = await sdk.edit(formId, answerId)
+    // TODO Find a way to authenticate
+    res.header('Authorization', KoboSdk.makeAuthorizationHeader(appConf.kobo.token))
+    res.cookie('kobonaut__eu_kobotoolbox_org', '')
+    res.redirect(link.url)
   }
 
   readonly getSchema = async (req: Request, res: Response, next: NextFunction) => {

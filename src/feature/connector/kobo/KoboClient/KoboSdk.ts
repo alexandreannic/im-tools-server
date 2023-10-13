@@ -36,7 +36,7 @@ export class KoboSdk {
     })
   }
   readonly edit = (formId: KoboId, answerId: KoboAnswerId) => {
-    return this.api.get<KoboApiForm>(`/v2/assets/${formId}/data/${answerId}/enketo/edit/?return_url=false`)
+    return this.api.get<{url: string, detail?: string}>(`/v2/assets/${formId}/data/${answerId}/enketo/edit/?return_url=false`)
   }
 
   readonly getVersions = (formId: string) => {
