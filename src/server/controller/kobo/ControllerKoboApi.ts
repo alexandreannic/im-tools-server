@@ -81,10 +81,10 @@ export class ControllerKoboApi {
     const answerId = await yup.string().required().validate(req.params.answerId)
     const sdk = await this.koboSdkGenerator.get(id)
     const link = await sdk.edit(formId, answerId)
+    // TODO Find a way to authenticate
     res.header('Authorization', KoboSdk.makeAuthorizationHeader(appConf.kobo.token))
-    res.cookie('kobonaut__eu_kobotoolbox_org', 'ihvenkxsr7mb6mxzss5y3s52bm39i1lg')
+    res.cookie('kobonaut__eu_kobotoolbox_org', '')
     res.redirect(link.url)
-    // res.send(form)
   }
 
   readonly getSchema = async (req: Request, res: Response, next: NextFunction) => {
