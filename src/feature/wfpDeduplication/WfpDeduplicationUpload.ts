@@ -6,7 +6,7 @@ import {addMinutes, addSeconds, parse, subMinutes, subSeconds} from 'date-fns'
 import {ApiPaginate} from '../../core/Type'
 import {appConf, AppConf} from '../../core/conf/AppConf'
 import {WfpBuildingBlockClient} from '../connector/wfpBuildingBlock/WfpBuildingBlockClient'
-import {DrcOffice} from '../../core/DrcType'
+import {DrcOffice} from '../../core/DrcUa'
 import {logger, Logger} from '../../helper/Logger'
 import {AppError} from '../../helper/Errors'
 

@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {logger, Logger} from '../../helper/Logger'
-import {DrcOffice} from '../../core/DrcType'
+import {DrcOffice} from '../../core/DrcUa'
 
 export class UserService {
 

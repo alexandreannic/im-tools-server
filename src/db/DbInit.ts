@@ -3,7 +3,7 @@ import {koboFormsId, koboServerId} from '../core/conf/KoboFormsId'
 import {appConf, AppConf} from '../core/conf/AppConf'
 import {AppFeatureId, KoboDatabaseFeatureParams} from '../feature/access/AccessType'
 import {KoboMigrateHHS2} from '../script/KoboMigrateHHS2'
-import {DrcJob, DrcOffice} from '../core/DrcType'
+import {DrcJob, DrcOffice} from '../core/DrcUa'
 import {DbHelperProtectionHhs} from './koboForm/DbHelperProtectionHhs'
 
 export const createdBySystem = 'SYSTEM'

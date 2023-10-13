@@ -1,5 +1,5 @@
 import {OblastISO, OblastName} from '../../../core/oblastIndex'
-import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcType'
+import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcUa'
 import {KoboAttachment} from '../../connector/kobo/KoboClient/type/KoboAnswer'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
 import {Bn_Re} from '../../../script/output/kobo/Bn_Re/Bn_Re'

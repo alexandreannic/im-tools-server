@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {KoboMappedAnswersService} from '../../kobo/KoboMappedAnswersService'
 import {_Arr, Arr, fnSwitch} from '@alexandreannic/ts-utils'
-import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcType'
+import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcUa'
 import {OblastIndex} from '../../../core/oblastIndex'
 import {KoboAnswerFilter} from '../../kobo/KoboService'
 import {ApiPaginate, Gender, toApiPaginate} from '../../../core/Type'
@@ -64,7 +64,7 @@ export class MpcaDbService {
 
   private readonly redirectDonor = (row: MpcaRow): MpcaRow => {
     if ((row.source === MpcaRowSource.RapidResponseMechansim || row.source === MpcaRowSource.BasicNeedRegistration)
-      && row.donor === DrcDonor.POFU
+      && row.donor === DrcDonor.PoolFunds
       && fnSwitch(row.oblast!, {
         Chernihivska: false,
         Donetska: true,
@@ -156,13 +156,13 @@ export class MpcaDbService {
             echo_hrk: {donor: DrcDonor.ECHO, project: DrcProject['ECHO2 (UKR-000322)'],},
             echo_lwo: {donor: DrcDonor.ECHO, project: DrcProject['ECHO2 (UKR-000322)'],},
             echo_nlv: {donor: DrcDonor.ECHO, project: DrcProject['ECHO2 (UKR-000322)'],},
-            novo_nlv: {donor: DrcDonor.NONO, project: DrcProject['Novo-Nordisk (UKR-000274)'],},
+            novo_nlv: {donor: DrcDonor.NovoNordisk, project: DrcProject['Novo-Nordisk (UKR-000298)'],},
             okf_lwo: {donor: DrcDonor.OKF, project: DrcProject['OKF (UKR-000309)'],},
-            pool_chj: {donor: DrcDonor.POFU, project: DrcProject['Pooled Funds (UKR-000270)'],},
-            pool_dnk: {donor: DrcDonor.POFU, project: DrcProject['Pooled Funds (UKR-000270)'],},
-            pool_hrk: {donor: DrcDonor.POFU, project: DrcProject['Pooled Funds (UKR-000270)'],},
-            pool_lwo: {donor: DrcDonor.POFU, project: DrcProject['Pooled Funds (UKR-000270)'],},
-            pool_nlv: {donor: DrcDonor.POFU, project: DrcProject['Pooled Funds (UKR-000270)'],},
+            pool_chj: {donor: DrcDonor.PoolFunds, project: DrcProject['Pooled Funds (UKR-000270)'],},
+            pool_dnk: {donor: DrcDonor.PoolFunds, project: DrcProject['Pooled Funds (UKR-000270)'],},
+            pool_hrk: {donor: DrcDonor.PoolFunds, project: DrcProject['Pooled Funds (UKR-000270)'],},
+            pool_lwo: {donor: DrcDonor.PoolFunds, project: DrcProject['Pooled Funds (UKR-000270)'],},
+            pool_nlv: {donor: DrcDonor.PoolFunds, project: DrcProject['Pooled Funds (UKR-000270)'],},
             sdc_umy: {donor: DrcDonor.SDCS, project: DrcProject['SDC2 (UKR-000330)'],},
           }, () => undefined),
           benefStatus: _.ben_det_res_stat,
@@ -297,8 +297,8 @@ export class MpcaDbService {
                 echo: {donor: DrcDonor.ECHO, project: DrcProject['ECHO2 (UKR-000322)'],},
                 uhf_4: {donor: DrcDonor.UHF, project: DrcProject['UHF4 (UKR-000314)'],},
                 bha: {donor: DrcDonor.BHA, project: DrcProject['BHA (UKR-000284)'],},
-                novo: {donor: DrcDonor.NONO, project: DrcProject['Novo-Nordisk (UKR-000274)'],},
-                pooled: {donor: DrcDonor.POFU, project: DrcProject['Pooled Funds (UKR-000270)'],},
+                novo: {donor: DrcDonor.NovoNordisk, project: DrcProject['Novo-Nordisk (UKR-000298)'],},
+                pooled: {donor: DrcDonor.PoolFunds, project: DrcProject['Pooled Funds (UKR-000270)'],},
               }, () => undefined)
             else if (_.back_donor_l)
               return fnSwitch(_.back_donor_l, {
@@ -317,13 +317,13 @@ export class MpcaDbService {
                 echo_hrk: {donor: DrcDonor.ECHO, project: DrcProject[`ECHO2 (UKR-000322)`]},
                 echo_lwo: {donor: DrcDonor.ECHO, project: DrcProject[`ECHO2 (UKR-000322)`]},
                 echo_nlv: {donor: DrcDonor.ECHO, project: DrcProject[`ECHO2 (UKR-000322)`]},
-                novo_nlv: {donor: DrcDonor.NONO, project: DrcProject[`Novo-Nordisk (UKR-000274)`]},
+                novo_nlv: {donor: DrcDonor.NovoNordisk, project: DrcProject[`Novo-Nordisk (UKR-000298)`]},
                 okf_lwo: {donor: DrcDonor.OKF, project: DrcProject[`OKF (UKR-000309)`]},
-                pool_chj: {donor: DrcDonor.POFU, project: DrcProject[`Pooled Funds (UKR-000270)`]},
-                pool_dnk: {donor: DrcDonor.POFU, project: DrcProject[`Pooled Funds (UKR-000270)`]},
-                pool_hrk: {donor: DrcDonor.POFU, project: DrcProject[`Pooled Funds (UKR-000270)`]},
-                pool_lwo: {donor: DrcDonor.POFU, project: DrcProject[`Pooled Funds (UKR-000270)`]},
-                pool_nlv: {donor: DrcDonor.POFU, project: DrcProject[`Pooled Funds (UKR-000270)`]},
+                pool_chj: {donor: DrcDonor.PoolFunds, project: DrcProject[`Pooled Funds (UKR-000270)`]},
+                pool_dnk: {donor: DrcDonor.PoolFunds, project: DrcProject[`Pooled Funds (UKR-000270)`]},
+                pool_hrk: {donor: DrcDonor.PoolFunds, project: DrcProject[`Pooled Funds (UKR-000270)`]},
+                pool_lwo: {donor: DrcDonor.PoolFunds, project: DrcProject[`Pooled Funds (UKR-000270)`]},
+                pool_nlv: {donor: DrcDonor.PoolFunds, project: DrcProject[`Pooled Funds (UKR-000270)`]},
               }, () => undefined)
           })(),
           oblast,
