@@ -19,7 +19,19 @@ export enum MpcaProgram {
   MPCA = 'MPCA',
 }
 
-export interface MpcaRow {
+export interface MpcaDataFilter {
+  start?: Date
+  end?: Date
+  office?: DrcOffice[]
+  source?: MpcaRowSource[]
+}
+
+export interface MpcaDataTag {
+  projects?: DrcProject[]
+  committed?: Date
+}
+
+export interface MpcaData {
   id: string
   source: MpcaRowSource
   office?: DrcOffice
@@ -49,6 +61,7 @@ export interface MpcaRow {
   phone?: string
   deduplication?: WfpDeduplication
   persons?: Person[]
+  tags?: MpcaDataTag
   // girls?: number
   // boys?: number
   // men?: number

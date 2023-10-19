@@ -11,7 +11,7 @@ export class KoboToXLS {
 
   constructor(
     private prisma: PrismaClient,
-    private service: KoboService = new KoboService(prisma),
+    private service: KoboService = new KoboService({prisma}),
   ) {
 
   }
