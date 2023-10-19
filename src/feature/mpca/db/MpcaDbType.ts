@@ -43,6 +43,7 @@ export interface MpcaData {
   prog?: MpcaProgram[]
   donor?: DrcDonor
   project?: DrcProject
+  // finalProject?: DrcProject
   amountUahSupposed?: number
   amountUahDedup?: number
   amountUahFinal?: number

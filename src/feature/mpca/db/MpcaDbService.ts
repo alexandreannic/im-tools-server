@@ -7,7 +7,7 @@ import {KoboAnswerFilter} from '../../kobo/KoboService'
 import {ApiPaginate, Gender, toApiPaginate} from '../../../core/Type'
 import {WfpDeduplicationService} from '../../wfpDeduplication/WfpDeduplicationService'
 import {appConf} from '../../../core/conf/AppConf'
-import {MpcaProgram, MpcaData, MpcaRowSource, MpcaDataTag} from './MpcaDbType'
+import {MpcaData, MpcaDataTag, MpcaProgram, MpcaRowSource} from './MpcaDbType'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
 import {Bn_ReOptions} from '../../../script/output/kobo/Bn_Re/Bn_ReOptions'
 import {Bn_RapidResponseOptions} from '../../../script/output/kobo/Bn_RapidResponse/Bn_RapidResponseOptions'
@@ -35,6 +35,7 @@ export class MpcaDbService {
       [...a, ...b, ...c, ...d]
         .map(this.getDedupplication(wfpIndex))
         .map(this.redirectDonor)
+        // .map(this.mergeTagDonor)
     )
   }
 
@@ -61,6 +62,11 @@ export class MpcaDbService {
     //   }, () => row.hhSize! * 3 * 2220)
     return row
   }
+
+  // private readonly mergeTagDonor = (row: MpcaData): MpcaData => {
+  //   row.finalProject = row.tags?.projects?.[0] ?? row.project
+  //   return row
+  // }
 
   private readonly redirectDonor = (row: MpcaData): MpcaData => {
     if ((row.source === MpcaRowSource.RapidResponseMechansim || row.source === MpcaRowSource.BasicNeedRegistration)

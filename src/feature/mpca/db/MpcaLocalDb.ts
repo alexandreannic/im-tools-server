@@ -2,9 +2,10 @@ import {MpcaDbService} from './MpcaDbService'
 import {PrismaClient} from '@prisma/client'
 import {ApiPaginate, toApiPaginate} from '../../../core/Type'
 import {MpcaData, MpcaDataFilter} from './MpcaDbType'
-import {Enum} from '@alexandreannic/ts-utils'
+import {Enum, fnSwitch} from '@alexandreannic/ts-utils'
 import {KoboEvent} from '../../kobo/KoboEvent'
 import {KoboAnswerId} from '../../connector/kobo/KoboClient/type/KoboAnswer'
+import {koboFormsId} from '../../../core/conf/KoboFormsId'
 
 export class MpcaLocalDb {
   private static instance: MpcaLocalDb
@@ -20,10 +21,20 @@ export class MpcaLocalDb {
     private koboEvent: KoboEvent = new KoboEvent()
   ) {
     this.koboEvent.listenTagEdited(async (x) => {
-      if (!this._cache || !this.idIndex) return
+      if (!this._cache || !this.idIndex || ![
+        koboFormsId.prod.bn_Re,
+        koboFormsId.prod.bn_OldMpcaNfi,
+        koboFormsId.prod.bn_RapidResponse,
+        koboFormsId.prod.shelter_cashForRepair,
+      ].includes(x.formId)) {
+        console.log('NO', x.formId)
+        return
+      }
       const cache = await this._cache
       x.answerIds.forEach(id => {
-        cache[this.idIndex![id]].tags = {
+        const index = this.idIndex![id]
+        if (!index) return
+        cache[index].tags = {
           ...cache[this.idIndex![id]].tags,
           ...x.tags,
         }
