@@ -12,8 +12,6 @@ import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAns
 import {UserSession} from '../session/UserSession'
 import {AccessService} from '../access/AccessService'
 import {AppFeatureId} from '../access/AccessType'
-import {AppError} from '../../helper/Errors'
-import * as util from 'util'
 import {appConf} from '../../core/conf/AppConf'
 import {KoboEvent} from './KoboEvent'
 

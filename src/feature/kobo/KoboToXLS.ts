@@ -11,7 +11,7 @@ export class KoboToXLS {
 
   constructor(
     private prisma: PrismaClient,
-    private service: KoboService = new KoboService({prisma}),
+    private service: KoboService = new KoboService(prisma),
   ) {
 
   }
@@ -63,7 +63,5 @@ export class KoboToXLS {
 
   private readonly styleDateColumn = (allColumns: string[], columnName: string) => {
     const findColumnByName = (name: string) => convertNumberIndexToLetter(Object.keys(allColumns).indexOf(name))
-
-
   }
 }

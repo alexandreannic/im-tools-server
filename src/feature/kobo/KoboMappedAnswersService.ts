@@ -28,7 +28,6 @@ export class KoboMappedAnswersService {
       formId: koboFormsId.prod.bn_Re,
       ...filters,
     }).then(KoboMappedAnswersService.map(mapBn_Re))
-      // .then(_ => _.data[0].i)
   }
 
   readonly searchShelter_cashForRepair = (filters: KoboAnswerFilter = {}) => {
