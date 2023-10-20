@@ -2,12 +2,13 @@ import {PrismaClient} from '@prisma/client'
 import {MpcaDbService} from '../../feature/mpca/db/MpcaDbService'
 import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
+import {MpcaLocalDb} from '../../feature/mpca/db/MpcaLocalDb'
 
 export class ControllerMpca {
 
   constructor(
     private prisma: PrismaClient,
-    private service: MpcaDbService = new MpcaDbService(prisma)
+    private service: MpcaLocalDb = MpcaLocalDb.constructSingleton(prisma)
   ) {
   }
 
@@ -18,7 +19,7 @@ export class ControllerMpca {
         end: yup.date(),
       })
     }).validate(req.body)
-    const data = await this.service.search(body)
+    const data = await this.service.search(body.filters)
     res.send(data)
   }
 }

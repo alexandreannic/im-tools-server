@@ -1,5 +1,5 @@
 import {KoboForm, Prisma, PrismaClient} from '@prisma/client'
-import {ApiPaginate, ApiPagination, defaultPagination, toApiPaginate} from '../../core/Type'
+import {ApiPaginate, ApiPagination, defaultPagination, toApiPaginate, UUID} from '../../core/Type'
 import {DbKoboAnswer, KoboAnswerId, KoboAnswerMetaData, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
 import XlsxPopulate from 'xlsx-populate'
@@ -12,13 +12,21 @@ import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAns
 import {UserSession} from '../session/UserSession'
 import {AccessService} from '../access/AccessService'
 import {AppFeatureId} from '../access/AccessType'
-import {AppError} from '../../helper/Errors'
-import * as util from 'util'
 import {appConf} from '../../core/conf/AppConf'
+import {KoboEvent} from './KoboEvent'
 
 export interface KoboAnswerFilter {
   filters?: KoboAnswersFilters,
   paginate?: ApiPagination
+}
+
+interface KoboAnswerSearch<
+  TAnswer extends Record<string, any> = Record<string, string | undefined>,
+  TTags extends Record<string, any> | undefined = undefined
+> extends KoboAnswerFilter {
+  formId: UUID,
+  fnMap?: (_: Record<string, string | undefined>) => TAnswer
+  fnMapTags?: (_?: any) => TTags,
 }
 
 export class KoboService {
@@ -26,9 +34,9 @@ export class KoboService {
   constructor(
     private prisma: PrismaClient,
     private access = new AccessService(prisma),
-    private sdkGenerator: KoboSdkGenerator = new KoboSdkGenerator(prisma)
+    private sdkGenerator: KoboSdkGenerator = new KoboSdkGenerator(prisma),
+    private event: KoboEvent = new KoboEvent(),
   ) {
-
   }
 
   readonly getForms = async (): Promise<KoboForm[]> => {
@@ -57,7 +65,7 @@ export class KoboService {
       })
     }))
   }
-
+    
   readonly searchAnswers = ({
     formId,
     filters = {},
@@ -298,5 +306,6 @@ export class KoboService {
         }
       })
     }))
+    this.event.emitTagEdited({formId, answerIds, tags})
   }
 }

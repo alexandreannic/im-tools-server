@@ -27,43 +27,43 @@ type ReportingmDonorMap = Partial<Record<
 
 const reportingUntilUHF4Approval: ReportingmDonorMap = {
   'lviv': {
-    [DrcProject['OKF (UKR-000309)']]: {ai: 1, ipt: 1,},
+    [DrcProject['UKR-000309 OKF']]: {ai: 1, ipt: 1,},
   },
   'chernihiv': {
-    [DrcProject['UHF4 (UKR-000314)']]: {ipt: 1, ai: 1},
+    [DrcProject['UKR-000314 UHF4']]: {ipt: 1, ai: 1},
   },
   'sumy': {
-    [DrcProject['UHF4 (UKR-000314)']]: {ipt: 1, ai: 1},
+    [DrcProject['UKR-000314 UHF4']]: {ipt: 1, ai: 1},
   },
   'dnipro': {
-    [DrcProject['UHF4 (UKR-000314)']]: {ipt: 1, ai: 1},
+    [DrcProject['UKR-000314 UHF4']]: {ipt: 1, ai: 1},
   },
   'kharkiv': {
-    [DrcProject['UHF4 (UKR-000314)']]: {ipt: .5, ai: .5},
+    [DrcProject['UKR-000314 UHF4']]: {ipt: .5, ai: .5},
     [DrcProject['UHF6']]: {ipt: .5, ai: .5},
   },
   'mykolaiv': {
-    [DrcProject['UHF4 (UKR-000314)']]: {ai: 1, ipt: 1},
+    [DrcProject['UKR-000314 UHF4']]: {ai: 1, ipt: 1},
   },
 }
 
 const reporting202309: ReportingmDonorMap = {
   'lviv': {
-    [DrcProject['OKF (UKR-000309)']]: {ai: 1, ipt: 1,},
+    [DrcProject['UKR-000309 OKF']]: {ai: 1, ipt: 1,},
   },
   'chernihiv': {
-    [DrcProject['UHF4 (UKR-000314)']]: {ipt: 1, ai: 1},
+    [DrcProject['UKR-000314 UHF4']]: {ipt: 1, ai: 1},
   },
   'dnipro': {
-    [DrcProject['UHF4 (UKR-000314)']]: {ipt: 1, ai: 1},
+    [DrcProject['UKR-000314 UHF4']]: {ipt: 1, ai: 1},
   },
   'kharkiv': {
-    [DrcProject['BHA (UKR-000284)']]: {ipt: 1},
-    [DrcProject['UHF4 (UKR-000314)']]: {ai: 1, ipt: 1},
+    [DrcProject['UKR-000284 BHA']]: {ipt: 1},
+    [DrcProject['UKR-000314 UHF4']]: {ai: 1, ipt: 1},
   },
   'mykolaiv': {
-    [DrcProject['UHF4 (UKR-000314)']]: {ai: 1, ipt: 1},
-    [DrcProject['Novo-Nordisk (UKR-000274)']]: {ipt: 1},
+    [DrcProject['UKR-000314 UHF4']]: {ai: 1, ipt: 1},
+    [DrcProject['UKR-000274 Novo-Nordisk']]: {ipt: 1},
   },
 }
 
