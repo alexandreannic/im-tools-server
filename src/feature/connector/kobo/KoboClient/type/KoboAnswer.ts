@@ -38,6 +38,7 @@ export type KoboAnswerMetaData = Pick<ApiKoboAnswerMetaData, 'start' | 'end'> & 
   submittedBy?: string
   lastValidatedTimestamp?: number
   source?: string
+  tags?: any
 }
 
 export const koboAnswerMetaData: (keyof KoboAnswerMetaData)[] = [

@@ -105,6 +105,7 @@ export class ApiClient {
                 error: _,
               })
             }
+            console.error(_)
             throw new ApiError(`Something not caught went wrong`, {
               code: 'front-side',
               error: _,
