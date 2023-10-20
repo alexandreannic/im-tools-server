@@ -4,9 +4,12 @@ import {AuthenticationProvider} from '@microsoft/microsoft-graph-client/src/IAut
 import {AuthenticationProviderOptions} from '@microsoft/microsoft-graph-client/src/IAuthenticationProviderOptions'
 import {Client} from '@microsoft/microsoft-graph-client'
 import {SessionError} from './SessionErrors'
-
 // import {User} from '@microsoft/msgraph-sdk-javascript/lib/src/models/user'
-type User = any
+
+type User = {
+  mail?: string
+  jobTitle?: string
+}
 
 export class SessionService {
 
@@ -45,7 +48,7 @@ export class SessionService {
     }
     const connectedUser = await this.syncUserInDb({
       email: msUser.mail,
-      drcJob: msUser.jobTitle,
+      drcJob: msUser.jobTitle?.trim().replace(/\s+/g, ' '),
       accessToken: userBody.accessToken,
       name: userBody.name,
     })
