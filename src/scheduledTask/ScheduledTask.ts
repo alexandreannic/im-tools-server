@@ -3,6 +3,7 @@ import {PrismaClient} from '@prisma/client'
 import {KoboSyncServer} from '../feature/kobo/KoboSyncServer'
 import {logger} from '../helper/Logger'
 import {appConf} from '../core/conf/AppConf'
+import {MpcaCachedDb} from '../feature/mpca/db/MpcaCachedDb'
 
 export class ScheduledTask {
 
@@ -10,7 +11,8 @@ export class ScheduledTask {
     private prisma: PrismaClient,
     private koboApiService = new KoboSyncServer(prisma),
     private conf = appConf,
-    private log = logger('ScheduledTask')
+    private log = logger('ScheduledTask'),
+    private memMpcaDb = MpcaCachedDb.constructSingleton(prisma),
   ) {
 
   }
@@ -28,5 +30,6 @@ export class ScheduledTask {
 
   private readonly run = async () => {
     await this.koboApiService.syncAllApiAnswersToDb()
+    await this.memMpcaDb.refresh()
   }
 }

@@ -159,7 +159,7 @@ export const KoboMigrateHHS2 = ({
       log.info(`Form ${oldFormId} already created.`)
       return
     }
-    await syncService.syncApiForm(serverId, newFormId)
+    await syncService.syncApiForm({serverId, formId: newFormId})
     const newKoboApiAnswers = await mapAnswers().then(_ => _.filter(x => !allInsertedIds.has(x.id)))
     if (newKoboApiAnswers.length === 0) {
       log?.info(`Data already inserted.`)

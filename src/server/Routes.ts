@@ -145,6 +145,7 @@ export const getRoutes = (
     router.get('/kobo-api/:id/:formId/:answerId/edit-url', errorCatcher(koboApi.edit))
 
     router.post('/mpca/search', auth(), errorCatcher(mpca.search))
+    router.post('/mpca/refresh', auth(), errorCatcher(mpca.refresh))
     router.put('/mpca-payment', auth(), errorCatcher(mpcaPayment.create))
     router.post('/mpca-payment/:id', auth(), errorCatcher(mpcaPayment.update))
     router.get('/mpca-payment', auth(), errorCatcher(mpcaPayment.getAll))

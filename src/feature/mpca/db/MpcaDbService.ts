@@ -12,14 +12,28 @@ import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
 import {Bn_ReOptions} from '../../../script/output/kobo/Bn_Re/Bn_ReOptions'
 import {Bn_RapidResponseOptions} from '../../../script/output/kobo/Bn_RapidResponse/Bn_RapidResponseOptions'
 import {Utils} from '../../../helper/Utils'
+import {KoboSyncServer} from '../../kobo/KoboSyncServer'
+import {koboFormsId} from '../../../core/conf/KoboFormsId'
 
 export class MpcaDbService {
+
   constructor(
     private prisma: PrismaClient,
     private kobo: KoboMappedAnswersService = new KoboMappedAnswersService(prisma),
     private wfp: WfpDeduplicationService = new WfpDeduplicationService(prisma),
+    private koboSync: KoboSyncServer = new KoboSyncServer(prisma),
     private conf = appConf
   ) {
+  }
+
+  readonly refreshAllForms = async () => {
+    const forms = [
+      koboFormsId.prod.bn_Re,
+      koboFormsId.prod.bn_OldMpcaNfi,
+      koboFormsId.prod.bn_RapidResponse,
+      koboFormsId.prod.bn_cashForRepair,
+    ]
+    await Promise.all(forms.map(formId => this.koboSync.syncApiForm({formId})))
   }
 
   readonly search = async (filters: KoboAnswerFilter): Promise<ApiPaginate<MpcaData>> => {
@@ -33,13 +47,13 @@ export class MpcaDbService {
     // const data = this.getDedupplication([...a, ...b, ...c, ...d], wfpIndex)
     return toApiPaginate(
       [...a, ...b, ...c, ...d]
-        .map(this.getDedupplication(wfpIndex))
-        .map(this.redirectDonor)
-        // .map(this.mergeTagDonor)
+        .map(this.getDeduplication(wfpIndex))
+        // .map(this.redirectDonor)
+      // .map(this.mergeTagDonor)
     )
   }
 
-  private readonly getDedupplication = (wfpIndex: Record<string, _Arr<WfpDeduplication>>) => (row: MpcaData): MpcaData => {
+  private readonly getDeduplication = (wfpIndex: Record<string, _Arr<WfpDeduplication>>) => (row: MpcaData): MpcaData => {
     row.amountUahSupposed = row.hhSize ? row.hhSize * 3 * this.conf.params.assistanceAmountUAH(row.date) : undefined
     row.amountUahFinal = row.amountUahSupposed
     if (!row.taxId) return row

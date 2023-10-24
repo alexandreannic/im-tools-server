@@ -4,6 +4,7 @@ import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {logger, Logger} from '../../helper/Logger'
 import {createdBySystem} from '../../db/DbInit'
+import {koboServerId} from '../../core/conf/KoboFormsId'
 
 export class KoboSyncServer {
 
@@ -20,7 +21,7 @@ export class KoboSyncServer {
     for (const form of allForms) {
       try {
         this.log.info(`Synchronizing ${form.name} (${form.id}) ...`)
-        await this.syncApiForm(form.serverId, form.id, updatedBy)
+        await this.syncApiForm({serverId: form.serverId, formId: form.id, updatedBy})
         this.log.info(`Synchronizing ${form.name} (${form.id}) completed.`)
       } catch (e) {
         this.log.error(`Synchronizing ${form.name} (${form.id}) FAILED!`)
@@ -30,7 +31,7 @@ export class KoboSyncServer {
     this.log.info(`Synchronize kobo forms completed!`)
   }
 
-  readonly syncApiForm = async (serverId: UUID, formId: KoboId, updatedBy?: string) => {
+  readonly syncApiForm = async ({serverId = koboServerId.prod, formId, updatedBy}: {serverId?: UUID, formId: KoboId, updatedBy?: string}) => {
     await this.syncApiFormInfo(serverId, formId)
     await this.syncApiFormAnswers(serverId, formId)
     await this.prisma.koboForm.update({
