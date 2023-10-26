@@ -1,5 +1,5 @@
 import {babyKits, KoboNfiMcpa, koboTransformerNfiMcpa, NFIs, nfis, Program, winterizationKits} from '../../feature/connector/kobo/KoboFormTransformer/KoboNfiMcpa'
-import {Arr, Enum} from '@alexandreannic/ts-utils'
+import {seq, Enum} from '@alexandreannic/ts-utils'
 import {koboTransformerNfiMpcaMyko} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaMyko'
 import {koboTransformerNfiMcpaNaa} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
 import {KoboTransformClient} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformer'
@@ -86,9 +86,9 @@ export class ServiceNfi {
     }, init)
     return {
       ...stats,
-      totalNFIs: Arr(nfis).map(_ => stats[_]).sum(),
-      totalBabyKits: Arr(babyKits).map(_ => stats[_]).sum(),
-      totalWinterizationKits: Arr(winterizationKits).map(_ => stats[_]).sum(),
+      totalNFIs: seq(nfis).map(_ => stats[_]).sum(),
+      totalBabyKits: seq(babyKits).map(_ => stats[_]).sum(),
+      totalWinterizationKits: seq(winterizationKits).map(_ => stats[_]).sum(),
     }
   }
 }

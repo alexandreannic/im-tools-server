@@ -1,5 +1,5 @@
 import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
-import {Arr, fnSwitch} from '@alexandreannic/ts-utils'
+import {seq, fnSwitch} from '@alexandreannic/ts-utils'
 import {KoboApiForm} from '../feature/connector/kobo/KoboClient/type/KoboApiForm'
 import * as fs from 'fs'
 import {koboFormsId} from '../core/conf/KoboFormsId'
@@ -215,7 +215,7 @@ const extractQuestionName = (_: Record<string, any>) => {
   }
 
   readonly generateInterface = (survey: KoboApiForm['content']['survey'], formId: KoboId) => {
-    const indexOptionId = Arr(survey).groupBy(_ => _.select_from_list_name)
+    const indexOptionId = seq(survey).groupBy(_ => _.select_from_list_name!)
     const repeatItems = this.getBeginRepeatQuestion(survey)
     const properties = survey
       .filter(_ => !ignoredQuestionTypes.includes(_.type))
@@ -223,7 +223,7 @@ const extractQuestionName = (_: Record<string, any>) => {
         return !_.$qpath.includes(r.name + '-')
       }))
       .map(x => {
-        const lastQuestionNameHavingOptionId = Arr(indexOptionId[x.select_from_list_name ?? '']).last?.name
+        const lastQuestionNameHavingOptionId = seq(indexOptionId[x.select_from_list_name ?? '']).last?.name
         const basicQuestionTypeMapping = (lastQuestionNameHavingOptionId?: string) => ({
           'select_one': () => 'undefined | ' + (this.options.skipQuestionTyping?.includes(x.name) ? 'string' : `Opt<'${lastQuestionNameHavingOptionId}'>`),
           'select_multiple': () => 'undefined | ' + (this.options.skipQuestionTyping?.includes(x.name) ? 'string[]' : `Opt<'${lastQuestionNameHavingOptionId}'>[]`),
@@ -237,7 +237,7 @@ const extractQuestionName = (_: Record<string, any>) => {
           'begin_repeat': () => {
             const groupedQuestions = survey.filter(_ => _.name !== x.name && _.$qpath?.includes(x.name + '-'))
             return '{' + groupedQuestions.map(_ => {
-              const lastQuestionNameHavingOptionId = Arr(indexOptionId[_.select_from_list_name ?? '']).last?.name
+              const lastQuestionNameHavingOptionId = seq(indexOptionId[_.select_from_list_name ?? '']).last?.name
               return `${_.$autoname}: ${fnSwitch(_.type, basicQuestionTypeMapping(lastQuestionNameHavingOptionId), _ => 'string')} | undefined`
             }).join(',') + '}[] | undefined'
 
@@ -253,7 +253,7 @@ const extractQuestionName = (_: Record<string, any>) => {
   }
 
   readonly generateOptionsType = (survey: KoboApiForm['content']['survey'], choices: KoboApiForm['content']['choices']) => {
-    const indexOptionId = Arr(survey).reduceObject<Record<string, string>>(_ => [_.select_from_list_name ?? '', _.name])
+    const indexOptionId = seq(survey).reduceObject<Record<string, string>>(_ => [_.select_from_list_name ?? '', _.name])
     const res: Record<string, Record<string, string>> = {}
     choices.forEach(choice => {
       if (this.options.skipQuestionTyping?.includes(indexOptionId[choice.list_name])) return

@@ -1,6 +1,6 @@
 import {PrismaClient} from '@prisma/client'
 import {KoboMappedAnswersService} from '../../kobo/KoboMappedAnswersService'
-import {_Arr, Arr, fnSwitch} from '@alexandreannic/ts-utils'
+import {seq, Seq, fnSwitch} from '@alexandreannic/ts-utils'
 import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcUa'
 import {OblastIndex} from '../../../core/oblastIndex'
 import {KoboAnswerFilter} from '../../kobo/KoboService'
@@ -42,7 +42,7 @@ export class MpcaDbService {
       this.searchBn_BnrOld(filters),
       this.searchBn_RapidResponseMechanism(filters),
       this.searchBn_cashForRepair(filters),
-      this.wfp.search().then(_ => Arr(_.data).groupBy(_ => _.taxId!))
+      this.wfp.search().then(_ => seq(_.data).groupBy(_ => _.taxId!))
     ])
     // const data = this.getDedupplication([...a, ...b, ...c, ...d], wfpIndex)
     return toApiPaginate(
@@ -53,7 +53,7 @@ export class MpcaDbService {
     )
   }
 
-  private readonly getDeduplication = (wfpIndex: Record<string, _Arr<WfpDeduplication>>) => (row: MpcaData): MpcaData => {
+  private readonly getDeduplication = (wfpIndex: Record<string, Seq<WfpDeduplication>>) => (row: MpcaData): MpcaData => {
     row.amountUahSupposed = row.hhSize ? row.hhSize * 3 * this.conf.params.assistanceAmountUAH(row.date) : undefined
     row.amountUahFinal = row.amountUahSupposed
     if (!row.taxId) return row
@@ -141,7 +141,7 @@ export class MpcaDbService {
           oblastIso: fnSwitch(_.ben_det_oblast!, OblastIndex.koboOblastIndexIso, () => undefined),
           raion: Bn_ReOptions.ben_det_raion[_.ben_det_raion!],
           hromada: Bn_ReOptions.ben_det_hromada[_.ben_det_hromada!],
-          prog: Arr(_.back_prog_type)?.map(prog => fnSwitch(prog.split('_')[0], {
+          prog: seq(_.back_prog_type)?.map(prog => fnSwitch(prog.split('_')[0], {
             'cfr': MpcaProgram.CashForRent,
             'cfe': MpcaProgram.CashForEducation,
             'mpca': MpcaProgram.MPCA,
@@ -289,7 +289,7 @@ export class MpcaDbService {
         const oblast = fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndex, () => _.submissionTime.getMonth() === 5 ? 'Mykolaivska' : undefined)
         return ({
           source: MpcaRowSource.RapidResponseMechansim,
-          prog: Arr(_.back_prog_type ?? _.back_prog_type_l).map(prog => fnSwitch(prog.split('_')[0], {
+          prog: seq(_.back_prog_type ?? _.back_prog_type_l).map(prog => fnSwitch(prog.split('_')[0], {
             'cfr': MpcaProgram.CashForRent,
             'cfe': MpcaProgram.CashForEducation,
             'mpca': MpcaProgram.MPCA,

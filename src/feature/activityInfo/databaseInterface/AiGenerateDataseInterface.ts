@@ -1,7 +1,7 @@
 import {AiProtectionHhs} from '../sandbox/AiProtectionHhs'
 import {ActivityInfoSdk} from '../sdk/ActivityInfoSdk'
 import {activityInfoForms, AIID, FormDesc, FormDescs} from '../model/ActivityInfo'
-import {Arr, fnSwitch} from '@alexandreannic/ts-utils'
+import {seq, fnSwitch} from '@alexandreannic/ts-utils'
 import fs from 'fs'
 import {capitalize, capitalizeFirstLetter} from '../../../helper/Utils'
 import columnsListMap = AiProtectionHhs.columnsListMap
@@ -131,10 +131,11 @@ const generateDatabaseInterface = async ({
       .filter(_ => !ignoredInputs.includes(_.type))
       .filter(_ => !ignoredQuestions.includes(_.label))
 
-    const subFormsIds = Arr(elements)
+    const subFormsIds = seq(elements)
       .filter(_ => _.type === 'subform')
       .map(_ => _.typeParameters.formId)
-      .compact().get
+      .compact()
+      .get()
 
     return [
       ...questions,

@@ -2,7 +2,7 @@ import {EcrecClient} from './EcrecClient'
 import {EcrecGetDataFilters, EcrecGetDataResponse, EcrecMsdStatus, EcrecSmeStatus, EcrecVetStatus, FundedStatus} from './EcrecSdkType'
 import {format, sub} from 'date-fns'
 import {StandardEnum} from '../../../helper/Utils'
-import {Arr} from '@alexandreannic/ts-utils'
+import {seq} from '@alexandreannic/ts-utils'
 
 export class EcrecSdk {
 
@@ -81,13 +81,13 @@ export class EcrecSdk {
         filterData: {
           filterRangeInts: [],
           filterRangeDoubles: [],
-          filterLongs: Arr([
+          filterLongs: seq([
             filters.status ? {fieldName: 'typeStatusId', values: filters.status,} : undefined,
             filters.funded ? {fieldName: 'funding', values: [filters.funded ? FundedStatus.Funded : FundedStatus.Pending]} : undefined,
           ]).compact(),
           filterStrings: [],
           filterTimes: [],
-          filterDates: Arr([
+          filterDates: seq([
             EcrecSdk.makeDateFilter('tmspDtCreate', filters.start, filters.end),
             EcrecSdk.makeDateFilter('fundingDate', filters.fundingDateStart, filters.fundingDateEnd),
           ]).compact()

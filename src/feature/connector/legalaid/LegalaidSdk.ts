@@ -1,7 +1,7 @@
 import {UUID} from '../../../core/Type'
 import {ApiClient} from '../../../core/client/ApiClient'
 import {Legalaid} from './Legalaid'
-import {Arr, Cache, duration, Enum, throwIf} from '@alexandreannic/ts-utils'
+import {seq, Cache, duration, Enum, throwIf} from '@alexandreannic/ts-utils'
 import Poll = Legalaid.Poll
 import PaginateRequest = Legalaid.PaginateRequest
 import PaginateResult = Legalaid.PaginateResult
@@ -123,7 +123,7 @@ export class LegalaidSdk {
       data: _.data.map(benef => {
         const ageGroups = Enum.entries(colsUUID).reduce<Gender<number>>((acc, [k, v]) => {
           return ({
-            ...acc, [k]: Arr(v.map(_ => benef[_])).sum((_?: number) => isNaN(_!) ? 0 : +_!)
+            ...acc, [k]: seq(v.map(_ => benef[_])).sum((_?: number) => isNaN(_!) ? 0 : +_!)
           })
         }, {} as any)
         return {

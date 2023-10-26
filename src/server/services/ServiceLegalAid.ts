@@ -1,5 +1,5 @@
 import {LegalaidSdk} from '../../feature/connector/legalaid/LegalaidSdk'
-import {Arr} from '@alexandreannic/ts-utils'
+import {seq} from '@alexandreannic/ts-utils'
 
 interface Filters {
   start?: Date
@@ -21,7 +21,7 @@ export class ServiceLegalAid {
       offices,
       start,
       end
-    }).then(_ => Arr(_.data).sum(_ => _.women + _.men))
+    }).then(_ => seq(_.data).sum(_ => _.women + _.men))
 
     const individuals$ = await this.sdk.fetchBeneficiariesByOffices({
       offices, start, end

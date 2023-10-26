@@ -9,7 +9,7 @@ import {Controller} from './Controller'
 import {ServiceNfi} from '../services/ServiceNfi'
 import {koboTransformerNfiMpcaMyko} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaMyko'
 import {koboTransformerNfiMcpaNaa} from '../../feature/connector/kobo/KoboFormTransformer/KoboTransformerNfiMpcaNAA'
-import {Arr} from '@alexandreannic/ts-utils'
+import {seq} from '@alexandreannic/ts-utils'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
 
 export class ControllerNfiMpca extends Controller {
@@ -41,7 +41,7 @@ export class ControllerNfiMpca extends Controller {
     const nfiMpcaMyko = await this.koboTransformClient.getAnswers(koboTransformerNfiMpcaMyko, filters).then(_ => this.service.reduceSum(_.data))
     const nfiMcpaNaa = await this.koboTransformClient.getAnswers(koboTransformerNfiMcpaNaa, filters).then(_ => this.service.reduceSum(_.data))
     res.send({
-      total: Arr([nfiMcpa, nfiMpcaMyko, nfiMcpaNaa]).sumObjects(),
+      total: seq([nfiMcpa, nfiMpcaMyko, nfiMcpaNaa]).sumObjects(),
       nfiMcpa,
       nfiMpcaMyko,
       nfiMcpaNaa,

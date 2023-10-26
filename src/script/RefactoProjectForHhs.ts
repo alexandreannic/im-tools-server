@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client'
 import {ProtectionHhsTags} from '../db/koboForm/DbHelperProtectionHhs'
 import {DrcProject} from '../core/DrcUa'
-import {Arr, Enum} from '@alexandreannic/ts-utils'
+import {seq, Enum} from '@alexandreannic/ts-utils'
 import {koboFormsId} from '../core/conf/KoboFormsId'
 
 const pattern = /\((UKR-[0-9]{6})\)/
@@ -31,8 +31,8 @@ export const refactoProjectForHhs = async (prisma: PrismaClient) => {
     // Promise.all(answers.map(answer => {
     try {
       const tag = answer.tags as unknown as ProtectionHhsTags
-      const projects: DrcProject[] = Arr(tag.projects?.map(mapTag) ?? []).compact().get
-      const ipt: DrcProject[] = Arr(tag.ipt?.map(mapTag)).compact().get
+      const projects: DrcProject[] = seq(tag.projects?.map(mapTag) ?? []).compact().get()
+      const ipt: DrcProject[] = seq(tag.ipt?.map(mapTag)).compact().get()
       const ai = tag.ai ? mapTag(tag.ai) : tag.ai
 
       const parsedTag: ProtectionHhsTags = {}

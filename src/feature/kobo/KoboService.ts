@@ -5,7 +5,7 @@ import {koboFormsId} from '../../core/conf/KoboFormsId'
 import XlsxPopulate from 'xlsx-populate'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {filterKoboQuestionType, KoboApiQuestion} from '../connector/kobo/KoboClient/type/KoboApiForm'
-import {Arr, Enum, fnSwitch} from '@alexandreannic/ts-utils'
+import {Enum, fnSwitch, seq} from '@alexandreannic/ts-utils'
 import {format} from 'date-fns'
 import {convertNumberIndexToLetter, removeHtml} from '../../helper/Utils'
 import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAnswer'
@@ -214,8 +214,8 @@ export class KoboService {
   }) => {
     const flatAnswers = data.map(({answers, ...meta}) => ({...meta, ...answers}))
     const koboFormDetails = await this.getFormDetails(formId)
-    const indexLabel = Arr(koboFormDetails.content.survey).filter(filterKoboQuestionType).reduceObject<Record<string, KoboApiQuestion>>(_ => [_.name, _])
-    const indexOptionsLabels = Arr(koboFormDetails.content.choices).reduceObject<Record<string, undefined | string>>(_ => [_.name, _.label?.[langIndex]])
+    const indexLabel = seq(koboFormDetails.content.survey).filter(filterKoboQuestionType).reduceObject<Record<string, KoboApiQuestion>>(_ => [_.name, _])
+    const indexOptionsLabels = seq(koboFormDetails.content.choices).reduceObject<Record<string, undefined | string>>(_ => [_.name, _.label?.[langIndex]])
     return flatAnswers.map(d => {
       const translated = {} as DbKoboAnswer
       Enum.keys(d).forEach(k => {
