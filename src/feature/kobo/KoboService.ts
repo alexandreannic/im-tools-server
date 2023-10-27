@@ -5,7 +5,7 @@ import {koboFormsId} from '../../core/conf/KoboFormsId'
 import XlsxPopulate from 'xlsx-populate'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {filterKoboQuestionType, KoboApiQuestion} from '../connector/kobo/KoboClient/type/KoboApiForm'
-import {Enum, fnSwitch, seq} from '@alexandreannic/ts-utils'
+import {seq, Enum, fnSwitch} from '@alexandreannic/ts-utils'
 import {format} from 'date-fns'
 import {convertNumberIndexToLetter, removeHtml} from '../../helper/Utils'
 import {KoboAnswersFilters} from '../../server/controller/kobo/ControllerKoboAnswer'
@@ -55,17 +55,23 @@ export class KoboService {
     if (!user) return toApiPaginate([])
     const access = await this.access.search({featureId: AppFeatureId.kobo_database, user})
       .then(_ => _.filter(_ => _.params?.koboFormId === params.formId))
+
     if (!user.admin && access.length === 0) return toApiPaginate([])
+
     const accessFilters = access.reduce<Record<string, string[]>>((acc, x) => ({...acc, ...x.params?.filters}), {})
-    return this.searchAnswers(params).then(p => ({
-      ...p,
-      data: p.data.filter(_ => {
-        return user.admin
-          || Enum.entries(accessFilters).every(([question, answer]) => answer.includes(_.answers[question]))
-      })
-    }))
+    const accessFiltersEntry = Enum.entries(
+      new Enum(accessFilters).transform((k, v) => [k, new Set(v)]).get()
+    )
+
+    return this.searchAnswers(params).then(p => {
+      if (!user.admin)
+        p.data = p.data.filter(_ => {
+          return accessFiltersEntry.every(([question, answer]) => answer.has(_.answers[question]))
+        })
+      return p
+    })
   }
-    
+
   readonly searchAnswers = ({
     formId,
     filters = {},

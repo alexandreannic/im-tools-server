@@ -11,10 +11,11 @@ import {PrismaClient} from '@prisma/client'
 import session from 'express-session'
 import multer from 'multer'
 import {AppError} from '../helper/Errors'
-// import sessionFileStore from 'session-file-store'
 import {PrismaSessionStore} from '@quixo3/prisma-session-store'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
+
+// import sessionFileStore from 'session-file-store'
 
 export class Server {
 

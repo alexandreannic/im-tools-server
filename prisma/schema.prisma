@@ -50,6 +50,10 @@ model KoboAnswers {
   tags                   Json?
 
   @@unique([id, formId])
+  @@index([start])
+  @@index([end])
+  @@index([submissionTime])
+  @@index([formId])
 }
 
 model MpcaPaymentTool {

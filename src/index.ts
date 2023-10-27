@@ -12,7 +12,7 @@ import {logger} from './helper/Logger'
 // import {washRMM} from './feature/connector/activity-info/generatedModel/washRMM'
 import {ScheduledTask} from './scheduledTask/ScheduledTask'
 import {MpcaCachedDb} from './feature/mpca/db/MpcaCachedDb'
-import {EventEmitter} from 'events';
+import {EventEmitter} from 'events'
 
 export const appEventEmitter = new EventEmitter()
 
@@ -97,6 +97,7 @@ const startApp = async () => {
   new ScheduledTask(prisma).start()
 
   MpcaCachedDb.constructSingleton(prisma).warmUp()
+
   new Server(
     conf,
     prisma,
