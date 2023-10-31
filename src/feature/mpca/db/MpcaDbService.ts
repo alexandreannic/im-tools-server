@@ -26,10 +26,9 @@ export class MpcaDbService {
   ) {
   }
 
-  readonly refreshAllForms = async () => {
+  readonly refreshNonArchivedForms = async () => {
     const forms = [
       koboFormsId.prod.bn_Re,
-      koboFormsId.prod.bn_OldMpcaNfi,
       koboFormsId.prod.bn_RapidResponse,
       koboFormsId.prod.bn_cashForRepair,
     ]
@@ -37,18 +36,21 @@ export class MpcaDbService {
   }
 
   readonly search = async (filters: KoboAnswerFilter): Promise<ApiPaginate<MpcaData>> => {
-    const [a, b, c, d, wfpIndex] = await Promise.all([
+    const [wfpIndex, ...rest] = await Promise.all([
+      this.wfp.search().then(_ => seq(_.data).groupBy(_ => _.taxId!)),
       this.searchBn_Bnre(filters),
       this.searchBn_BnrOld(filters),
       this.searchBn_RapidResponseMechanism(filters),
       this.searchBn_cashForRepair(filters),
-      this.wfp.search().then(_ => seq(_.data).groupBy(_ => _.taxId!))
+      this.searchBn_0_mpcaReg(filters),
+      this.searchBn_0_mpcaRegNoSig(filters),
+      this.searchBn_0_mpcaRegESign(filters),
+      this.searchBn_0_mpcaRegNewShort(filters),
     ])
     // const data = this.getDedupplication([...a, ...b, ...c, ...d], wfpIndex)
     return toApiPaginate(
-      [...a, ...b, ...c, ...d]
-        .map(this.getDeduplication(wfpIndex))
-        // .map(this.redirectDonor)
+      rest.flat().map(this.getDeduplication(wfpIndex))
+      // .map(this.redirectDonor)
       // .map(this.mergeTagDonor)
     )
   }
@@ -471,5 +473,206 @@ export class MpcaDbService {
         })
       })
     })
+  }
+
+  private readonly searchBn_0_mpcaRegNewShort = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+    return this.kobo.searchBn_0_mpcaRegNewShort(filters)
+      .then(_ => {
+        return _.data.map(_ => {
+          const oblastIso = fnSwitch(_.oblast!, {
+            chernihivska: OblastIndex.findISOByName('Chernihivska'),
+          }, d => {
+            if (d === undefined) return undefined
+            throw new Error(`Unhandled oblast ${_.oblast}`)
+          })
+          return {
+            source: MpcaRowSource.v0_mpcaRegNewShort,
+            prog: [MpcaProgram.MPCA],
+            oblast: OblastIndex.oblastByISO[oblastIso!],
+            oblastIso,
+            office: fnSwitch(_.drc_base!, {
+              chj: DrcOffice.Chernihiv,
+            }, () => {
+              throw new Error(`Unhandled oblast ${_.oblast}`)
+            }),
+            id: _.id,
+            date: _.submissionTime,
+            ...fnSwitch(_.DRC_project!, {
+              bha_project: {project: DrcProject['UKR-000284 BHA'], donor: DrcDonor.BHA},
+            }, () => {
+              throw new Error(`Unhandled project ${_.DRC_project}`)
+            }),
+            lastName: _.last_resp,
+            firstName: _.name_resp,
+            patronyme: _.patron,
+            hhSize: _.household_size,
+            passportNum: undefined,
+            taxId: _.your_id,
+            taxIdFileName: undefined,
+            taxIdFileURL: undefined,
+            idFileName: undefined,
+            idFileURL: undefined,
+            phone: '' + _.phone,
+            tags: _.tags as MpcaDataTag,
+          }
+        })
+      })
+  }
+
+  private readonly searchBn_0_mpcaReg = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+    return this.kobo.searchBn_0_mpcaReg(filters)
+      .then(_ => {
+        return _.data.map(_ => {
+          const oblastIso = fnSwitch(_.oblast!, {
+            dnipropetrovska: OblastIndex.findISOByName('Dnipropetrovska'),
+            lvivska: OblastIndex.findISOByName('Lvivska'),
+            chernihivska: OblastIndex.findISOByName('Chernihivska'),
+            chernivetska: OblastIndex.findISOByName('Chernivetska'),
+            mykolaivska: OblastIndex.findISOByName('Mykolaivska'),
+            khersonska: OblastIndex.findISOByName('Khersonska'),
+            donetska: OblastIndex.findISOByName('Donetska'),
+          }, d => {
+            if (d === undefined) return undefined
+            throw new Error(`Unhandled oblast ${_.oblast}`)
+          })
+          return {
+            source: MpcaRowSource.v0_mpcaReg,
+            prog: [MpcaProgram.MPCA],
+            oblast: OblastIndex.oblastByISO[oblastIso!],
+            oblastIso,
+            office: fnSwitch(_.drc_base!, {
+              dnk: DrcOffice.Dnipro,
+              lwo: DrcOffice.Lviv,
+              chj: DrcOffice.Chernihiv,
+              cwc: DrcOffice.Chernivtsi,
+            }, () => {
+              throw new Error(`Unhandled office ${_.drc_base}`)
+            }),
+            id: _.id,
+            date: _.submissionTime,
+            ...fnSwitch(_.DRC_project!, {
+              bha_project: {project: DrcProject['UKR-000284 BHA'], donor: DrcDonor.BHA},
+            }, () => {
+              throw new Error(`Unhandled project ${_.DRC_project}`)
+            }),
+            lastName: _.last_resp,
+            firstName: _.name_resp,
+            patronyme: _.patron,
+            hhSize: _.household_size,
+            passportSerie: _.passport_serial,
+            passportNum: _.passport_number,
+            taxId: _.your_id,
+            taxIdFileName: _.id,
+            taxIdFileURL: undefined,
+            idFileName: undefined,
+            idFileURL: undefined,
+            phone: '' + _.phone,
+            tags: _.tags as MpcaDataTag,
+          }
+        })
+      })
+  }
+  private readonly searchBn_0_mpcaRegNoSig = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+    return this.kobo.searchBn_0_mpcaRegNoSig(filters)
+      .then(_ => {
+        return _.data.map(_ => {
+          const oblastIso = fnSwitch(_.oblast!, {
+            dnipropetrovska: OblastIndex.findISOByName('Dnipropetrovska'),
+            lvivska: OblastIndex.findISOByName('Lvivska'),
+            chernihivska: OblastIndex.findISOByName('Chernihivska'),
+            chernivetska: OblastIndex.findISOByName('Chernivetska'),
+            mykolaivska: OblastIndex.findISOByName('Mykolaivska'),
+            khersonska: OblastIndex.findISOByName('Khersonska'),
+            donetska: OblastIndex.findISOByName('Donetska'),
+          }, d => {
+            if (d === undefined) return undefined
+            throw new Error(`Unhandled oblast ${_.oblast}`)
+          })
+          return {
+            source: MpcaRowSource.v0_mpcaReg,
+            prog: [MpcaProgram.MPCA],
+            oblast: OblastIndex.oblastByISO[oblastIso!],
+            oblastIso,
+            office: fnSwitch(_.drc_base!, {
+              dnk: DrcOffice.Dnipro,
+              lwo: DrcOffice.Lviv,
+              chj: DrcOffice.Chernihiv,
+              cwc: DrcOffice.Chernivtsi,
+            }, () => {
+              throw new Error(`Unhandled office ${_.drc_base}`)
+            }),
+            id: _.id,
+            date: _.submissionTime,
+            ...fnSwitch(_.DRC_project!, {
+              bha: {project: DrcProject['UKR-000284 BHA'], donor: DrcDonor.BHA},
+            }, () => {
+              throw new Error(`Unhandled project ${_.DRC_project}`)
+            }),
+            lastName: _.last_resp,
+            firstName: _.name_resp,
+            patronyme: _.patron,
+            hhSize: _.household_size,
+            taxId: _.adult_1,
+            phone: '' + _.phone,
+            tags: _.tags as MpcaDataTag,
+          }
+        })
+      })
+  }
+  private readonly searchBn_0_mpcaRegESign = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+    return this.kobo.searchBn_0_mpcaRegESign(filters)
+      .then(_ => {
+        return _.data.map(_ => {
+          const oblastIso = fnSwitch(_.oblast!, {
+            dnipropetrovska: OblastIndex.findISOByName('Dnipropetrovska'),
+            lvivska: OblastIndex.findISOByName('Lvivska'),
+            chernihivska: OblastIndex.findISOByName('Chernihivska'),
+            chernivetska: OblastIndex.findISOByName('Chernivetska'),
+            mykolaivska: OblastIndex.findISOByName('Mykolaivska'),
+            khersonska: OblastIndex.findISOByName('Khersonska'),
+            donetska: OblastIndex.findISOByName('Donetska'),
+            kharkivska: OblastIndex.findISOByName('Kharkivska'),
+            kyivska: OblastIndex.findISOByName('Kyivska'),
+            luhanska: OblastIndex.findISOByName('Luhanska'),
+            zaporizka: OblastIndex.findISOByName('Zaporizka'),
+            odeska: OblastIndex.findISOByName('Odeska'),
+          }, d => {
+            if (d === undefined) return undefined
+            throw new Error(`Unhandled oblast ${_.oblast}`)
+          })
+          return {
+            source: MpcaRowSource.v0_mpcaReg,
+            prog: [MpcaProgram.MPCA],
+            oblast: OblastIndex.oblastByISO[oblastIso!],
+            oblastIso,
+            office: fnSwitch(_.drc_base!, {
+              dnk: DrcOffice.Dnipro,
+              lwo: DrcOffice.Lviv,
+              chj: DrcOffice.Chernihiv,
+              cwc: DrcOffice.Chernivtsi,
+            }, () => {
+              throw new Error(`Unhandled office ${_.drc_base}`)
+            }),
+            id: _.id,
+            date: _.submissionTime,
+            ...fnSwitch(_.DRC_project!, {
+              bha: {project: DrcProject['UKR-000284 BHA'], donor: DrcDonor.BHA},
+            }, () => {
+              throw new Error(`Unhandled project ${_.DRC_project}`)
+            }),
+            lastName: _.last_resp,
+            firstName: _.name_resp,
+            patronyme: _.patron,
+            hhSize: _.household_size,
+            taxId: _.adult_1,
+            taxIdFileName: _.Photo_of_Individual_Tax_Code,
+            taxIdFileURL: _.attachments?.find(x => x.filename.includes(_.Photo_of_Individual_Tax_Code)),
+            idFileName: _.Passport_page_1 ?? _.Photo_of_ID_card,
+            idFileURL: _.attachments?.find(x => x.filename.includes(_.Passport_page_1) || x.filename.includes(_.Photo_of_ID_card)),
+            phone: '' + _.phone,
+            tags: _.tags as MpcaDataTag,
+          }
+        })
+      })
   }
 }

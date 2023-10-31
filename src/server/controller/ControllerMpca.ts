@@ -14,7 +14,7 @@ export class ControllerMpca {
   }
 
   readonly refresh = async (req: Request, res: Response, next: NextFunction) => {
-    await this.service.refreshAllForms()
+    await this.service.refreshNonArchivedForms()
     await this.cache.refresh()
     res.send()
   }

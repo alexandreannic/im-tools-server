@@ -79,43 +79,6 @@ project: {
 	'echo': `UKR-000322 ECHO`,
 	'uhf6': `UKR-000336 UHF VI`
 },
-location: {
-	'logow': `Governmental collective site`,
-	'lopri': `Private collective site`,
-	'lohum': `Humanitarian hub`,
-	'locso': `CSO/CBO premises`,
-	'loloc': `Local authorities' premises`,
-	'locom': `Community space`,
-	'loedu': `Educational facility`,
-	'lopub': `Public service building`,
-	'loeres': `Resilience hubs`,
-	'lodrc': `DRC WGSS`,
-	'looth': `Other WGSS`,
-	'other': `Other`
-},
-hh_char_hh_det_gender: {
-	'male': `Male`,
-	'female': `Female`,
-	'other': `Other`,
-	'unspecified': `Unspecified`
-},
-activity: {
-	'gpt': `General protection topic`,
-	'let': `Legal topic`,
-	'gbv': `GBV topic`,
-	'other': `Other`
-},
-new_ben: {
-	'yes': `Yes`,
-	'no': `No`
-},
-hh_char_hh_det_status: {
-	'idp': `IDP`,
-	'returnee': `Returnee`,
-	'non-displaced': `Non-displaced`,
-	'unspec': `Unspecified`,
-	'other': `Other`
-},
 ben_det_oblast: {
 	'cherkaska': `Cherkaska`,
 	'chernihivska': `Chernihivska`,
@@ -142,4 +105,41 @@ ben_det_oblast: {
 	'zakarpatska': `Zakarpatska`,
 	'zaporizka': `Zaporizka`,
 	'zhytomyrska': `Zhytomyrska`
+},
+location: {
+	'logow': `Governmental collective site`,
+	'lopri': `Private collective site`,
+	'lohum': `Humanitarian hub`,
+	'locso': `CSO/CBO premises`,
+	'loloc': `Local authorities' premises`,
+	'locom': `Community space`,
+	'loedu': `Educational facility`,
+	'lopub': `Public service building`,
+	'loeres': `Resilience hubs`,
+	'lodrc': `DRC WGSS`,
+	'looth': `Other WGSS`,
+	'other': `Other`
+},
+activity: {
+	'gpt': `General protection topic`,
+	'let': `Legal topic`,
+	'pss': `PSS topic`,
+	'other': `Other`
+},
+new_ben: {
+	'yes': `Yes`,
+	'no': `No`
+},
+hh_char_hh_det_gender: {
+	'male': `Male`,
+	'female': `Female`,
+	'other': `Other`,
+	'unspecified': `Unspecified`
+},
+hh_char_hh_det_status: {
+	'idp': `IDP`,
+	'returnee': `Returnee`,
+	'non-displaced': `Non-displaced`,
+	'unspec': `Unspecified`,
+	'other': `Other`
 }}

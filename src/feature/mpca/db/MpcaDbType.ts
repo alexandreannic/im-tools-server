@@ -11,6 +11,10 @@ export enum MpcaRowSource {
   CashForRepairRegistration = 'CashForRepairRegistration',
   BasicNeedRegistration = 'BasicNeedRegistration',
   OldBNRE = 'OldBNRE',
+  v0_mpcaRegNewShort = 'v0_mpcaRegNewShort',
+  v0_mpcaReg = 'v0_mpcaReg',
+  v0_mpcaRegNoSig = 'v0_mpcaRegNoSig',
+  v0_mpcaRegESign = 'v0_mpcaRegESign',
 }
 
 export enum MpcaProgram {

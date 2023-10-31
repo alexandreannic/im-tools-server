@@ -60,6 +60,8 @@ export class OblastIndex {
     'UA18': `Zhytomyrska`
   })
 
+  static readonly oblastName: Record<OblastName, OblastName> = new Enum(this.oblastByISO).transform((k, v) => [v, v]).get()
+
   static readonly koboOblastIndex: Record<string, OblastName> = {
     aroc: 'Autonomous Republic of Crimea',//'UA43',
     cherkaska: 'Cherkaska',

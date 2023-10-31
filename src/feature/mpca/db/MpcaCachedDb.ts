@@ -29,7 +29,6 @@ export class MpcaCachedDb {
         koboFormsId.prod.bn_RapidResponse,
         koboFormsId.prod.bn_cashForRepair,
       ].includes(x.formId)) {
-        console.log('NO', x.formId)
         return
       }
       const cache = await this._cache

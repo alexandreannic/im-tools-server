@@ -12,11 +12,15 @@ export interface Bn_RapidResponse {
   form_approval: undefined | Opt<'pay_det_tax_exempt_l'>,
   // [note] **Unique ID/Case Number**
   back_un_id: string,
-  // [select_one] Please select the shock(s)
+  // [select_one] 1.1 Please select the shock(s)
   shock: undefined | Opt<'shock'>,
-  // [select_multiple] Programme Type
+  // [select_one] 1.2 Select Office
+  back_office: undefined | Opt<'back_office_l'>,
+  // [select_one] 1.3 Enumerator
+  back_enum: undefined | Opt<'back_enum_l'>,
+  // [select_multiple] 1.4 Programme Type
   back_prog_type: undefined | Opt<'back_prog_type'>[],
-  // [select_one] 1.3 Project & Donor
+  // [select_one] 1.5 Project & Donor
   back_donor: undefined | Opt<'back_donor'>,
   // [text] What is your surname name (as shown in personal ID)?
   ben_det_surname: string | undefined,
@@ -34,6 +38,10 @@ export interface Bn_RapidResponse {
   ben_det_raion: undefined | Opt<'ben_det_raion_l'>,
   // [select_one] Select hromada where registration is taking place
   ben_det_hromada: undefined | Opt<'ben_det_hromada_l'>,
+  // [text] Street
+  ben_det_street: string | undefined,
+  // [text] Building and apartment number
+  ben_det_ba_number: string | undefined,
   // [geopoint] GPS Coordinates
   gps_coordinates: string,
   // [integer] Indicate the total number of people in your household, including the HHH
@@ -223,6 +231,7 @@ export interface Bn_RapidResponse {
   estimate_sqm_damage_l: number | undefined,
   // [note] Based upon the answers above, the household is eligible for the following:
   eligibility_summary_esk_l: string,
+  calc_eligible: string,
   // [note] This household is eligble for One Emergency Shelter kit
   note_eligible_1_l: string,
   // [note] This household is eligble for Two Emergency Shelter Kits

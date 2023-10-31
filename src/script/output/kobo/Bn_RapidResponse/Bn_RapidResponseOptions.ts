@@ -4,7 +4,8 @@ back_donor: {
 	'uhf_4': `UHF 4`,
 	'bha': `BHA`,
 	'novo': `NovoNordisk`,
-	'pooled': `Pool Funds`
+	'pooled': `Pool Funds`,
+	'sdc': `SDC`
 },
 shock: {
 	'strike_infrastructure': `Strike on Civilian/ Community Infrastructure`,
@@ -18,15 +19,15 @@ form_length: {
 	'short': `Short`
 },
 level_damage: {
-	'one': `1`,
-	'two': `2`,
-	'three': `3`,
-	'four': `4`
+	'one': `1 (no damage)`,
+	'two': `2 (windows and/or door damage)`,
+	'three': `3 (windows and/or door damage and/or roof damage)`,
+	'four': `4 (highly damaged or fully destroyed)`
 },
 back_prog_type: {
 	'mpca': `MPCA`,
 	'nfi': `NFI`,
-	'shelter': `Shelter`
+	'shelter': `Shelter (ask BNF if their apartment has been damaged)`
 },
 pay_det_id_type: {
 	'nat_pass_card': `A = National Passport (card)`,
@@ -158,6 +159,7 @@ back_enum_l: {
 	'chj_ex2': `Extra 2`
 },
 back_donor_l: {
+	'sdc_umy': `SDC`,
 	'uhf_chj': `UHF-4`,
 	'uhf_dnk': `UHF-4`,
 	'uhf_hrk': `UHF-4`,
@@ -182,6 +184,7 @@ back_donor_l: {
 	'pool_nlv': `Pooled Funds`
 },
 back_prog_type_l: {
+	'mpca_umy': `MPCA`,
 	'mpca_lwo': `MPCA`,
 	'nfi_lwo': `NFI`,
 	'cfr_lwo': `Cash for Rent`,

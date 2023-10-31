@@ -101,6 +101,18 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
         }
       }
     },
+    {
+      formName: 'Bn_0_mpcaRegNewShort', formId: koboFormsId.prod.bn_0_mpcaRegNewShort, skipQuestionTyping: ['hromada', 'raion']
+    },
+    {
+      formName: 'Bn_0_mpcaReg', formId: koboFormsId.prod.bn_0_mpcaReg, skipQuestionTyping: ['hromada', 'raion']
+    },
+    {
+      formName: 'Bn_0_mpcaRegNoSig', formId: koboFormsId.prod.bn_0_mpcaRegNoSig, skipQuestionTyping: ['hromada', 'raion']
+    },
+    {
+      formName: 'Bn_0_mpcaRegESign', formId: koboFormsId.prod.bn_0_mpcaRegESign, skipQuestionTyping: ['hromada', 'raion']
+    },
     {formName: 'Bn_Re', formId: koboFormsId.prod.bn_Re},
     {formName: 'Bn_OldMpcaNfi', formId: koboFormsId.prod.bn_OldMpcaNfi},
     {formName: 'Bn_OldMpcaNfiNaa', formId: koboFormsId.prod.bn_OldMpcaNfiNaa},
@@ -223,7 +235,7 @@ const extractQuestionName = (_: Record<string, any>) => {
         return !_.$qpath.includes(r.name + '-')
       }))
       .map(x => {
-        const lastQuestionNameHavingOptionId = seq(indexOptionId[x.select_from_list_name ?? '']).last?.name
+        const lastQuestionNameHavingOptionId = seq(indexOptionId[x.select_from_list_name ?? '']).last()?.name
         const basicQuestionTypeMapping = (lastQuestionNameHavingOptionId?: string) => ({
           'select_one': () => 'undefined | ' + (this.options.skipQuestionTyping?.includes(x.name) ? 'string' : `Opt<'${lastQuestionNameHavingOptionId}'>`),
           'select_multiple': () => 'undefined | ' + (this.options.skipQuestionTyping?.includes(x.name) ? 'string[]' : `Opt<'${lastQuestionNameHavingOptionId}'>[]`),
@@ -237,7 +249,7 @@ const extractQuestionName = (_: Record<string, any>) => {
           'begin_repeat': () => {
             const groupedQuestions = survey.filter(_ => _.name !== x.name && _.$qpath?.includes(x.name + '-'))
             return '{' + groupedQuestions.map(_ => {
-              const lastQuestionNameHavingOptionId = seq(indexOptionId[_.select_from_list_name ?? '']).last?.name
+              const lastQuestionNameHavingOptionId = seq(indexOptionId[_.select_from_list_name ?? '']).last()?.name
               return `${_.$autoname}: ${fnSwitch(_.type, basicQuestionTypeMapping(lastQuestionNameHavingOptionId), _ => 'string')} | undefined`
             }).join(',') + '}[] | undefined'
 
