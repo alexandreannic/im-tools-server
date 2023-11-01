@@ -128,7 +128,7 @@ export class DbInit {
         level: FeatureAccessLevel.Write,
         featureId: AppFeatureId.kobo_database,
         params: KoboDatabaseFeatureParams.create({
-          koboFormId: koboFormsId.prod.bn_RapidResponse,
+          koboFormId: koboFormsId.prod.bn_rapidResponse,
           filters: {}
         }),
       },

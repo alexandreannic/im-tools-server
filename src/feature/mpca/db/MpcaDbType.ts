@@ -4,18 +4,37 @@ import {KoboAttachment} from '../../connector/kobo/KoboClient/type/KoboAnswer'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
 import {Bn_Re} from '../../../script/output/kobo/Bn_Re/Bn_Re'
 import {Person} from '../../../core/Type'
+import {koboFormsId} from '../../../core/conf/KoboFormsId'
 
-export enum MpcaRowSource {
-  RapidResponseMechansim = 'RapidResponseMechansim',
-  CashForRent = 'CashForRent',
-  CashForRepairRegistration = 'CashForRepairRegistration',
-  BasicNeedRegistration = 'BasicNeedRegistration',
-  OldBNRE = 'OldBNRE',
-  v0_mpcaRegNewShort = 'v0_mpcaRegNewShort',
-  v0_mpcaReg = 'v0_mpcaReg',
-  v0_mpcaRegNoSig = 'v0_mpcaRegNoSig',
-  v0_mpcaRegESign = 'v0_mpcaRegESign',
+
+// export enum MpcaRowSource {
+//   [koboFormsId.prod.bn_RapidResponse] = 'RapidResponseMechansim',
+//   CashForRent = 'CashForRent',
+//   CashForRepairRegistration = 'CashForRepairRegistration',
+//   BasicNeedRegistration = 'BasicNeedRegistration',
+//   OldBNRE = 'OldBNRE',
+//   v0_mpcaRegNewShort = 'v0_mpcaRegNewShort',
+//   v0_mpcaReg = 'v0_mpcaReg',
+//   v0_mpcaRegNoSig = 'v0_mpcaRegNoSig',
+//   v0_mpcaRegESign = 'v0_mpcaRegESign',
+// }
+
+const buildEnumFromObject = <T extends keyof typeof koboFormsId.prod>(t: T[]): { [K in T]: K } => {
+  return t.reduce((acc, curr) => ({...acc, [curr]: curr}), {} as any)
 }
+
+const builtEnum = buildEnumFromObject([
+  'bn_rapidResponse',
+  'shelter_cashForRepair',
+  'bn_1_mpcaNfi',
+  'bn_re',
+  'bn_0_mpcaReg',
+  'bn_0_mpcaRegESign',
+  'bn_0_mpcaRegNoSig',
+  'bn_0_mpcaRegNewShort',
+])
+
+export type MpcaRowSource = keyof typeof builtEnum
 
 export enum MpcaProgram {
   CashForRent = 'CashForRent',

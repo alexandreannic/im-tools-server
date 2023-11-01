@@ -24,10 +24,10 @@ export class MpcaCachedDb {
   ) {
     this.koboEvent.listenTagEdited(async (x) => {
       if (!this._cache || !this.idIndex || ![
-        koboFormsId.prod.bn_Re,
-        koboFormsId.prod.bn_OldMpcaNfi,
-        koboFormsId.prod.bn_RapidResponse,
-        koboFormsId.prod.bn_cashForRepair,
+        koboFormsId.prod.bn_re,
+        koboFormsId.prod.bn_1_mpcaNfi,
+        koboFormsId.prod.bn_rapidResponse,
+        koboFormsId.prod.shelter_cashForRepair,
       ].includes(x.formId)) {
         return
       }

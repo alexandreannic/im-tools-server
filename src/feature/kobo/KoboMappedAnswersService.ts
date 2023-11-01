@@ -37,10 +37,10 @@ export class KoboMappedAnswersService {
     }).then(KoboMappedAnswersService.map(fn))
   }
 
-  readonly searchBnre = this.buildMappedSearch(koboFormsId.prod.bn_Re, mapBn_Re)
-  readonly searchShelter_cashForRepair = this.buildMappedSearch(koboFormsId.prod.bn_cashForRepair, mapShelter_cashForRepair)
-  readonly searchBn_BnrOld = this.buildMappedSearch(koboFormsId.prod.bn_OldMpcaNfi, mapBn_OldMpcaNfi)
-  readonly searchBn_RapidResponseMechanism = this.buildMappedSearch(koboFormsId.prod.bn_RapidResponse, mapBn_RapidResponse)
+  readonly searchBnre = this.buildMappedSearch(koboFormsId.prod.bn_re, mapBn_Re)
+  readonly searchShelter_cashForRepair = this.buildMappedSearch(koboFormsId.prod.shelter_cashForRepair, mapShelter_cashForRepair)
+  readonly searchBn_BnrOld = this.buildMappedSearch(koboFormsId.prod.bn_1_mpcaNfi, mapBn_OldMpcaNfi)
+  readonly searchBn_RapidResponseMechanism = this.buildMappedSearch(koboFormsId.prod.bn_rapidResponse, mapBn_RapidResponse)
   readonly searchBn_0_mpcaRegNewShort = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegNewShort, mapBn_0_mpcaRegNewShort)
   readonly searchBn_0_mpcaReg = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaReg, mapBn_0_mpcaReg)
   readonly searchBn_0_mpcaRegNoSig = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegNoSig, mapBn_0_mpcaRegNoSig)

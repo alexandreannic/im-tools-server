@@ -3,7 +3,7 @@ import {KoboTransformer} from './KoboTransformer'
 import {KoboNfiMcpa, mapNfisCount, Program} from './KoboNfiMcpa'
 
 export const koboTransformerNfiMpcaMyko = new KoboTransformer<KoboNfiMcpa>(
-  koboFormsId.prod.bn_OldMpcaNfiMyko,
+  koboFormsId.prod.bn_1_mpcaNfiMyko,
   {
     houseHoldSize: 'module_eligibility_screening/group_kj9wg97/Total_Family',
     kits: {

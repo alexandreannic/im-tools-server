@@ -46,8 +46,8 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
       ]
     },
     {formName: 'Bn_cashForRentApplication', formId: koboFormsId.prod.bn_cashForRentApplication},
-    {formName: 'Bn_RapidResponse', formId: koboFormsId.prod.bn_RapidResponse},
-    {formName: 'Shelter_cashForRepair', formId: koboFormsId.prod.bn_cashForRepair},
+    {formName: 'Bn_RapidResponse', formId: koboFormsId.prod.bn_rapidResponse},
+    {formName: 'Shelter_cashForRepair', formId: koboFormsId.prod.shelter_cashForRepair},
     {
       formName: 'Meal_CfmInternal', formId: koboFormsId.prod.mealCfmInternal, skipQuestionTyping: [
         'ben_det_hromada',
@@ -113,10 +113,10 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
     {
       formName: 'Bn_0_mpcaRegESign', formId: koboFormsId.prod.bn_0_mpcaRegESign, skipQuestionTyping: ['hromada', 'raion']
     },
-    {formName: 'Bn_Re', formId: koboFormsId.prod.bn_Re},
-    {formName: 'Bn_OldMpcaNfi', formId: koboFormsId.prod.bn_OldMpcaNfi},
-    {formName: 'Bn_OldMpcaNfiNaa', formId: koboFormsId.prod.bn_OldMpcaNfiNaa},
-    {formName: 'Bn_OldMpcaNfiMyko', formId: koboFormsId.prod.bn_OldMpcaNfiMyko},
+    {formName: 'Bn_Re', formId: koboFormsId.prod.bn_re},
+    {formName: 'Bn_OldMpcaNfi', formId: koboFormsId.prod.bn_1_mpcaNfi},
+    {formName: 'Bn_OldMpcaNfiNaa', formId: koboFormsId.prod.bn_1_mpcaNfiNaa},
+    {formName: 'Bn_OldMpcaNfiMyko', formId: koboFormsId.prod.bn_1_mpcaNfiMyko},
     {formName: 'Protection_Hhs2', formId: koboFormsId.prod.protection_Hhs2},
   ]
   return Promise.all(forms.map(f => new KoboInterfaceGenerator(koboSdk, {

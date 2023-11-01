@@ -28,9 +28,9 @@ export class MpcaDbService {
 
   readonly refreshNonArchivedForms = async () => {
     const forms = [
-      koboFormsId.prod.bn_Re,
-      koboFormsId.prod.bn_RapidResponse,
-      koboFormsId.prod.bn_cashForRepair,
+      koboFormsId.prod.bn_re,
+      koboFormsId.prod.bn_rapidResponse,
+      koboFormsId.prod.shelter_cashForRepair,
     ]
     await Promise.all(forms.map(formId => this.koboSync.syncApiForm({formId})))
   }
@@ -85,7 +85,7 @@ export class MpcaDbService {
   // }
 
   private readonly redirectDonor = (row: MpcaData): MpcaData => {
-    if ((row.source === MpcaRowSource.RapidResponseMechansim || row.source === MpcaRowSource.BasicNeedRegistration)
+    if ((row.source === 'bn_rapidResponse' || row.source === 'bn_re')
       && row.donor === DrcDonor.PoolFunds
       && fnSwitch(row.oblast!, {
         Chernihivska: false,
@@ -101,7 +101,7 @@ export class MpcaDbService {
       row.project = DrcProject['UKR-000284 BHA']
     }
 
-    if (!row.donor && row.source === MpcaRowSource.RapidResponseMechansim && fnSwitch(row.oblast!, {
+    if (!row.donor && row.source === 'bn_rapidResponse' && fnSwitch(row.oblast!, {
       Chernihivska: false,
       Kharkivska: true,
       Donetska: true,
@@ -128,7 +128,7 @@ export class MpcaDbService {
       return _.data.map(_ => {
         const group = [..._.hh_char_hh_det ?? [], {hh_char_hh_det_age: _.hh_char_hhh_age, hh_char_hh_det_gender: _.hh_char_hhh_gender}]
         return {
-          source: MpcaRowSource.BasicNeedRegistration,
+          source: 'bn_re',
           id: _.id,
           date: _.submissionTime,
           office: fnSwitch(_.back_office!, {
@@ -232,7 +232,7 @@ export class MpcaDbService {
     return this.kobo.searchShelter_cashForRepair(filters)
       .then(_ => {
         return _.data.map(_ => ({
-          source: MpcaRowSource.CashForRepairRegistration,
+          source: 'shelter_cashForRepair',
           prog: [MpcaProgram.CashForRent],
           oblast: fnSwitch(_.ben_det_oblast ?? (_ as any).ben_det_oblastgov!, OblastIndex.koboOblastIndex, () => undefined),
           oblastIso: fnSwitch(_.ben_det_oblast ?? (_ as any).ben_det_oblastgov!, OblastIndex.koboOblastIndexIso, () => undefined),
@@ -290,7 +290,7 @@ export class MpcaDbService {
         const group = [..._.hh_char_hh_det_l ?? [], {hh_char_hh_det_age_l: _.hh_char_hhh_age_l, hh_char_hh_det_gender_l: _.hh_char_hhh_gender_l}]
         const oblast = fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndex, () => _.submissionTime.getMonth() === 5 ? 'Mykolaivska' : undefined)
         return ({
-          source: MpcaRowSource.RapidResponseMechansim,
+          source: 'bn_rapidResponse',
           prog: seq(_.back_prog_type ?? _.back_prog_type_l).map(prog => fnSwitch(prog.split('_')[0], {
             'cfr': MpcaProgram.CashForRent,
             'cfe': MpcaProgram.CashForEducation,
@@ -404,7 +404,7 @@ export class MpcaDbService {
         const group = [..._.group_in3fh72 ?? [], {GenderHH: _.gender_respondent, AgeHH: _.agex}]
         const oblast = fnSwitch(_.oblast!, OblastIndex.koboOblastIndex, () => undefined)
         return ({
-          source: MpcaRowSource.OldBNRE,
+          source: 'bn_1_mpcaNfi',
           id: _.id,
           date: _.submissionTime,
           prog: fnSwitch(_.Programme!, {
@@ -486,7 +486,7 @@ export class MpcaDbService {
             throw new Error(`Unhandled oblast ${_.oblast}`)
           })
           return {
-            source: MpcaRowSource.v0_mpcaRegNewShort,
+            source: 'bn_0_mpcaRegNewShort',
             prog: [MpcaProgram.MPCA],
             oblast: OblastIndex.oblastByISO[oblastIso!],
             oblastIso,
@@ -536,7 +536,7 @@ export class MpcaDbService {
             throw new Error(`Unhandled oblast ${_.oblast}`)
           })
           return {
-            source: MpcaRowSource.v0_mpcaReg,
+            source: 'bn_0_mpcaReg',
             prog: [MpcaProgram.MPCA],
             oblast: OblastIndex.oblastByISO[oblastIso!],
             oblastIso,
@@ -589,7 +589,7 @@ export class MpcaDbService {
             throw new Error(`Unhandled oblast ${_.oblast}`)
           })
           return {
-            source: MpcaRowSource.v0_mpcaReg,
+            source: 'bn_0_mpcaRegNoSig',
             prog: [MpcaProgram.MPCA],
             oblast: OblastIndex.oblastByISO[oblastIso!],
             oblastIso,
@@ -641,7 +641,7 @@ export class MpcaDbService {
             throw new Error(`Unhandled oblast ${_.oblast}`)
           })
           return {
-            source: MpcaRowSource.v0_mpcaReg,
+            source: 'bn_0_mpcaRegESign',
             prog: [MpcaProgram.MPCA],
             oblast: OblastIndex.oblastByISO[oblastIso!],
             oblastIso,
