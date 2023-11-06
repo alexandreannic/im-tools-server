@@ -26,7 +26,7 @@ export type KoboAnswerGeolocation = any
 export type KoboAnswerTags = any
 export type KoboAnswerNotes = any
 
-export type KoboAnswerMetaData = Pick<ApiKoboAnswerMetaData, 'start' | 'end'> & {
+export type KoboAnswerMetaData<TTag extends Record<string, any> | undefined = undefined> = Pick<ApiKoboAnswerMetaData, 'start' | 'end'> & {
   version: ApiKoboAnswerMetaData['__version__']
   attachments?: KoboAttachment[]
   geolocation: ApiKoboAnswerMetaData['_geolocation']
@@ -38,7 +38,7 @@ export type KoboAnswerMetaData = Pick<ApiKoboAnswerMetaData, 'start' | 'end'> & 
   submittedBy?: string
   lastValidatedTimestamp?: number
   source?: string
-  tags?: any
+  tags?: TTag
 }
 
 export const koboAnswerMetaData: (keyof KoboAnswerMetaData)[] = [
@@ -79,11 +79,19 @@ interface ApiKoboAnswerMetaData {
 // export interface KoboAnswer extends KoboAnswerMetaData {
 //   [key: string]: string
 // }
-export type KoboAnswer<T extends Record<string, any> = Record<string, any>> = KoboAnswerMetaData & {answers: T}
+export type KoboAnswer<
+  T extends Record<string, any> = Record<string, any>,
+  TTag extends Record<string, any> | undefined = undefined
+> = KoboAnswerMetaData<TTag> & {answers: T}
 
-export type KoboAnswerFlat<T extends Record<string, any> = Record<string, string | undefined>> = (KoboAnswerMetaData & T)
+export type KoboAnswerFlat<
+  T extends Record<string, any> = Record<string, string | undefined>,
+  TTag extends Record<string, any> | undefined = undefined
+> = (KoboAnswerMetaData<TTag> & T)
 
-export type DbKoboAnswer<T extends Record<string, any> = Record<string, any>> = KoboAnswer<T> & {formId: KoboId}
+export type DbKoboAnswer<
+  T extends Record<string, any> = Record<string, any>,
+> = KoboAnswer<T, any> & {formId: KoboId}
 
 export interface KoboApiList<T> {
   count: number,
