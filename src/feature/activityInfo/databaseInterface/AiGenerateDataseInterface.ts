@@ -15,7 +15,7 @@ export const ActivityInfoBuildType = {
     ignoredQuestions: [
       'Total Reached (All Population Groups)',
     ],
-    skipQuestionsPattern: [
+    skipQuestion: [
       /Collective Sites/,
       /Total Reached \(No Disaggregation\)/,
       /Oblast/,
@@ -27,7 +27,7 @@ export const ActivityInfoBuildType = {
       /Hormada/,
       /Settlement/,
     ],
-    pickSpecificOptionK2Id: {
+    pickSpecificOptionSet: {
       cg7insdlee1c3h0s: 'cbc6ncylee1d4ulu',
       c6q8ni3lepq77hp3: 'cocmup7lepq89f38',
     },
@@ -40,16 +40,38 @@ export const ActivityInfoBuildType = {
       }
     }
   }),
+
+  snfiRmm: () => generateDatabaseInterface({
+    formId: activityInfoForms.snfiRmm,
+    name: 'snfiRmm',
+    skipQuestionsOptions: [
+      /Oblast/,
+      /Raion/,
+      /Hromada/,
+      /Settlement/,
+      /Collective Site/,
+    ],
+    filterOptions: {
+      'Reporting Partner': _ => {
+        return _.includes('Danish Refugee Council')
+      },
+      'Implementing Partner': _ => {
+        return _.includes('Danish Refugee Council')
+      }
+    }
+  }),
+
   generalProtectionRmm: () => generateDatabaseInterface({
     formId: activityInfoForms.generalProtectionRmm,
     name: 'generalProtectionRmm',
   }),
+
   mpcaRmm: () => generateDatabaseInterface({
     optionsLimit: 200,
     formId: activityInfoForms.mpcaRmm,
     name: 'mpcaRmm',
     ignoredQuestions: [],
-    skipQuestionsPattern: [
+    skipQuestion: [
       /MPCA Indicators/,
       // /Implementing Partner/,
       // /MPCA Indicators/,
@@ -61,7 +83,7 @@ export const ActivityInfoBuildType = {
       /Hormada/,
       /Settlement/,
     ],
-    pickSpecificOptionK2Id: {},
+    pickSpecificOptionSet: {},
     filterOptions: {
       'Partner Organization': _ => {
         return _.includes('Danish Refugee Council')
@@ -90,18 +112,18 @@ const generateDatabaseInterface = async ({
   name,
   optionsLimit = 20,
   ignoredQuestions = [],
-  pickSpecificOptionK2Id = {},
+  pickSpecificOptionSet = {},
   skipQuestionsOptions = [],
   filterOptions = {},
-  skipQuestionsPattern = [],
+  skipQuestion = [],
   outputDir = appConf.rootProjectDir + '/src/script/output/activityInfo',
 }: {
   optionsLimit?: number
   ignoredQuestions?: string[]
   formId: string,
   name: string,
-  skipQuestionsPattern?: RegExp[]
-  pickSpecificOptionK2Id?: Record<AIID, AIID>
+  skipQuestion?: RegExp[]
+  pickSpecificOptionSet?: Record<AIID, AIID>
   skipQuestionsOptions?: RegExp[],
   filterOptions?: Record<string, (label: string) => boolean>
   outputDir?: string
@@ -118,7 +140,7 @@ const generateDatabaseInterface = async ({
     ]
     const elements = ids.map(_ => f[_]).flatMap(_ => {
       return _.schema.elements
-        .filter(_ => !skipQuestionsPattern.find(p => p.test(_.label)))
+        .filter(_ => !skipQuestion.find(p => p.test(_.label)))
         .map(_ => {
           if (isFetchingQuestionOptionBlocked(_.label)) {
             _.type = 'FREE_TEXT'
@@ -132,8 +154,8 @@ const generateDatabaseInterface = async ({
       .filter(_ => !ignoredQuestions.includes(_.label))
 
     const subFormsIds = seq(elements)
-      .filter(_ => _.type === 'subform')
-      .map(_ => _.typeParameters.formId)
+      // .filter(_ => !!_.typeParameters.formId)
+      .map(_ => _.typeParameters.formId ?? _.typeParameters.range?.[0]?.formId)
       .compact()
       .get()
 
@@ -157,7 +179,7 @@ const generateDatabaseInterface = async ({
     const getRandomOptions = () => {
       return (f[optionId].schema.elements.find(_ => (_.code ?? '').includes('ENG')) ?? f[optionId].schema.elements[0]).id
     }
-    const optionDefId = pickSpecificOptionK2Id[optionId] ?? columnsListMap[optionId]?.listId ?? getRandomOptions()
+    const optionDefId = pickSpecificOptionSet[optionId] ?? columnsListMap[optionId]?.listId ?? getRandomOptions()
     const options = await x.fetchColumns(optionId, optionDefId)
     const filter = filterOptions[e.label]
     return {
@@ -172,7 +194,7 @@ const generateDatabaseInterface = async ({
     const forms = getElements(formDesc, [formId])
     console.log(forms)
     const options = await Promise.all(forms
-      .filter(_ => _.type === 'reference' && !pickSpecificOptionK2Id[_.id])
+      .filter(_ => _.type === 'reference' && !pickSpecificOptionSet[_.id])
       .map(_ => getOptions(formDesc, _))
     )
     const data = forms.map(q => {
