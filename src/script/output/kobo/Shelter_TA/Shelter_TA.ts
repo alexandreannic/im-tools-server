@@ -2,7 +2,6 @@ import {Shelter_TAOptions} from './Shelter_TAOptions'
 
 type Opt<T extends keyof typeof Shelter_TAOptions> = keyof (typeof Shelter_TAOptions)[T]
 
-// Form id: aTP5nwZjpyR7oy7bdMZktC
 export interface Shelter_TA {
   start: string,
   end: string,

@@ -22,6 +22,7 @@ import {appConf} from '../core/conf/AppConf'
 import apicache from 'apicache'
 import {ControllerProxy} from './controller/ControllerProxy'
 import {ControllerMpca} from './controller/ControllerMpca'
+import {ControllerShelter} from './controller/ControllerShelter'
 
 export interface AuthenticatedRequest extends Request {
   user?: UserSession
@@ -74,6 +75,7 @@ export const getRoutes = (
   const access = new ControllerAccess(prisma)
   const user = new ControllerUser(prisma)
   const proxy = new ControllerProxy(prisma)
+  const shelter = new ControllerShelter(prisma)
 
   const auth = ({adminOnly = false}: {adminOnly?: boolean} = {}) => async (req: Request, res: Response, next: NextFunction) => {
     // req.session.user = {
@@ -143,6 +145,8 @@ export const getRoutes = (
     router.get('/kobo-api/:id', auth(), errorCatcher(koboApi.getForms))
     router.get('/kobo-api/:id/:formId', cache('24 hour'), auth(), errorCatcher(koboApi.getSchema))
     router.get('/kobo-api/:id/:formId/:answerId/edit-url', errorCatcher(koboApi.edit))
+
+    router.post('/shelter/search', errorCatcher(shelter.search))
 
     router.post('/mpca/search', errorCatcher(mpca.search))
     router.post('/mpca/refresh', auth(), errorCatcher(mpca.refresh))

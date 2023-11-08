@@ -47,6 +47,7 @@ export interface Database {
 
 const dbId = 'cbi4e3dlbs86afe2'
 export const activityInfoForms = {
+  snfiRmm: 'ckrgu2uldtxbgbg1h',
   generalProtectionRmm: 'cas3n26ldsu5aea5',
   activities_and_people: 'cy3vehlldsu5aeb6',
   washAPM2: 'cg7insdlee1c3h0s',

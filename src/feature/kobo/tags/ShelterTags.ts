@@ -22,12 +22,6 @@ export interface ShelterNtaTags {
   validation?: ShelterTagValidation
 }
 
-export enum ShelterTaPriceLevel {
-  Light = 'Light',
-  Medium = 'Medium',
-  Heavy = 'Heavy',
-}
-
 export interface ShelterTaTags {
   progress?: ShelterProgress
   contractor1?: any

@@ -58,14 +58,12 @@ export class KoboService {
     const accessFiltersEntry = Enum.entries(
       new Enum(accessFilters).transform((k, v) => [k, new Set(v)]).get()
     )
-
-    return this.searchAnswers(params).then(p => {
-      if (!user.admin)
-        p.data = p.data.filter(_ => {
-          return accessFiltersEntry.every(([question, answer]) => answer.has(_.answers[question]))
-        })
-      return p
-    })
+    const data = await this.searchAnswers(params)
+    if (!user.admin)
+      data.data = data.data.filter(_ => {
+        return accessFiltersEntry.every(([question, answer]) => answer.has(_.answers[question]))
+      })
+    return data
   }
 
   readonly searchAnswers = ({
@@ -311,3 +309,4 @@ export class KoboService {
     this.event.emitTagEdited({formId, answerIds, tags})
   }
 }
+

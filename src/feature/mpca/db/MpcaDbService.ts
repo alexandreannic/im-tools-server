@@ -7,7 +7,7 @@ import {KoboAnswerFilter} from '../../kobo/KoboService'
 import {ApiPaginate, Gender, toApiPaginate} from '../../../core/Type'
 import {WfpDeduplicationService} from '../../wfpDeduplication/WfpDeduplicationService'
 import {appConf} from '../../../core/conf/AppConf'
-import {MpcaData, MpcaDataTag, MpcaProgram, MpcaRowSource} from './MpcaDbType'
+import {MpcaEntity, MpcaDataTag, MpcaProgram, MpcaRowSource} from './MpcaDbType'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
 import {Bn_ReOptions} from '../../../script/output/kobo/Bn_Re/Bn_ReOptions'
 import {Bn_RapidResponseOptions} from '../../../script/output/kobo/Bn_RapidResponse/Bn_RapidResponseOptions'
@@ -35,7 +35,7 @@ export class MpcaDbService {
     await Promise.all(forms.map(formId => this.koboSync.syncApiForm({formId})))
   }
 
-  readonly search = async (filters: KoboAnswerFilter): Promise<ApiPaginate<MpcaData>> => {
+  readonly search = async (filters: KoboAnswerFilter): Promise<ApiPaginate<MpcaEntity>> => {
     const [wfpIndex, ...rest] = await Promise.all([
       this.wfp.search().then(_ => seq(_.data).groupBy(_ => _.taxId!)),
       this.searchBn_Bnre(filters),
@@ -55,7 +55,7 @@ export class MpcaDbService {
     )
   }
 
-  private readonly getDeduplication = (wfpIndex: Record<string, Seq<WfpDeduplication>>) => (row: MpcaData): MpcaData => {
+  private readonly getDeduplication = (wfpIndex: Record<string, Seq<WfpDeduplication>>) => (row: MpcaEntity): MpcaEntity => {
     row.amountUahSupposed = row.hhSize ? row.hhSize * 3 * this.conf.params.assistanceAmountUAH(row.date) : undefined
     row.amountUahFinal = row.amountUahSupposed
     if (!row.taxId) return row
@@ -84,7 +84,7 @@ export class MpcaDbService {
   //   return row
   // }
 
-  private readonly redirectDonor = (row: MpcaData): MpcaData => {
+  private readonly redirectDonor = (row: MpcaEntity): MpcaEntity => {
     if ((row.source === 'bn_rapidResponse' || row.source === 'bn_re')
       && row.donor === DrcDonor.PoolFunds
       && fnSwitch(row.oblast!, {
@@ -116,7 +116,7 @@ export class MpcaDbService {
   }
 
 
-  private readonly searchBn_Bnre = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+  private readonly searchBn_Bnre = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
     return this.kobo.searchBnre({
       filters: {
         ...filters,
@@ -228,7 +228,7 @@ export class MpcaDbService {
   //   }))
   // }),
 
-  private readonly searchBn_cashForRepair = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+  private readonly searchBn_cashForRepair = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
     return this.kobo.searchShelter_cashForRepair(filters)
       .then(_ => {
         return _.data.map(_ => ({
@@ -263,7 +263,7 @@ export class MpcaDbService {
       })
   }
 
-  private readonly searchBn_RapidResponseMechanism = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+  private readonly searchBn_RapidResponseMechanism = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
     return this.kobo.searchBn_RapidResponseMechanism({
       filters: {
         ...filters,
@@ -389,7 +389,7 @@ export class MpcaDbService {
     })
   }
 
-  private readonly searchBn_BnrOld = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+  private readonly searchBn_BnrOld = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
     return this.kobo.searchBn_BnrOld({
       filters: {
         ...filters,
@@ -475,7 +475,7 @@ export class MpcaDbService {
     })
   }
 
-  private readonly searchBn_0_mpcaRegNewShort = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+  private readonly searchBn_0_mpcaRegNewShort = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
     return this.kobo.searchBn_0_mpcaRegNewShort(filters)
       .then(_ => {
         return _.data.map(_ => {
@@ -519,7 +519,7 @@ export class MpcaDbService {
       })
   }
 
-  private readonly searchBn_0_mpcaReg = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+  private readonly searchBn_0_mpcaReg = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
     return this.kobo.searchBn_0_mpcaReg(filters)
       .then(_ => {
         return _.data.map(_ => {
@@ -572,7 +572,7 @@ export class MpcaDbService {
         })
       })
   }
-  private readonly searchBn_0_mpcaRegNoSig = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+  private readonly searchBn_0_mpcaRegNoSig = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
     return this.kobo.searchBn_0_mpcaRegNoSig(filters)
       .then(_ => {
         return _.data.map(_ => {
@@ -619,7 +619,7 @@ export class MpcaDbService {
         })
       })
   }
-  private readonly searchBn_0_mpcaRegESign = (filters: KoboAnswerFilter): Promise<MpcaData[]> => {
+  private readonly searchBn_0_mpcaRegESign = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
     return this.kobo.searchBn_0_mpcaRegESign(filters)
       .then(_ => {
         return _.data.map(_ => {

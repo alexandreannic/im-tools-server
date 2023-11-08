@@ -1,20 +1,11 @@
 import {v4} from 'uuid'
 import {addMonths, differenceInMonths, format, isAfter, isBefore, startOfMonth} from 'date-fns'
-import {ca} from 'date-fns/locale'
 import * as _yup from 'yup'
-
-export type StandardEnum<T> = {
-  [id: string]: T | string
-  [nu: number]: string
-}
+import {Index} from './HelperType'
 
 export const yup = _yup
 
 export const genUUID = v4
-
-export interface Index<T> {
-  [key: string]: T
-}
 
 export const arrayToObject = <T>(array: T[], indexedKey: keyof T, selectedKey?: keyof T): Index<any> => {
   const obj = {}

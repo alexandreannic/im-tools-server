@@ -3,7 +3,7 @@ import fs from 'fs'
 import {appConf} from '../../core/conf/AppConf'
 import {ApiClient} from '../../core/client/ApiClient'
 import {seq} from '@alexandreannic/ts-utils'
-import {MpcaData} from '../../feature/mpca/db/MpcaDbType'
+import {MpcaEntity} from '../../feature/mpca/db/MpcaDbType'
 import {differenceInDays} from 'date-fns'
 
 interface XLSD {
@@ -38,7 +38,7 @@ interface XLSD {
         ...d,
         date: new Date(d.date),
       }
-    }) as MpcaData[])
+    }) as MpcaEntity[])
   })
   const indexByTax = dbData.groupBy(_ => _.taxId ?? '')
   const stream = fs.createReadStream(appConf.rootProjectDir + '/src/script/restoreXlsMpcaData/mpca-data_not_in_kobo_oleh_vyshnevskyi.csv')
