@@ -13,7 +13,8 @@ import {mapBn_0_mpcaRegESign} from '../../script/output/kobo/Bn_0_mpcaRegESign/B
 import {mapBn_0_mpcaRegNewShort} from '../../script/output/kobo/Bn_0_mpcaRegNewShort/Bn_0_mpcaRegNewShortMapping'
 import {mapShelter_TA} from '../../script/output/kobo/Shelter_TA/Shelter_TAMapping'
 import {map} from '@alexandreannic/ts-utils'
-import {ShelterTaTags} from './tags/ShelterTags'
+import {ShelterNtaTags, ShelterTaTags} from './tags/ShelterTags'
+import {mapShelter_NTA} from '../../script/output/kobo/Shelter_NTA/Shelter_NTAMapping'
 
 export class KoboMappedAnswersService {
 
@@ -56,6 +57,7 @@ export class KoboMappedAnswersService {
   }
 
   readonly searchShelter_Ta = this.buildMappedSearch(koboFormsId.prod.shelter_TA, mapShelter_TA, _ => _ as ShelterTaTags)
+  readonly searchShelter_Nta = this.buildMappedSearch(koboFormsId.prod.shelter_NTA, mapShelter_NTA, _ => _ as ShelterNtaTags)
   readonly searchBnre = this.buildMappedSearch(koboFormsId.prod.bn_re, mapBn_Re)
   readonly searchShelter_cashForRepair = this.buildMappedSearch(koboFormsId.prod.shelter_cashForRepair, mapShelter_cashForRepair)
   readonly searchBn_BnrOld = this.buildMappedSearch(koboFormsId.prod.bn_1_mpcaNfi, mapBn_OldMpcaNfi)

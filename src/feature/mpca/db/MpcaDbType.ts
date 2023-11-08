@@ -54,7 +54,7 @@ export interface MpcaDataTag {
   committed?: Date
 }
 
-export interface MpcaData {
+export interface MpcaEntity {
   id: string
   source: MpcaRowSource
   office?: DrcOffice

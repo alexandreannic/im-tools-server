@@ -1,8 +1,8 @@
 import {EcrecClient} from './EcrecClient'
 import {EcrecGetDataFilters, EcrecGetDataResponse, EcrecMsdStatus, EcrecSmeStatus, EcrecVetStatus, FundedStatus} from './EcrecSdkType'
 import {format, sub} from 'date-fns'
-import {StandardEnum} from '../../../helper/Utils'
 import {seq} from '@alexandreannic/ts-utils'
+import {StandardEnum} from '../../../helper/HelperType'
 
 export class EcrecSdk {
 
