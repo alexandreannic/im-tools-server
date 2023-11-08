@@ -48,7 +48,6 @@ export class KoboService {
     paginate: ApiPagination
     user?: UserSession
   }) => {
-    console.time('answer')
     if (!user) return toApiPaginate([])
     const access = await this.access.search({featureId: AppFeatureId.kobo_database, user})
       .then(_ => _.filter(_ => _.params?.koboFormId === params.formId))
@@ -59,17 +58,12 @@ export class KoboService {
     const accessFiltersEntry = Enum.entries(
       new Enum(accessFilters).transform((k, v) => [k, new Set(v)]).get()
     )
-    console.timeLog('answer', 'access')
-
-    const p = await this.searchAnswers(params)
-    console.timeLog('answer', 'get answers')
-
+    const data = await this.searchAnswers(params)
     if (!user.admin)
-      p.data = p.data.filter(_ => {
+      data.data = data.data.filter(_ => {
         return accessFiltersEntry.every(([question, answer]) => answer.has(_.answers[question]))
       })
-    console.timeLog('answer', 'filter access', user.admin, accessFiltersEntry)
-    return p
+    return data
   }
 
   readonly searchAnswers = ({
