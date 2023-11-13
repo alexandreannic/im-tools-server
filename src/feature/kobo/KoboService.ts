@@ -282,7 +282,7 @@ export class KoboService {
   //   workbook.toFileAsync(appConf.rootProjectDir + `/${fileName}.xlsx`, {password})
   // }
 
-  readonly updateTags = async ({formId, answerIds, tags}: {formId: KoboId, answerIds: KoboAnswerId[], tags: Record<string, any>}) => {
+  readonly updateTags = async ({formId, answerIds, tags}: {formId?: KoboId, answerIds: KoboAnswerId[], tags: Record<string, any>}) => {
     const answers = await this.prisma.koboAnswers.findMany({
       select: {
         id: true,
@@ -306,7 +306,7 @@ export class KoboService {
         }
       })
     }))
-    this.event.emitTagEdited({formId, answerIds, tags})
+    this.event.emitTagEdited({formId: formId ?? '', answerIds, tags})
   }
 }
 
