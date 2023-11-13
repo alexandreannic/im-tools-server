@@ -1,4 +1,4 @@
-import {UUID} from '../../../core/Type'
+import {MaybePeriod, UUID} from '../../../core/Type'
 import {ApiClient} from '../../../core/client/ApiClient'
 import {Legalaid} from './Legalaid'
 import {seq, Cache, duration, Enum, throwIf} from '@alexandreannic/ts-utils'
@@ -16,9 +16,7 @@ export enum PollType {
   Individual,
 }
 
-export interface Filters {
-  start?: Date
-  end?: Date
+export interface Filters extends MaybePeriod {
 }
 
 const pollSearch = {
@@ -27,12 +25,12 @@ const pollSearch = {
 }
 
 export class LegalaidSdk {
-  
+
   constructor(private client: ApiClient) {
   }
 
   private static readonly formatDate = toYYYYMMDD
-  
+
   readonly fetchOfficesAll = async () => {
     return Config.offices
   }

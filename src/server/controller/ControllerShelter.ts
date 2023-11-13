@@ -21,12 +21,12 @@ export class ControllerShelter {
 
   readonly search = async (req: Request, res: Response, next: NextFunction) => {
     const body = await yup.object({
-      filters: yup.object({
-        start: yup.date(),
-        end: yup.date(),
-      })
+      // filters: yup.object({
+      start: yup.date(),
+      end: yup.date(),
+      // })
     }).validate(req.body)
-    const data = await this.cache.search()
+    const data = await this.cache.search(body)
     res.send(data)
   }
 }

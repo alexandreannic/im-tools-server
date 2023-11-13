@@ -1,13 +1,12 @@
 import {LegalaidSdk} from '../../feature/connector/legalaid/LegalaidSdk'
 import {seq} from '@alexandreannic/ts-utils'
+import {MaybePeriod} from '../../core/Type'
 
-interface Filters {
-  start?: Date
-  end?: Date
+interface Filters extends MaybePeriod {
 }
 
 export class ServiceLegalAid {
-  
+
   constructor(
     private sdk: LegalaidSdk,
   ) {
@@ -29,11 +28,11 @@ export class ServiceLegalAid {
 
     return Promise.all([groups$, individuals$])
       .then(([group, individuals]) => ({
-        individuals, 
+        individuals,
         group,
         printedMaterial: 50,
         localAidPartner: 23,
       }))
   }
-  
+
 }

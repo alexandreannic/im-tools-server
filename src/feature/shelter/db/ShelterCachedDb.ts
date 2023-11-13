@@ -1,5 +1,5 @@
 import {PrismaClient} from '@prisma/client'
-import {ApiPaginate, toApiPaginate, UUID} from '../../../core/Type'
+import {ApiPaginate, MaybePeriod, PeriodHelper, toApiPaginate, UUID} from '../../../core/Type'
 import {KoboEvent} from '../../kobo/KoboEvent'
 import {koboFormsId} from '../../../core/conf/KoboFormsId'
 import {MemoryDatabase, MemoryDatabaseInterface} from '../../../core/MemoryDatabase'
@@ -65,7 +65,9 @@ export class ShelterCachedDb {
   readonly refresh: typeof this.meme.refresh
   readonly warmUp: typeof this.meme.warmUp
 
-  readonly search = async (): Promise<ApiPaginate<ShelterEntity>> => {
-    return toApiPaginate(await this.meme.get() ?? [])
+  readonly search = async (period: MaybePeriod = {}): Promise<ApiPaginate<ShelterEntity>> => {
+    return toApiPaginate(await this.meme.get().then(res =>
+      res.filter(PeriodHelper.filter(period, _ => _.nta?.submissionTime ?? _.ta?.submissionTime))
+    ))
   }
 }

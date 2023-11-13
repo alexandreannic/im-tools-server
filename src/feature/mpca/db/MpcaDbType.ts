@@ -3,7 +3,7 @@ import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcUa'
 import {KoboAttachment} from '../../connector/kobo/KoboClient/type/KoboAnswer'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
 import {Bn_Re} from '../../../script/output/kobo/Bn_Re/Bn_Re'
-import {Person} from '../../../core/Type'
+import {MaybePeriod, Person} from '../../../core/Type'
 import {koboFormsId} from '../../../core/conf/KoboFormsId'
 
 
@@ -42,9 +42,7 @@ export enum MpcaProgram {
   MPCA = 'MPCA',
 }
 
-export interface MpcaDataFilter {
-  start?: Date
-  end?: Date
+export interface MpcaDataFilter extends MaybePeriod{
   office?: DrcOffice[]
   source?: MpcaRowSource[]
 }

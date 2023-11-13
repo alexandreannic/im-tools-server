@@ -18,15 +18,15 @@ export class DbInit {
   }
 
   readonly initializeDatabase = async () => {
-    await Promise.all([
-      this.migrateHhs2(),
-      this.fixKoboForms(),
-      this.createAccOwner(),
-      this.createAccAdmins(),
-      this.createAccTest(),
-      this.createServer(),
-      this.createAccess(),
-    ])
+    // await Promise.all([
+    //   this.migrateHhs2(),
+    //   this.fixKoboForms(),
+    //   this.createAccOwner(),
+    //   this.createAccAdmins(),
+    //   this.createAccTest(),
+    //   this.createServer(),
+    //   this.createAccess(),
+    // ])
   }
 
   private readonly fixKoboForms = async () => {

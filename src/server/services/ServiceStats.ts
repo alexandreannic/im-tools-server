@@ -3,10 +3,9 @@ import {ServiceLegalAid} from './ServiceLegalAid'
 import {ServiceNfi} from './ServiceNfi'
 import {nfisTranslations} from '../../feature/connector/kobo/KoboFormTransformer/KoboNfiMcpa'
 import {Cache} from '@alexandreannic/ts-utils'
+import {MaybePeriod} from '../../core/Type'
 
-export interface StatsFilters {
-  start?: Date
-  end?: Date
+export interface StatsFilters extends MaybePeriod {
 }
 
 export const translate = <T extends Record<string, any>>(translation: Record<keyof T, string>) => (data: Record<keyof T, number>): string => {

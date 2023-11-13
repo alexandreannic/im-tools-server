@@ -1,13 +1,11 @@
-import {ApiPaginate, UUID} from '../../../../../core/Type'
+import {ApiPaginate, MaybePeriod, UUID} from '../../../../../core/Type'
 import {seq} from '@alexandreannic/ts-utils'
 
 export type KoboId = string
 
 export type KoboAnswerId = string
 
-export interface KoboAnswerParams {
-  start?: Date
-  end?: Date
+export interface KoboAnswerParams extends MaybePeriod {
 }
 
 export interface KoboAnswerStatus {

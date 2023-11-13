@@ -39,3 +39,20 @@ export enum Gender {
   Female = 'Female',
   Other = 'Other',
 }
+
+export interface Period {
+  start: Date
+  end: Date
+}
+
+export type MaybePeriod = Partial<Period>
+
+export class PeriodHelper {
+  static readonly filter = <T>(period: MaybePeriod, fn: (t: T) => Date | undefined) => (t: T) => {
+    const val = fn(t)
+    if (!val) return !period
+    if (period?.start && period.start.getTime() >= val.getTime()) return false
+    if (period?.end && period.end.getTime() <= val.getTime()) return false
+    return true
+  }
+}
