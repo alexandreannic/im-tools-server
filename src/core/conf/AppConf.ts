@@ -14,6 +14,9 @@ export const appConf = {
   cors: {
     allowOrigin: e(defaultValue(`http://localhost:3000`))('CORS_ALLOW_ORIGIN'),
   },
+  sentry: {
+    dns: e()('SENTRY_DNS')
+  },
   buildingBlockWfp: {
     otpURL: e(required)('BUILDINGBLOCK_WFP_OTP_URL'),
     login: e(required)('BUILDINGBLOCK_WFP_LOGIN'),
