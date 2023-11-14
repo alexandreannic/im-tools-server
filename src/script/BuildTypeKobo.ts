@@ -19,6 +19,9 @@ interface KoboInterfaceGeneratorParams {
 export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) => {
   const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
     {
+      formName: 'Shelter_north', formId: koboFormsId.prod.shelter_north,
+    },
+    {
       formName: 'Partnership_partnersDatabase', formId: koboFormsId.prod.partnership_partnersDatabase,
     },
     {
@@ -286,7 +289,7 @@ const extractQuestionName = (_: Record<string, any>) => {
     return `export const ${this.options.formName}Options = {\n`
       + Object.entries(res).map(([k, v]) => `${k}: {\n` +
         Object.keys(v)
-          .map(sk => `\t'${sk}': \`${v[sk]?.replace('`', '')}\``)
+          .map(sk => `\t'${sk.replaceAll(`'`, `\\'`)}': \`${v[sk]?.replace('`', '')}\``)
           .join(',\n')
       ).join('\n},\n')
       + '\n}}'

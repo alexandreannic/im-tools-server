@@ -10,6 +10,7 @@ back_office: {
 back_enum: {
 	'anna_artiukh': `Anna Artiukh`,
 	'oksana_podolianko': `Oksana Podolianko`,
+	'yevhenii_musiienko': `Yevhenii Musiienko`,
 	'oleksandr_havrylov': `Oleksandr Havrylov`,
 	'ievgen_kylymenniy': `Ievgen Kylymenniy`,
 	'oleksandr_shmunk': `Oleksandr Shmunk`,
@@ -59,7 +60,6 @@ back_enum: {
 	'tetiana_kolot': `Tetiana Kolot`,
 	'katerina_severin': `Katerina Severin`,
 	'maksim_sedun': `Maksim Sedun`,
-	'ivan_volynkin': `Ivan Volynkin`,
 	'chj_ex1': `Extra 1`,
 	'chj_ex2': `Extra 2`
 },
@@ -86,10 +86,19 @@ back_donor: {
 	'pool_hrk': `Pooled Funds`,
 	'pool_lwo': `Pooled Funds`,
 	'pool_nlv': `Pooled Funds`,
-	'sdc_umy': `SDC`
+	'sdc_umy': `SDC`,
+	'hrk_umy': `SDC`,
+	'umy_danida': `Danida`,
+	'uhf7_chj': `UHF-7`,
+	'uhf7_dnk': `UHF-7`,
+	'uhf7_hrk': `UHF-7`,
+	'uhf7_lwo': `UHF-7`,
+	'uhf7_nlv': `UHF-7`,
+	'uhf7_umy': `UHF-7`
 },
 back_prog_type: {
 	'mpca_umy': `MPCA`,
+	'csf_umy': `Cash for Fuel`,
 	'mpca_lwo': `MPCA`,
 	'nfi_lwo': `NFI`,
 	'cfr_lwo': `Cash for Rent`,
@@ -97,20 +106,26 @@ back_prog_type: {
 	'iwk_lwo': `Infant Winterclothing Kit`,
 	'ihk_lwo': `Infant Hygiene Kit`,
 	'esk_lwo': `Emergency Shelter Kit`,
+	'csf_lwo': `Cash for Fuel`,
 	'mpca_nlv': `MPCA`,
 	'nfi_nlv': `NFI`,
 	'esk_nlv': `Emergency Shelter Kit`,
+	'csf_nlv': `Cash for Fuel`,
 	'mpca_dnk': `MPCA`,
 	'nfi_dnk': `NFI`,
 	'cfr_dnk': `Cash for Rent`,
 	'esk_dnk': `Emergency Shelter Kit`,
+	'csf_dnk': `Cash for Fuel`,
 	'mpca_hrk': `MPCA`,
 	'nfi_hrk': `NFI`,
 	'esk_hrk': `Emergency Shelter Kit`,
+	'csf_hrk': `Cash for Fuel`,
 	'mpca_chj': `MPCA`,
 	'nfi_chj': `NFI`,
 	'cfr_chj': `Cash for Rent`,
-	'esk_chj': `Emergency Shelter Kit`
+	'esk_chj': `Emergency Shelter Kit`,
+	'cfu_chj': `Cash for Utilities`,
+	'csf_chj': `Cash for Fuel`
 },
 pay_det_tax_exempt: {
 	'yes': `A = Yes`,
@@ -120,6 +135,34 @@ back_refer_who: {
 	'prot': `A = Protection`,
 	'legal': `B = Legal`,
 	'shelter': `C = Shelter`
+},
+utilities_fuel: {
+	'utilities': `A = Mains utilities`,
+	'fuel': `B = Solid Fuel`
+},
+mains_utilities: {
+	'electric': `Electric`,
+	'gas': `Gas`,
+	'cohs': `Community heating system`,
+	'other': `Other`
+},
+mains_fuel: {
+	'wood': `Wood`,
+	'coal': `Coal`,
+	'charcoal': `Charcoal`,
+	'pellets': `Pellets`,
+	'ofmf': `Oil fed or multi fuel boiler`,
+	'other': `Other`
+},
+functioning_fuel_delivery: {
+	'yes': `A = Yes`,
+	'no': `B = No`,
+	'dk': `C = Don’t know`
+},
+current_gov_assist_cff: {
+	'yes': `Yes`,
+	'yes_but': `Yes but not sufficient to cover needs`,
+	'no': `No`
 },
 ben_det_prev_oblast: {
 	'cherkaska': `Cherkaska`,

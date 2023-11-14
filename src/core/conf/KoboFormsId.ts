@@ -10,6 +10,7 @@ export const koboFormsId = {
     shelter_NTA: 'aL8oHMzJJ9soPepvK6YU9E',
     shelter_TA: 'aTP5nwZjpyR7oy7bdMZktC',
     shelter_cashForRepair: 'a9CjhyhTKVojCdArKmw9yM',
+    shelter_north: 'aCPdwVnnsYeReynJ7YnLGH',
     bn_re: 'aKgX4MNs6gCemDQKPeXxY8',
     bn_1_mpcaNfi: 'a4Sx3PrFMDAMZEGsyzgJJg',
     bn_1_mpcaNfiMyko: 'a8WAWB9Yxu2jkgk4Ei8GTk',

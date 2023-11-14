@@ -20,6 +20,9 @@ staff_code_001: {
 	'CEJ010': `CEJ010`,
 	'CEJ011': `CEJ011`,
 	'CEJ012': `CEJ012`,
+	'CEJ013': `CEJ013`,
+	'CEJ014': `CEJ014`,
+	'CEJ015': `CEJ015`,
 	'UMY001': `UMY001`,
 	'UMY002': `UMY002`,
 	'UMY003': `UMY003`,
@@ -30,6 +33,11 @@ staff_code_001: {
 	'UMY008': `UMY008`,
 	'UMY009': `UMY009`,
 	'UMY010': `UMY010`,
+	'UMY011': `UMY011`,
+	'UMY012': `UMY012`,
+	'UMY013': `UMY013`,
+	'UMY014': `UMY014`,
+	'UMY015': `UMY015`,
 	'HRK001': `HRK001`,
 	'HRK002': `HRK002`,
 	'HRK003': `HRK003`,
@@ -40,6 +48,11 @@ staff_code_001: {
 	'HRK008': `HRK008`,
 	'HRK009': `HRK009`,
 	'HRK010': `HRK010`,
+	'HRK011': `HRK011`,
+	'HRK012': `HRK012`,
+	'HRK013': `HRK013`,
+	'HRK014': `HRK014`,
+	'HRK015': `HRK015`,
 	'DNK001': `DNK001`,
 	'DNK002': `DNK002`,
 	'DNK003': `DNK003`,
@@ -50,6 +63,11 @@ staff_code_001: {
 	'DNK008': `DNK008`,
 	'DNK009': `DNK009`,
 	'DNK010': `DNK010`,
+	'DNK011': `DNK011`,
+	'DNK012': `DNK012`,
+	'DNK013': `DNK013`,
+	'DNK014': `DNK014`,
+	'DNK015': `DNK015`,
 	'LWO001': `LWO001`,
 	'LWO002': `LWO002`,
 	'LWO003': `LWO003`,
@@ -60,54 +78,26 @@ staff_code_001: {
 	'LWO008': `LWO008`,
 	'LWO009': `LWO009`,
 	'LWO010': `LWO010`,
-	'NVL001': `NVL001`,
-	'NVL002': `NVL002`,
-	'NVL003': `NVL003`,
-	'NVL004': `NVL004`,
-	'NVL005': `NVL005`,
-	'NVL006': `NVL006`,
-	'NVL007': `NVL007`,
-	'NVL008': `NVL008`,
-	'NVL009': `NVL009`,
-	'NVL010': `NVL010`
-},
-ben_det_type_site: {
-	'rural': `Rural area`,
-	'urban': `Urban area`
-},
-activity: {
-	'kll': `KII`,
-	'fgd': `FGD`,
-	'observation': `Observation`
-},
-informant_role: {
-	'loau': `Local authority representative`,
-	'cogr': `Community group representative`,
-	'rein': `Representative of international NGO`,
-	'rena': `Representative of national NGO`,
-	'reor': `Representative of CSOs/community-based organizations`,
-	'sowo': `Social worker`,
-	'teacher': `Teacher`,
-	'hewo': `Health worker`,
-	'huwo': `Humanitarian/social worker`,
-	'other': `Other`
-},
-hh_char_hh_det_gender: {
-	'male': `Male`,
-	'female': `Female`,
-	'other': `Other`,
-	'unspecified': `Unspecified`
-},
-hh_char_hh_det_status: {
-	'idp': `IDP`,
-	'returnee': `Returnee`,
-	'non-displaced': `Non-displaced`,
-	'unspec': `Unspecified`,
-	'other': `Other`
-},
-pmt_npc: {
-	'yes': `Yes`,
-	'no': `No`
+	'LWO011': `LWO011`,
+	'LWO012': `LWO012`,
+	'LWO013': `LWO013`,
+	'LWO014': `LWO014`,
+	'LWO015': `LWO015`,
+	'NVL001': `NLV001`,
+	'NVL002': `NLV002`,
+	'NVL003': `NLV003`,
+	'NVL004': `NLV004`,
+	'NVL005': `NLV005`,
+	'NVL006': `NLV006`,
+	'NVL007': `NLV007`,
+	'NVL008': `NLV008`,
+	'NVL009': `NLV009`,
+	'NVL010': `NLV010`,
+	'NVL011': `NLV011`,
+	'NVL012': `NLV012`,
+	'NVL013': `NLV013`,
+	'NVL014': `NLV014`,
+	'NVL015': `NLV015`
 },
 ben_det_oblast: {
 	'cherkaska': `Cherkaska`,
@@ -135,4 +125,42 @@ ben_det_oblast: {
 	'zakarpatska': `Zakarpatska`,
 	'zaporizka': `Zaporizka`,
 	'zhytomyrska': `Zhytomyrska`
+},
+ben_det_type_site: {
+	'rural': `Rural area`,
+	'urban': `Urban area`
+},
+activity: {
+	'kll': `KII`,
+	'fgd': `FGD`,
+	'observation': `Observation`
+},
+pmt_npc: {
+	'yes': `Yes`,
+	'no': `No`
+},
+informant_role: {
+	'loau': `Local authority representative`,
+	'cogr': `Community group representative`,
+	'rein': `Representative of international NGO`,
+	'rena': `Representative of national NGO`,
+	'reor': `Representative of CSOs/community-based organizations`,
+	'sowo': `Social worker`,
+	'teacher': `Teacher`,
+	'hewo': `Health worker`,
+	'huwo': `Humanitarian/social worker`,
+	'other': `Other`
+},
+hh_char_hh_det_gender: {
+	'male': `Male`,
+	'female': `Female`,
+	'other': `Other`,
+	'unspecified': `Unspecified`
+},
+hh_char_hh_det_status: {
+	'idp': `IDP`,
+	'returnee': `Returnee`,
+	'non-displaced': `Non-displaced`,
+	'unspec': `Unspecified`,
+	'other': `Other`
 }}

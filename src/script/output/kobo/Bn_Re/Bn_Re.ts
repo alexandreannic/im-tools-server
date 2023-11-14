@@ -12,10 +12,28 @@ export interface Bn_Re {
   back_office: undefined | Opt<'back_office'>,
   // [select_one] 1.2 Enumerator
   back_enum: undefined | Opt<'back_enum'>,
-  // [select_one] 1.3 Project & Donor
-  back_donor: undefined | Opt<'back_donor'>,
-  // [select_multiple] 1.4 Programme Type
+  // [select_multiple] 1.3 Programme Type
   back_prog_type: undefined | Opt<'back_prog_type'>[],
+  // [select_one] 1.3.1 Which donor for MPCA
+  donor_mpca: undefined | Opt<'back_donor'>,
+  // [select_one] 1.3.2 Which donor for NFI
+  donor_nfi: undefined | Opt<'back_donor'>,
+  // [select_one] 1.3.3 Which donor for Emergency Shelter Kit
+  donor_esk: undefined | Opt<'back_donor'>,
+  // [select_one] 1.3.4 Which donor for Cash for Rent
+  donor_cfr: undefined | Opt<'back_donor'>,
+  // [select_one] 1.3.5 Which donor for Cash for Fuel
+  donor_cff: undefined | Opt<'back_donor'>,
+  // [select_one] 1.3.6 Which donor for Cash for Education
+  donor_cfe: undefined | Opt<'back_donor'>,
+  // [select_one] 1.3.7 Which donor for Infant Winterclothing Kit
+  donor_iwk: undefined | Opt<'back_donor'>,
+  // [select_one] 1.3.8 Which donor for Infant Hygiene Kit
+  donor_ihk: undefined | Opt<'back_donor'>,
+  // [select_one] 1.3.9 Which donor for Cash for Utilities
+  donor_cfu: undefined | Opt<'back_donor'>,
+  // [select_multiple] 1.4 Selected Project & Donor
+  back_donor: undefined | Opt<'back_donor'>[],
   calc_prog_type_mpca: string,
   calc_prog_type_cfr: string,
   calc_prog_type_nfi: string,
@@ -24,6 +42,7 @@ export interface Bn_Re {
   calc_prog_type_iwk: string,
   // [calculate] type_ihk
   calc_prog_type_iwk_001: string,
+  calc_prog_type_csf: string,
   // [select_one] 1.5.1 Was this case an internal DRC referral?
   back_refer: undefined | Opt<'pay_det_tax_exempt'>,
   // [select_one] 1.5.2 From which Department was the referral?
@@ -70,6 +89,8 @@ export interface Bn_Re {
   hh_char_hhh_age: number | undefined,
   // [select_one] 3.1.6 What is the civil status of the Head of Household?
   hh_char_civ_stat: undefined | Opt<'hh_char_civ_stat'>,
+  // [select_one] 3.1.7 Is there anyone in the household who receives a pension?
+  hh_char_pensioner: undefined | Opt<'pay_det_tax_exempt'>,
   calc_char_civ_stat: string,
   // [note] This is a child headed household (high risk protection case), please refer immediately to a DRC Protection colleague and complete internal referral form.
   hh_char_chh: string,
@@ -87,6 +108,8 @@ export interface Bn_Re {
   // [select_one] 3.3.2 What is the level of difficulty for the selected options in the previous questions?
   hh_char_dis_level: undefined | Opt<'hh_char_dis_level'>,
   calc_dis_level: string,
+  // [select_one] 3.4 Do you or anyone in your household receive financial assistance from the government or other agencies?
+  receive_financial_assistance: undefined | Opt<'pay_det_tax_exempt'>,
   // [note] **Based on minimum standards this house is eligible for:**
   eligibility_summary_nfi: string,
   // [note] **1** Family Hygiene Kit (HKMV)
@@ -141,6 +164,20 @@ export interface Bn_Re {
   note_eligible_1: string,
   // [note] This household is eligble for Two Emergency Shelter Kits
   note_eligible_2: string,
+  // [select_one] Are you currently receiving Government financial assistance to cover your fuel/utilities payment needs?
+  current_gov_assist_cff: undefined | Opt<'current_gov_assist_cff'>,
+  // [select_one] This year, is your primary source of heating from mains utilities (e.g. Piped gas, electric, community heating) or solid fuel (Wood, pellets, charcoal, coal etc)
+  utilities_fuel: undefined | Opt<'utilities_fuel'>,
+  // [select_multiple] What is your main source of heating from mains utilities?
+  mains_utilities: undefined | Opt<'mains_utilities'>[],
+  // [text] If "Other", please specify
+  mains_utilities_other: string | undefined,
+  // [select_multiple] What is your primary source of solid fuel heating?
+  mains_fuel: undefined | Opt<'mains_fuel'>[],
+  // [text] If "Other", please specify
+  mains_fuel_other: string | undefined,
+  // [select_one] Is there a functioning fuel delivery/supplier in your area?
+  functioning_fuel_delivery: undefined | Opt<'functioning_fuel_delivery'>,
   // [select_one] 5.1 What is your current accommodation status?
   cfr_curr_accom: undefined | Opt<'cfr_curr_accom'>,
   // [select_one] 5.2 Do you intend to continue renting your current accommodation?
@@ -203,6 +240,12 @@ export interface Bn_Re {
   ass_inc_cfr_top_up: string,
   // [note] Unfortunatley based upon our criteria, you not not meet the requirements for cash for rent support
   ass_inc_cfr_not_inc: string,
+  calc_vulnerability_cff: string,
+  calc_gen_cff_inc: string,
+  // [note] **You have met the critera for inclusion in the cash for fuel assistance programme. We will conduct further internal checks and revert to you with a final result.** <span style="color: red">Do not read this out to the household</span>
+  ass_inc_cff_inc: string,
+  // [note] **Unfortunately based upon our criteria, you do not qualify for the cash for fuel assistance program as you do not meet the threshold for vulnerability.**
+  ass_inc_cff_not_vul: string,
   // [select_one] 7.0 Thank you for answering the questions above, are you willing to provide your payment details?
   pay_consent: undefined | Opt<'pay_det_tax_exempt'>,
   // [select_one] 7.1 What form of ID do you have?

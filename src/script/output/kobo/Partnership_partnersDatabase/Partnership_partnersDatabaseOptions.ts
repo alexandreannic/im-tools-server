@@ -171,8 +171,10 @@ If_yes_how: {
 	'other': `Other`
 },
 Minority_group: {
+	'youth': `Youth`,
 	'children': `Children`,
 	'elderly': `Elderly`,
+	'women_and_girls': `Women and girls`,
 	'people_with_disabilities': `People with disabilities`,
 	'idps_from_a_particular_location': `IDPs from a particular location`,
 	'armenians': `Armenians`,
@@ -181,12 +183,18 @@ Minority_group: {
 	'turkic_speaking_urums': `Turkic-speaking Urums`,
 	'roma': `Roma`,
 	'people_of_african_descent': `People of African descent`,
+	'people': `People of Asian descent`,
 	'russians_and_russian_speakers': `Russians and Russian speakers`,
 	'refugees_and_asylum_seekers_in_ukraine': `Refugees and asylum seekers in Ukraine`,
 	'lgbtqia': `LGBTQIA+`,
 	'stateless_persons_and_persons_at_risk_of': `Stateless persons and persons at risk of statelessness`,
 	'hiv': `HIV+`,
-	'women_s_rights': `Women's rights`,
+	'indigenous_people': `Indigenous people`,
+	'option_18': `Crimean Tatars`,
+	'people_from_rural_areas': `People from rural areas`,
+	'military_and_ex_military': `Military and ex-military / family of military`,
+	'people_from_care_systems': `People from social care systems`,
+	'ukrainian_speakers': `Ukrainian speakers`,
 	'other': `Other`
 },
 Own_vehicles: {

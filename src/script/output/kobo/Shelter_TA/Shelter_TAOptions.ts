@@ -1,4 +1,7 @@
 export const Shelter_TAOptions = {
+nta_form: {
+	'nta': `Shelter - Non-Technical Assessment`
+},
 ben_det_oblast: {
 	'cherkaska': `Cherkaska`,
 	'chernihivska': `Chernihivska`,
