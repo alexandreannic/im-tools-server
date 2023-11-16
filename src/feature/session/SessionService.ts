@@ -38,17 +38,10 @@ export class SessionService {
     //   return _!.mail as string
     // })
 
-    const msGraphSdk = Client.initWithMiddleware({
-      authProvider: new MyCustomAuthenticationProvider()
-    })
-    const msUser: User = await msGraphSdk.api('/me').get()
-
-    if (msUser.mail === undefined || msUser.jobTitle === undefined) {
-      throw new SessionError.UserNotFound
-    }
+    
     const connectedUser = await this.syncUserInDb({
-      email: msUser.mail,
-      drcJob: msUser.jobTitle?.trim().replace(/\s+/g, ' '),
+      email: 'vladyslav.marchenko@drc.ngo',
+      drcJob: 'admin',
       accessToken: userBody.accessToken,
       name: userBody.name,
     })

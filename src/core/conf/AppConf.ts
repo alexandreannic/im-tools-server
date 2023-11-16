@@ -15,9 +15,9 @@ export const appConf = {
     allowOrigin: e(defaultValue(`http://localhost:3000`))('CORS_ALLOW_ORIGIN'),
   },
   buildingBlockWfp: {
-    otpURL: e(required)('BUILDINGBLOCK_WFP_OTP_URL'),
-    login: e(required)('BUILDINGBLOCK_WFP_LOGIN'),
-    password: e(required)('BUILDINGBLOCK_WFP_PASSWORD'),
+    otpURL: e(defaultValue('dummy'))('BUILDINGBLOCK_WFP_OTP_URL'),
+    login: e(defaultValue('dummy'))('BUILDINGBLOCK_WFP_LOGIN'),
+    password: e(defaultValue('dummy'))('BUILDINGBLOCK_WFP_PASSWORD'),
   },
   db: {
     maxConcurrency: e(int, defaultValue(100))('DATABASE_MAX_CONCURRENCY'),
