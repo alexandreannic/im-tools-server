@@ -395,7 +395,7 @@ export class MpcaDbService {
         ...filters,
         filterBy: [{
           column: 'Programme',
-          value: ['cash_for_rent', 'mpca'],
+          value: ['cash_for_rent', 'mpca', ''],
           type: 'array',
         }]
       }
@@ -440,7 +440,7 @@ export class MpcaDbService {
             status_conflict: 'long_res',
             status_returnee: 'ret',
             status_refugee: 'ref_asy',
-          }),
+          }, () => undefined),
           persons: group.map(p => ({
             age: Utils.safeNumber(p.AgeHH),
             gender: fnSwitch(p.GenderHH!, {female: Gender.Female, male: Gender.Male, nogender: Gender.Other}, () => void 0)

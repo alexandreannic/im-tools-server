@@ -307,6 +307,7 @@ export class KoboService {
       })
     }))
     this.event.emitTagEdited({formId: formId ?? '', answerIds, tags})
+    return answers.length
   }
 }
 
