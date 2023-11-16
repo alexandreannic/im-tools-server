@@ -162,7 +162,7 @@ export class MpcaDbService {
           // women: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 18 && p.hh_char_hh_det_age < 50 && p.hh_char_hh_det_gender === 'female').length,
           // boys: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age < 18 && p.hh_char_hh_det_gender === 'male').length,
           // girls: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age < 18 && p.hh_char_hh_det_gender === 'female').length,
-          ...fnSwitch(_.back_donor!, {
+          ...fnSwitch(_.donor_mpca ?? _.back_donor?.[0]!, {
             uhf_chj: {donor: DrcDonor.UHF, project: DrcProject['UKR-000314 UHF4'],},
             uhf_dnk: {donor: DrcDonor.UHF, project: DrcProject['UKR-000314 UHF4'],},
             uhf_hrk: {donor: DrcDonor.UHF, project: DrcProject['UKR-000314 UHF4'],},
