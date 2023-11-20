@@ -82,8 +82,8 @@ export class ControllerKoboApi {
     const sdk = await this.koboSdkGenerator.get(id)
     const link = await sdk.edit(formId, answerId)
     // TODO Find a way to authenticate
-    res.header('Authorization', KoboSdk.makeAuthorizationHeader(appConf.kobo.token))
-    res.cookie('kobonaut__eu_kobotoolbox_org', '')
+    // res.header('Authorization', KoboSdk.makeAuthorizationHeader(appConf.kobo.token))
+    // res.cookie('kobonaut__eu_kobotoolbox_org', '')
     res.redirect(link.url)
   }
 
