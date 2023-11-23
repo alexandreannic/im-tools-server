@@ -29,9 +29,9 @@ model KoboForm {
 }
 
 model KoboAnswers {
-  id                     String                   @id
+  id                     String                    @id
   uuid                   String
-  form                   KoboForm                 @relation(fields: [formId], references: [id])
+  form                   KoboForm                  @relation(fields: [formId], references: [id])
   formId                 String
   start                  DateTime
   end                    DateTime
@@ -48,6 +48,7 @@ model KoboAnswers {
   deletedAt              DateTime?
   deletedBy              String?
   tags                   Json?
+  mealVerifications      MealVerificationAnswers[]
 
   @@unique([id, formId])
   @@index([start])
@@ -179,4 +180,28 @@ model Proxy {
   slug      String    @unique
   url       String
   disabled  Boolean?
+}
+
+model MealVerificationAnswers {
+  id                 String                         @id @default(uuid())
+  koboAnswer         KoboAnswers                    @relation(fields: [koboAnswerId], references: [id])
+  mealVerification   MealVerification               @relation(fields: [mealVerificationId], references: [id])
+  koboAnswerId       String
+  mealVerificationId String
+  status             MealVerificationAnswersStatus?
+}
+
+enum MealVerificationAnswersStatus {
+  Selected
+}
+
+model MealVerification {
+  id        String                    @id @default(uuid())
+  activity  String
+  createdAt DateTime                  @default(now())
+  createdBy String
+  name      String
+  desc      String?
+  filters   Json
+  answers   MealVerificationAnswers[]
 }

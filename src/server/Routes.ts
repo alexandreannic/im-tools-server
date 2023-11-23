@@ -23,6 +23,7 @@ import apicache from 'apicache'
 import {ControllerProxy} from './controller/ControllerProxy'
 import {ControllerMpca} from './controller/ControllerMpca'
 import {ControllerShelter} from './controller/ControllerShelter'
+import {ControllerMealVerification} from './controller/ControllerMealVerification'
 
 export interface AuthenticatedRequest extends Request {
   user?: UserSession
@@ -76,6 +77,7 @@ export const getRoutes = (
   const user = new ControllerUser(prisma)
   const proxy = new ControllerProxy(prisma)
   const shelter = new ControllerShelter(prisma)
+  const mealVerification = new ControllerMealVerification(prisma)
 
   const auth = ({adminOnly = false}: {adminOnly?: boolean} = {}) => async (req: Request, res: Response, next: NextFunction) => {
     // req.session.user = {
@@ -157,6 +159,11 @@ export const getRoutes = (
     router.post('/wfp-deduplication/refresh', auth(), errorCatcher(wfp.refresh))
     router.post('/wfp-deduplication/search', auth(), errorCatcher(wfp.search))
     router.post('/wfp-deduplication/upload-taxid', auth(), Server.upload.single('aa-file'), errorCatcher(wfp.uploadTaxIdMapping))
+
+    router.put('/meal-verification', auth(), errorCatcher(mealVerification.create))
+    router.get('/meal-verification', auth(), errorCatcher(mealVerification.getAll))
+    router.get('/meal-verification/:id/answers', auth(), errorCatcher(mealVerification.getAnswers))
+    router.delete('/meal-verification/:id', auth(), errorCatcher(mealVerification.remove))
 
     // router.get('/legalaid', auth(), errorCatcher(legalaid.index))
     router.get('/nfi/raw', auth(), errorCatcher(nfi.raw))

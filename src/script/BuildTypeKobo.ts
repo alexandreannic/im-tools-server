@@ -52,6 +52,24 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
     {formName: 'Bn_RapidResponse', formId: koboFormsId.prod.bn_rapidResponse},
     {formName: 'Shelter_cashForRepair', formId: koboFormsId.prod.shelter_cashForRepair},
     {
+      formName: 'Meal_VerificationEcrec', formId: koboFormsId.prod.meal_VerificationEcrec, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Meal_VerificationWinterization', formId: koboFormsId.prod.meal_VerificationWinterization, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Meal_VisitMonitoring', formId: koboFormsId.prod.meal_VisitMonitoring, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
       formName: 'Meal_CfmInternal', formId: koboFormsId.prod.mealCfmInternal, skipQuestionTyping: [
         'ben_det_hromada',
         'ben_det_raion',
