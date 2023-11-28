@@ -137,7 +137,7 @@ export const getRoutes = (
     router.post('/kobo/answer/:formId/by-access', auth(), errorCatcher(koboAnswer.searchByUserAccess))
     router.post('/kobo/answer/:formId/tag', auth(), errorCatcher(koboAnswer.updateTag))
 
-    router.post('/proxy-request', auth(), errorCatcher(main.proxy))
+    router.post('/proxy-request', errorCatcher(main.proxy))
 
     router.get('/kobo-api/local-form', auth(), errorCatcher(koboApi.getAnswersFromLocalCsv))
     router.post('/kobo-api/sync', auth({adminOnly: true}), errorCatcher(koboApi.synchronizeAllAnswersFromKoboServer))

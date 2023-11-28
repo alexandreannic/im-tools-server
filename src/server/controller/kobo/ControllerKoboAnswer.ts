@@ -16,8 +16,8 @@ export interface KoboAnswersFilters extends MaybePeriod {
 }
 
 const answersFiltersValidation: ObjectSchema<KoboAnswersFilters> = yup.object({
-  start: yup.date(),
-  end: yup.date(),
+  start: yup.date().optional(),
+  end: yup.date().optional(),
   ids: yup.array().of(yup.string().required()).optional(),
   filterBy: yup.array(yup.object({
     column: yup.string().required(),
