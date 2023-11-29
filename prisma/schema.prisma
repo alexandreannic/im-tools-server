@@ -184,7 +184,7 @@ model Proxy {
 
 model MealVerificationAnswers {
   id                 String                         @id @default(uuid())
-  koboAnswer         KoboAnswers                    @relation(fields: [koboAnswerId], references: [id])
+  koboAnswer         KoboAnswers                    @relation(fields: [koboAnswerId], references: [id], onDelete: Cascade)
   mealVerification   MealVerification               @relation(fields: [mealVerificationId], references: [id])
   koboAnswerId       String
   mealVerificationId String

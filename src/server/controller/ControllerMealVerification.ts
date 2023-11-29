@@ -6,19 +6,28 @@ import {PrismaClient} from '@prisma/client'
 import {MealVerificationService} from '../../feature/mealVerfication/MealVerificationService'
 
 export class MealVerificationSchema {
+
+  static readonly yupStatus = yup.mixed<MealVerificationAnswersStatus>().oneOf(Enum.values(MealVerificationAnswersStatus))
+
   static readonly id = yup.object({
     id: yup.string().required()
   })
+
   static readonly answers = yup.object({
     koboAnswerId: yup.string().required(),
-    status: yup.mixed<MealVerificationAnswersStatus>().oneOf(Enum.values(MealVerificationAnswersStatus)).optional(),
+    status: MealVerificationSchema.yupStatus.optional(),
   })
+
   static readonly create = yup.object({
     activity: yup.string().required(),
     name: yup.string().required(),
     desc: yup.string().optional(),
     filters: yup.mixed().required(),
     answers: yup.array().of(MealVerificationSchema.answers.required()).required(),
+  })
+
+  static readonly answerStatus = yup.object({
+    status: MealVerificationSchema.yupStatus.optional(),
   })
 }
 
@@ -52,5 +61,12 @@ export class ControllerMealVerification {
     const {id} = await MealVerificationSchema.id.validate(req.params)
     await this.service.remove(id)
     res.send(id)
+  }
+
+  readonly updateAnswerStatus = async (req: Request, res: Response, next: NextFunction) => {
+    const {id} = await MealVerificationSchema.id.validate(req.params)
+    const {status} = await MealVerificationSchema.answerStatus.validate(req.body)
+    await this.service.updateAnswerStatus(id, status)
+    res.send({status})
   }
 }
