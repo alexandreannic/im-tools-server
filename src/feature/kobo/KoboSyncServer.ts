@@ -20,11 +20,11 @@ export class KoboSyncServer {
     this.log.info(`Synchronize kobo forms:`)
     for (const form of allForms) {
       try {
-        this.log.info(`Synchronizing ${form.name} (${form.id}) ...`)
+        this.log.info(`Synchronizing ${form.name} by ${updatedBy} (${form.id}) ...`)
         await this.syncApiForm({serverId: form.serverId, formId: form.id, updatedBy})
-        this.log.info(`Synchronizing ${form.name} (${form.id}) completed.`)
+        this.log.info(`Synchronizing ${form.name} by ${updatedBy} (${form.id}) completed.`)
       } catch (e) {
-        this.log.error(`Synchronizing ${form.name} (${form.id}) FAILED!`)
+        this.log.error(`Synchronizing ${form.name} by ${updatedBy} (${form.id}) FAILED!`)
         console.error(e)
       }
     }

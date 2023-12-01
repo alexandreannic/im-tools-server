@@ -34,7 +34,7 @@ export const errorCatcher = (handler: (req: Request, res: Response, next: NextFu
     try {
       await handler(req, res, next)
     } catch (err) {
-      console.error('[errorCatcher()]')
+      console.error('[errorCatcher()]', req.url, req.session.user?.email)
       next(err)
     }
   }
