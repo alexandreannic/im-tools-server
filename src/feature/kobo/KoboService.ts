@@ -54,7 +54,17 @@ export class KoboService {
 
     if (!user.admin && access.length === 0) return toApiPaginate([])
 
-    const accessFilters = access.reduce<Record<string, string[]>>((acc, x) => ({...acc, ...x.params?.filters}), {})
+    const accessFilters = seq(access).map(_ => _.params?.filters).compact().reduce<Record<string, string[]>>((acc, x) => {
+      Enum.entries(x).forEach(([k, v]) => {
+        if (Array.isArray(x[k])) {
+          acc[k] = seq([...acc[k] ?? [], ...x[k] ?? []]).distinct(_ => _)
+        } else {
+          acc[k] = v as any
+        }
+      })
+      return acc
+    }, {} as const)
+
     const accessFiltersEntry = Enum.entries(
       new Enum(accessFilters).transform((k, v) => [k, new Set(v)]).get()
     )

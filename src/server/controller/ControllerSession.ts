@@ -6,6 +6,7 @@ import {SessionService} from '../../feature/session/SessionService'
 import {AppError} from '../../helper/Errors'
 import {UserSession} from '../../feature/session/UserSession'
 import {appConf} from '../../core/conf/AppConf'
+import {SessionError} from '../../feature/session/SessionErrors'
 
 export class ControllerSession extends Controller {
 
@@ -56,6 +57,7 @@ export class ControllerSession extends Controller {
     }).validate(req.body)
 
     const user = await this.prisma.user.findFirstOrThrow({where: {email: body.email}})
+    if (user.email === this.conf.ownerEmail) throw new SessionError.UserNoAccess()
     req.session.user = {
       ...UserSession.fromUser(user),
       originalEmail: req.session.user?.email,
