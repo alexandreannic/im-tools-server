@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client'
+import {MealVerificationStatus, PrismaClient} from '@prisma/client'
 import {logger, Logger} from '../../helper/Logger'
 import {InferType} from 'yup'
 import {MealVerificationSchema} from '../../server/controller/ControllerMealVerification'
@@ -31,7 +31,9 @@ export class MealVerificationService {
   }
 
   readonly getAll = async () => {
-    return this.prisma.mealVerification.findMany()
+    return this.prisma.mealVerification.findMany({
+      orderBy: {createdAt: 'desc'}
+    })
   }
 
   readonly getAnswers = async (mealVerificationId: UUID) => {
@@ -45,6 +47,15 @@ export class MealVerificationService {
   readonly remove = async (mealVerificationId: UUID) => {
     await this.prisma.mealVerificationAnswers.deleteMany({where: {mealVerificationId}})
     await this.prisma.mealVerification.delete({where: {id: mealVerificationId}})
+  }
+
+  readonly update = async (id: UUID, status?: MealVerificationStatus) => {
+    return this.prisma.mealVerification.update({
+      where: {id},
+      data: {
+        status,
+      }
+    })
   }
 
   readonly updateAnswerStatus = async (id: UUID, selected?: MealVerificationAnswersStatus) => {

@@ -195,6 +195,12 @@ enum MealVerificationAnswersStatus {
   Selected
 }
 
+enum MealVerificationStatus {
+  Approved
+  Rejected
+  Pending
+}
+
 model MealVerification {
   id        String                    @id @default(uuid())
   activity  String
@@ -204,4 +210,5 @@ model MealVerification {
   desc      String?
   filters   Json
   answers   MealVerificationAnswers[]
+  status    MealVerificationStatus?
 }

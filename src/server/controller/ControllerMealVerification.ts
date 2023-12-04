@@ -2,12 +2,13 @@ import {NextFunction, Request, Response} from 'express'
 import * as yup from 'yup'
 import {Enum} from '@alexandreannic/ts-utils'
 import {MealVerificationAnswersStatus} from '../../feature/mealVerfication/MealVerificationType'
-import {PrismaClient} from '@prisma/client'
+import {MealVerificationStatus, PrismaClient} from '@prisma/client'
 import {MealVerificationService} from '../../feature/mealVerfication/MealVerificationService'
 
 export class MealVerificationSchema {
 
-  static readonly yupStatus = yup.mixed<MealVerificationAnswersStatus>().oneOf(Enum.values(MealVerificationAnswersStatus))
+  static readonly yupAnswerStatus = yup.mixed<MealVerificationAnswersStatus>().oneOf(Enum.values(MealVerificationAnswersStatus))
+  static readonly yupStatus = yup.mixed<MealVerificationStatus>().oneOf(Enum.values(MealVerificationStatus))
 
   static readonly id = yup.object({
     id: yup.string().required()
@@ -15,7 +16,7 @@ export class MealVerificationSchema {
 
   static readonly answers = yup.object({
     koboAnswerId: yup.string().required(),
-    status: MealVerificationSchema.yupStatus.optional(),
+    status: MealVerificationSchema.yupAnswerStatus.optional(),
   })
 
   static readonly create = yup.object({
@@ -26,8 +27,12 @@ export class MealVerificationSchema {
     answers: yup.array().of(MealVerificationSchema.answers.required()).required(),
   })
 
-  static readonly answerStatus = yup.object({
+  static readonly update = yup.object({
     status: MealVerificationSchema.yupStatus.optional(),
+  })
+
+  static readonly answerStatus = yup.object({
+    status: MealVerificationSchema.yupAnswerStatus.optional(),
   })
 }
 
@@ -61,6 +66,13 @@ export class ControllerMealVerification {
     const {id} = await MealVerificationSchema.id.validate(req.params)
     await this.service.remove(id)
     res.send(id)
+  }
+
+  readonly update = async (req: Request, res: Response, next: NextFunction) => {
+    const {id} = await MealVerificationSchema.id.validate(req.params)
+    const {status} = await MealVerificationSchema.update.validate(req.body)
+    await this.service.update(id, status)
+    res.send({status})
   }
 
   readonly updateAnswerStatus = async (req: Request, res: Response, next: NextFunction) => {

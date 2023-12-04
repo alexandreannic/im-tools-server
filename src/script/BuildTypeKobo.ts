@@ -23,6 +23,11 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
     },
     {
       formName: 'Partnership_partnersDatabase', formId: koboFormsId.prod.partnership_partnersDatabase,
+      overrideOptionsByQuestion: {
+        Type_of_organization: {
+          'municipal_organization_or_othe': [`Government-run entity`],
+        }
+      }
     },
     {
       formName: 'Partnership_assessment', formId: koboFormsId.prod.partnership_assessment,

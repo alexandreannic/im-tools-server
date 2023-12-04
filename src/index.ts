@@ -95,10 +95,12 @@ const startApp = async () => {
     prisma,
   )
 
-  new ScheduledTask(prisma).start()
 
-  MpcaCachedDb.constructSingleton(prisma).warmUp()
-  ShelterCachedDb.constructSingleton(prisma).warmUp()
+  if (conf.production) {
+    new ScheduledTask(prisma).start()
+    MpcaCachedDb.constructSingleton(prisma).warmUp()
+    ShelterCachedDb.constructSingleton(prisma).warmUp()
+  }
 
   new Server(
     conf,

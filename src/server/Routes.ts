@@ -164,6 +164,7 @@ export const getRoutes = (
     router.get('/meal-verification', auth(), errorCatcher(mealVerification.getAll))
     router.get('/meal-verification/:id/answers', auth(), errorCatcher(mealVerification.getAnswers))
     router.delete('/meal-verification/:id', auth(), errorCatcher(mealVerification.remove))
+    router.post('/meal-verification/:id', auth(), errorCatcher(mealVerification.update))
     router.post('/meal-verification/answer/:id', auth(), errorCatcher(mealVerification.updateAnswerStatus))
 
     // router.get('/legalaid', auth(), errorCatcher(legalaid.index))
