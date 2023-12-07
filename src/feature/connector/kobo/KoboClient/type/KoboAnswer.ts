@@ -25,7 +25,7 @@ export type KoboAnswerTags = any
 export type KoboAnswerNotes = any
 
 export type KoboAnswerMetaData<TTag extends Record<string, any> | undefined = undefined> = Pick<ApiKoboAnswerMetaData, 'start' | 'end'> & {
-  version: ApiKoboAnswerMetaData['__version__']
+  version?: ApiKoboAnswerMetaData['__version__']
   attachments?: KoboAttachment[]
   geolocation: ApiKoboAnswerMetaData['_geolocation']
   submissionTime: ApiKoboAnswerMetaData['_submission_time']
@@ -55,7 +55,7 @@ interface ApiKoboAnswerMetaData {
   _id: string,
   start: Date,
   end: Date,
-  __version__: string,
+  __version__?: string,
   _xform_id_string: string,
   _uuid: UUID,
   _attachments?: KoboAttachment[],

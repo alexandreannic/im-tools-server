@@ -114,7 +114,7 @@ export class KoboService {
     }).then(_ => _.map(d => ({
       start: d.start,
       end: d.end,
-      version: d.version,
+      version: d.version ?? undefined,
       attachments: d.attachments,
       geolocation: d.geolocation,
       submissionTime: d.submissionTime,
