@@ -43,6 +43,7 @@ export interface Bn_Re {
   // [calculate] type_ihk
   calc_prog_type_iwk_001: string,
   calc_prog_type_csf: string,
+  calc_prog_type_cfu: string,
   // [select_one] 1.5.1 Was this case an internal DRC referral?
   back_refer: undefined | Opt<'pay_det_tax_exempt'>,
   // [select_one] 1.5.2 From which Department was the referral?
@@ -246,6 +247,12 @@ export interface Bn_Re {
   ass_inc_cff_inc: string,
   // [note] **Unfortunately based upon our criteria, you do not qualify for the cash for fuel assistance program as you do not meet the threshold for vulnerability.**
   ass_inc_cff_not_vul: string,
+  calc_vulnerability_cfu: string,
+  calc_gen_cfu_inc: string,
+  // [note] **You have met the critera for inclusion in the cash for utilities assistance programme. We will conduct further internal checks and revert to you with a final result.** <span style="color: red">Do not read this out to the household</span>
+  ass_inc_cfu_inc: string,
+  // [note] **Unfortunately based upon our criteria, you do not qualify for the cash for utilitie assistance program as you do not meet the threshold for vulnerability.**
+  ass_inc_cfu_not_vul: string,
   // [select_one] 7.0 Thank you for answering the questions above, are you willing to provide your payment details?
   pay_consent: undefined | Opt<'pay_det_tax_exempt'>,
   // [select_one] 7.1 What form of ID do you have?

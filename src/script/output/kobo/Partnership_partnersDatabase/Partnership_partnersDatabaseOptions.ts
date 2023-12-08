@@ -5,7 +5,7 @@ Type_of_organization: {
 	'cso': `CSO`,
 	'volunteer_group': `Volunteer group`,
 	'activist': `Activist`,
-	'municipal_organization_or_othe': `Municipal organization or other type of government-run entity`,
+	'municipal_organization_or_othe': `Government-run entity`,
 	'other': `Other`
 },
 Is_this_a_women_led_organization: {

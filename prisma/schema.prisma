@@ -196,7 +196,6 @@ enum MealVerificationAnswersStatus {
 }
 
 enum MealVerificationStatus {
-  Paid
   Approved
   Rejected
   Pending

@@ -60,6 +60,8 @@ export interface Meal_VerificationEcrec {
   many_pig: number | undefined,
   // [integer] Poultry:
   many_poultry: number | undefined,
+  // [select_multiple] Please indicate what support you received:
+  type_assistance: undefined | Opt<'type_assistance'>[],
   // [text] 4.1 Other Comments from Respondent
   fin_det_res: string | undefined,
   // [text] 4.2 Other Comments from Enumerator

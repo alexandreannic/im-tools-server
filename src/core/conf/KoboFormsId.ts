@@ -25,6 +25,7 @@ export const koboFormsId = {
     meal_VisitMonitoring: 'a8GkjWBQDfxVADGHWJDrUw',
     meal_VerificationEcrec: 'aEN2tkQhpsfX4G3i6Re7bi',
     meal_VerificationWinterization: 'aAWVLi8bSb2S8bHc5CcL8i',
+    ecrec_sectoralCashRegistration: 'aE5md7RfHiy4LJmddoFAQH',
     protection_Hhs2_1: 'aQDZ2xhPUnNd43XzuQucVR',
     protection_Hhs2: 'aRHsewShwZhXiy8jrBj9zf',
     protection_Hhs1: 'aFU8x6tHksveU2c3hK7RUG',

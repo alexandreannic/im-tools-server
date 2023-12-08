@@ -1992,10 +1992,13 @@ mdd_001: {
 	'pmra': `UKR-000230 PM WRA`,
 	'pmka': `UKR-000231 PM WKA`,
 	'sida': `SIDA 518-570A`,
+	'sida43': `UKR-000343 SIDA`,
 	'eu4y': `UKR-000132 EU4Youth`,
 	'uhf1': `UKR-000256 UHF`,
+	'uhf2': `UKR-000271 UHF2`,
 	'uhf3': `UKR-000276 UHF3`,
 	'uhf4': `UKR-000314 UHF4`,
+	'uhf5': `UKR-000316 UHF5`,
 	'unhcr': `UKR-000291_292 UNHCR`,
 	'unhc': `UKR-000308 UNHCR`,
 	'danid': `UKR-000266 DANIDA`,
@@ -2005,7 +2008,7 @@ mdd_001: {
 	'nono': `UKR-000298 Novo-Nordisk`,
 	'sdcs': `UKR-000290 SDC Shelter`,
 	'mofa': `UKR-000301 DANISH MoFA`,
-	'uhf5': `UKR-000316 UHF5`
+	'nadn': `Needs assessment (DRC/NRC)`
 },
 mdt: {
 	'nfi': `NFI`,
@@ -2017,6 +2020,7 @@ mdt: {
 	'cbte': `CB team`,
 	'pate': `Partnership team`,
 	'gbv': `GBV`,
+	'livelihood': `Livelihood`,
 	'oth': `Other:`
 },
 pan: {

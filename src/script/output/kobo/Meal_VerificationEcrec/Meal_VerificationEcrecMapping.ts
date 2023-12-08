@@ -21,4 +21,5 @@ export const mapMeal_VerificationEcrec = (_: Record<keyof Meal_VerificationEcrec
 	many_cow: _.many_cow ? +_.many_cow : undefined,
 	many_pig: _.many_pig ? +_.many_pig : undefined,
 	many_poultry: _.many_poultry ? +_.many_poultry : undefined,
+	type_assistance: _.type_assistance?.split(' '),
 }) as Meal_VerificationEcrec
