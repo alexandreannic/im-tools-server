@@ -1,13 +1,13 @@
 import {PrismaClient} from '@prisma/client'
 import {KoboMappedAnswersService} from '../../kobo/KoboMappedAnswersService'
-import {seq, Seq, fnSwitch} from '@alexandreannic/ts-utils'
+import {fnSwitch, Seq, seq} from '@alexandreannic/ts-utils'
 import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcUa'
 import {OblastIndex} from '../../../core/oblastIndex'
 import {KoboAnswerFilter} from '../../kobo/KoboService'
 import {ApiPaginate, Gender, toApiPaginate} from '../../../core/Type'
 import {WfpDeduplicationService} from '../../wfpDeduplication/WfpDeduplicationService'
 import {appConf} from '../../../core/conf/AppConf'
-import {MpcaEntity, MpcaDataTag, MpcaProgram, MpcaRowSource} from './MpcaDbType'
+import {MpcaDataTag, MpcaEntity, MpcaProgram} from './MpcaDbType'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
 import {Bn_ReOptions} from '../../../script/output/kobo/Bn_Re/Bn_ReOptions'
 import {Bn_RapidResponseOptions} from '../../../script/output/kobo/Bn_RapidResponse/Bn_RapidResponseOptions'
@@ -121,7 +121,7 @@ export class MpcaDbService {
       filters: {
         ...filters,
         filterBy: [
-          {column: 'back_prog_type', value: ['cfe', 'cfr', 'mpca']},
+          {column: 'back_prog_type', value: ['cfe', 'cfr', 'mpca', 'csf', 'cfu']},
         ]
       }
     }).then(_ => {
@@ -147,6 +147,8 @@ export class MpcaDbService {
             'cfr': MpcaProgram.CashForRent,
             'cfe': MpcaProgram.CashForEducation,
             'mpca': MpcaProgram.MPCA,
+            'csf': MpcaProgram.CashForFuel,
+            'cfu': MpcaProgram.CashForUtilities,
           }, () => undefined)).compact(),
           hhSize: _.ben_det_hh_size,
           persons: group.map(p => ({
@@ -162,7 +164,8 @@ export class MpcaDbService {
           // women: group.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age >= 18 && p.hh_char_hh_det_age < 50 && p.hh_char_hh_det_gender === 'female').length,
           // boys: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age < 18 && p.hh_char_hh_det_gender === 'male').length,
           // girls: group?.filter(p => p.hh_char_hh_det_age && p.hh_char_hh_det_age < 18 && p.hh_char_hh_det_gender === 'female').length,
-          ...fnSwitch(_.donor_mpca ?? _.back_donor?.[0]!, {
+          // TODO Handle multiple donors
+          ...fnSwitch(_.donor_mpca ?? _.donor_cfe ?? _.donor_cfu ?? _.donor_cff ?? _.donor_cfr ?? _.back_donor?.[0]!, {
             uhf_chj: {donor: DrcDonor.UHF, project: DrcProject['UKR-000314 UHF4'],},
             uhf_dnk: {donor: DrcDonor.UHF, project: DrcProject['UKR-000314 UHF4'],},
             uhf_hrk: {donor: DrcDonor.UHF, project: DrcProject['UKR-000314 UHF4'],},
@@ -186,7 +189,21 @@ export class MpcaDbService {
             pool_lwo: {donor: DrcDonor.PoolFunds, project: DrcProject['UKR-000270 Pooled Funds'],},
             pool_nlv: {donor: DrcDonor.PoolFunds, project: DrcProject['UKR-000270 Pooled Funds'],},
             sdc_umy: {donor: DrcDonor.SDCS, project: DrcProject['UKR-000330 SDC2'],},
-          }, () => undefined),
+            hrk_umy: {donor: DrcDonor.SDCS, project: DrcProject['UKR-000330 SDC2'],},
+            uhf6_chj: {donor: DrcDonor.UHF, project: DrcProject['UKR-000336 UHF6'],},
+            uhf6_dnk: {donor: DrcDonor.UHF, project: DrcProject['UKR-000336 UHF6'],},
+            uhf6_hrk: {donor: DrcDonor.UHF, project: DrcProject['UKR-000336 UHF6'],},
+            uhf6_lwo: {donor: DrcDonor.UHF, project: DrcProject['UKR-000336 UHF6'],},
+            uhf6_nlv: {donor: DrcDonor.UHF, project: DrcProject['UKR-000336 UHF6'],},
+            uhf6_umy: {donor: DrcDonor.UHF, project: DrcProject['UKR-000336 UHF6'],},
+            uhf7_chj: {donor: DrcDonor.UHF, project: DrcProject['UKR-000352 UHF7'],},
+            uhf7_dnk: {donor: DrcDonor.UHF, project: DrcProject['UKR-000352 UHF7'],},
+            uhf7_hrk: {donor: DrcDonor.UHF, project: DrcProject['UKR-000352 UHF7'],},
+            uhf7_lwo: {donor: DrcDonor.UHF, project: DrcProject['UKR-000352 UHF7'],},
+            uhf7_nlv: {donor: DrcDonor.UHF, project: DrcProject['UKR-000352 UHF7'],},
+            uhf7_umy: {donor: DrcDonor.UHF, project: DrcProject['UKR-000352 UHF7'],},
+            umy_danida: {donor: DrcDonor.DANI, project: DrcProject['UKR-000267 DANIDA'],},
+          }, _ => ({donor: _ as DrcDonor, project: _ as DrcProject})),
           benefStatus: _.ben_det_res_stat,
           lastName: _.ben_det_surname,
           firstName: _.ben_det_first_name,

@@ -37,6 +37,8 @@ const builtEnum = buildEnumFromObject([
 export type MpcaRowSource = keyof typeof builtEnum
 
 export enum MpcaProgram {
+  CashForFuel = 'CashForFuel',
+  CashForUtilities = 'CashForUtilities',
   CashForRent = 'CashForRent',
   CashForEducation = 'CashForEducation',
   MPCA = 'MPCA',
