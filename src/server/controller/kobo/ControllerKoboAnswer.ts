@@ -44,7 +44,7 @@ export class ControllerKoboAnswer {
     }).validate(req.body)
 
     const data = await this.service.updateTags({...params, ...body})
-    res.send(data)
+    res.send()
   }
 
   /** TODO need to handle public access */
