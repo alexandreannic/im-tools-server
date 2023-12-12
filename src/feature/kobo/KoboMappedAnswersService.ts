@@ -16,6 +16,7 @@ import {map} from '@alexandreannic/ts-utils'
 import {ShelterNtaTags, ShelterTaTags} from './tags/ShelterTags'
 import {mapShelter_NTA} from '../../script/output/kobo/Shelter_NTA/Shelter_NTAMapping'
 import {mapShelter_north} from '../../script/output/kobo/Shelter_north/Shelter_northMapping'
+import {mapEcrec_sectoralCashRegistration} from '../../script/output/kobo/Ecrec_sectoralCashRegistration/Ecrec_sectoralCashRegistrationMapping'
 
 export class KoboMappedAnswersService {
 
@@ -68,5 +69,6 @@ export class KoboMappedAnswersService {
   readonly searchBn_0_mpcaReg = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaReg, mapBn_0_mpcaReg)
   readonly searchBn_0_mpcaRegNoSig = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegNoSig, mapBn_0_mpcaRegNoSig)
   readonly searchBn_0_mpcaRegESign = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegESign, mapBn_0_mpcaRegESign)
+  readonly searchBn_ecrecCashRegistration = this.buildMappedSearch(koboFormsId.prod.ecrec_sectoralCashRegistration, mapEcrec_sectoralCashRegistration)
 }
 
