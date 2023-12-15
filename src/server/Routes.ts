@@ -18,7 +18,6 @@ import {ControllerAccess} from './controller/ControllerAccess'
 import {ControllerUser} from './controller/ControllerUser'
 import {UserSession} from '../feature/session/UserSession'
 import {AppError} from '../helper/Errors'
-import {appConf} from '../core/conf/AppConf'
 import apicache from 'apicache'
 import {ControllerProxy} from './controller/ControllerProxy'
 import {ControllerMpca} from './controller/ControllerMpca'
@@ -145,7 +144,7 @@ export const getRoutes = (
     router.get('/kobo-api/:id/attachment', errorCatcher(koboApi.getAttachementsWithoutAuth))
     router.get('/kobo-api/:id/:formId/answers', auth(), errorCatcher(koboApi.getAnswers))
     router.get('/kobo-api/:id', auth(), errorCatcher(koboApi.getForms))
-    router.get('/kobo-api/:id/:formId', auth(), cache('24 hour'), errorCatcher(koboApi.getSchema))
+    router.get('/kobo-api/:id/:formId', auth(), errorCatcher(cache('24 hour')), errorCatcher(koboApi.getSchema))
     router.get('/kobo-api/:id/:formId/:answerId/edit-url', errorCatcher(koboApi.edit))
 
     router.post('/shelter/search', errorCatcher(shelter.search))
