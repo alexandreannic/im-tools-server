@@ -44,7 +44,7 @@ export enum MpcaProgram {
   MPCA = 'MPCA',
 }
 
-export interface MpcaDataFilter extends MaybePeriod{
+export interface MpcaDataFilter extends MaybePeriod {
   office?: DrcOffice[]
   source?: MpcaRowSource[]
 }
@@ -66,6 +66,7 @@ export interface MpcaEntity {
   prog?: MpcaProgram[]
   donor?: DrcDonor
   project?: DrcProject
+  enumerator?: string
   // finalProject?: DrcProject
   amountUahSupposed?: number
   amountUahDedup?: number

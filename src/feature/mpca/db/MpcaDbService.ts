@@ -14,6 +14,8 @@ import {Bn_RapidResponseOptions} from '../../../script/output/kobo/Bn_RapidRespo
 import {Utils} from '../../../helper/Utils'
 import {KoboSyncServer} from '../../kobo/KoboSyncServer'
 import {koboFormsId} from '../../../core/conf/KoboFormsId'
+import {Shelter_cashForRepairOptions} from '../../../script/output/kobo/Shelter_cashForRepair/Shelter_cashForRepairOptions'
+import {Bn_OldMpcaNfiOptions} from '../../../script/output/kobo/Bn_OldMpcaNfi/Bn_OldMpcaNfiOptions'
 
 export class MpcaDbService {
 
@@ -39,7 +41,7 @@ export class MpcaDbService {
     const [wfpIndex, ...rest] = await Promise.all([
       this.wfp.search().then(_ => seq(_.data).groupBy(_ => _.taxId!)),
       this.searchBn_Bnre(filters),
-      this.searchBn_BnrOld(filters),
+      this.searchBn_1_mpcaNfi(filters),
       this.searchBn_RapidResponseMechanism(filters),
       this.searchBn_cashForRepair(filters),
       this.searchBn_0_mpcaReg(filters),
@@ -117,7 +119,7 @@ export class MpcaDbService {
 
 
   private readonly searchBn_Bnre = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
-    return this.kobo.searchBnre({
+    return this.kobo.searchBn_re({
       filters: {
         ...filters,
         filterBy: [
@@ -129,6 +131,7 @@ export class MpcaDbService {
         const group = [..._.hh_char_hh_det ?? [], {hh_char_hh_det_age: _.hh_char_hhh_age, hh_char_hh_det_gender: _.hh_char_hhh_gender}]
         return {
           source: 'bn_re',
+          enumerator: Bn_ReOptions.back_enum[_.back_enum!],
           id: _.id,
           date: _.submissionTime,
           office: fnSwitch(_.back_office!, {
@@ -251,6 +254,7 @@ export class MpcaDbService {
         return _.data.map(_ => ({
           source: 'shelter_cashForRepair',
           prog: [MpcaProgram.CashForRent],
+          enumerator: Shelter_cashForRepairOptions.name_enum[_.name_enum!],
           oblast: fnSwitch(_.ben_det_oblast ?? (_ as any).ben_det_oblastgov!, OblastIndex.koboOblastIndex, () => undefined),
           oblastIso: fnSwitch(_.ben_det_oblast ?? (_ as any).ben_det_oblastgov!, OblastIndex.koboOblastIndexIso, () => undefined),
           office: fnSwitch(_.back_office!, {
@@ -308,6 +312,7 @@ export class MpcaDbService {
         const oblast = fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndex, () => _.submissionTime.getMonth() === 5 ? 'Mykolaivska' : undefined)
         return ({
           source: 'bn_rapidResponse',
+          enumerator: Bn_RapidResponseOptions.back_enum_l[_.back_enum ?? _.back_enum_l!],
           prog: seq(_.back_prog_type ?? _.back_prog_type_l).map(prog => fnSwitch(prog.split('_')[0], {
             'cfr': MpcaProgram.CashForRent,
             'cfe': MpcaProgram.CashForEducation,
@@ -406,8 +411,8 @@ export class MpcaDbService {
     })
   }
 
-  private readonly searchBn_BnrOld = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
-    return this.kobo.searchBn_BnrOld({
+  private readonly searchBn_1_mpcaNfi = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
+    return this.kobo.searchBn_1_mpcaNfi({
       filters: {
         ...filters,
         filterBy: [{
@@ -423,6 +428,7 @@ export class MpcaDbService {
         return ({
           source: 'bn_1_mpcaNfi',
           id: _.id,
+          enumerator: Bn_OldMpcaNfiOptions.staff_names[_.staff_names!],
           date: _.submissionTime,
           prog: fnSwitch(_.Programme!, {
             'mpca': [MpcaProgram.MPCA],
@@ -505,6 +511,7 @@ export class MpcaDbService {
           return {
             source: 'bn_0_mpcaRegNewShort',
             prog: [MpcaProgram.MPCA],
+            enumerator: Bn_OldMpcaNfiOptions.staff_names[_.staff_names!],
             oblast: OblastIndex.oblastByISO[oblastIso!],
             oblastIso,
             office: fnSwitch(_.drc_base!, {
@@ -555,6 +562,7 @@ export class MpcaDbService {
           return {
             source: 'bn_0_mpcaReg',
             prog: [MpcaProgram.MPCA],
+            enumerator: Bn_OldMpcaNfiOptions.staff_names[_.staff_names!],
             oblast: OblastIndex.oblastByISO[oblastIso!],
             oblastIso,
             office: fnSwitch(_.drc_base!, {
