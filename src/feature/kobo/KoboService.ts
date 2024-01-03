@@ -49,7 +49,7 @@ export class KoboService {
     user?: UserSession
   }) => {
     if (!user) return toApiPaginate([])
-    const access = await this.access.search({featureId: AppFeatureId.kobo_database, user})
+    const access = await this.access.searchForUser({featureId: AppFeatureId.kobo_database, user})
       .then(_ => _.filter(_ => _.params?.koboFormId === params.formId))
 
     if (!user.admin && access.length === 0) return toApiPaginate([])

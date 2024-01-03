@@ -97,11 +97,15 @@ export const convertNumberIndexToLetter = (_: number) => {
   return (_ + 9).toString(36).toUpperCase()
 }
 
-export const tryCach = <T>(tryFn: () => T, catchFn: () => T): T => {
-  try {
-    return tryFn()
-  } catch {
-    return catchFn()
+export const fnTry = <T>(fn: () => T) => {
+  return {
+    catch: <C>(fnCatch: (e: Error) => C): T | C => {
+      try {
+        return fn()
+      } catch (e: any) {
+        return fnCatch(e)
+      }
+    }
   }
 }
 

@@ -1,4 +1,4 @@
-import {FeatureAccessLevel, Prisma, PrismaClient} from '@prisma/client'
+import {FeatureAccess, FeatureAccessLevel, PrismaClient} from '@prisma/client'
 import {Access, AppFeatureId, KoboDatabaseFeatureParams, WfpDeduplicationAccessParams} from './AccessType'
 import {yup} from '../../helper/Utils'
 import {Enum} from '@alexandreannic/ts-utils'
@@ -6,6 +6,8 @@ import {InferType} from 'yup'
 import {DrcOffice} from '../../core/DrcUa'
 import {UserSession} from '../session/UserSession'
 import {UUID} from '../../core/Type'
+import {logger, Logger} from '../../helper/Logger'
+import {GroupItemService} from '../group/GroupItemService'
 
 export type AccessSearchParams = InferType<typeof AccessService.searchSchema>
 export type AccessCreateParams = InferType<typeof AccessService.createSchema>
@@ -19,7 +21,11 @@ interface SearchByFeature {
 
 export class AccessService {
 
-  constructor(private prisma: PrismaClient) {
+  constructor(
+    private prisma: PrismaClient,
+    private group: GroupItemService = new GroupItemService(prisma),
+    private log: Logger = logger('AccessService'),
+  ) {
   }
 
   static readonly idParamsSchema = yup.object({
@@ -46,14 +52,8 @@ export class AccessService {
     featureId: yup.mixed<AppFeatureId>().oneOf(Enum.values(AppFeatureId))
   })
 
-  // @ts-ignore
-  readonly search: SearchByFeature = async ({featureId, user}: any) => {
-    // const ids = await this.prisma.$queryRaw<{id: number}[]>(Prisma.sql`
-    //     SELECT DISTINCT id
-    //     FROM "FeatureAccess"
-    //     WHERE "featureId" = '${featureId}'
-    //     ORDER BY "createdAt" DESC
-    // `)
+
+  private readonly searchFromAccess = async ({featureId, user}: {featureId?: AppFeatureId, user?: UserSession}) => {
     return this.prisma.featureAccess.findMany({
         distinct: ['id'],
         where: {
@@ -61,37 +61,72 @@ export class AccessService {
             {featureId: featureId},
             ...user ? [{
               OR: [
-                {
-                  email: {
-                    equals: user.email,
-                    mode: 'insensitive' as const,
-                  }
-                },
+                {email: {equals: user.email, mode: 'insensitive' as const,}},
                 {
                   OR: [
                     {drcOffice: user.drcOffice}, // Replace 'value' with the specific value you want to check against
                     {drcOffice: null},
                     {drcOffice: ''},
                   ],
-                  drcJob: {
-                    equals: user.drcJob,
-                    mode: 'insensitive' as const,
-                  }
+                  drcJob: {equals: user.drcJob, mode: 'insensitive' as const,}
                 }
               ]
             }] : []
           ]
         },
-        orderBy: {
-          createdAt: 'desc',
-        }
+        orderBy: {createdAt: 'desc',}
       }
     )
-    // .then(_ => _.filter(_ => {
-    // console.log(_)
-    // return _.drcOffice === null || _.drcOffice === user.drcOffice
-    // }))
   }
+
+  private readonly searchFromGroup = async ({featureId, user}: {featureId?: AppFeatureId, user?: UserSession}) => {
+    return this.prisma.featureAccess.findMany({
+      include: {
+        groups: {select: {items: true}},
+      },
+      where: {
+        featureId: featureId,
+        groups: user ? {
+          some: {
+            items: {
+              some: {
+                OR: [
+                  {drcJob: {equals: user.drcJob, mode: 'insensitive' as const,}},
+                  {email: {equals: user.email, mode: 'insensitive' as const,}}
+                ]
+              }
+            }
+          }
+        } : {},
+      }
+    })
+  }
+
+  // @ts-ignore
+  readonly searchForUser: SearchByFeature = async ({featureId, user}: any) => {
+    const [
+      fromGroup,
+      fromAccess,
+    ] = await Promise.all([
+      this.searchFromGroup({featureId, user}),
+      this.searchFromAccess({featureId, user}),
+    ])
+    const tt: FeatureAccess[] = fromAccess
+    const zz: FeatureAccess[] = fromGroup.flatMap(accesses => {
+      return accesses.groups.flatMap(_ => _.items ?? []).map(_ => {
+        const r: FeatureAccess = {
+          ...accesses,
+          createdAt: _.createdAt,
+          level: _.level,
+          drcJob: _.drcJob,
+          email: _.email,
+        }
+        return r
+      })
+    })
+    return [...tt, ...zz]
+  }
+
 
   readonly create = (body: AccessCreateParams) => {
     return Promise.all((body.drcJob ?? [undefined]).map(drcJob =>
@@ -131,18 +166,37 @@ export class AccessService {
     return this.prisma.featureAccess.findMany({
         distinct: ['id'],
         where: {
-          OR: [
-            {
-              email: user.email,
-            },
-            {
-              AND: {
-                drcJob: user.drcJob,
-                drcOffice: {in: user.drcOffice},
+          OR: [{
+            groups: {
+              some: {
+                items: {
+                  some: {
+                    OR: [
+                      {drcJob: {equals: user.drcJob, mode: 'insensitive' as const,}},
+                      {email: {equals: user.email, mode: 'insensitive' as const,}}
+                    ]
+                  }
+                }
               }
             }
-          ]
+          }, {
+            OR: [
+              {email: {equals: user.email, mode: 'insensitive' as const,}},
+              {
+                OR: [
+                  {drcOffice: user.drcOffice},
+                  {drcOffice: null},
+                  {drcOffice: ''},
+                ],
+                drcJob: {
+                  equals: user.drcJob,
+                  mode: 'insensitive' as const,
+                }
+              }
+            ]
+          }]
         },
+        orderBy: {createdAt: 'desc',}
       }
     )
   }
