@@ -23,6 +23,7 @@ import {ControllerProxy} from './controller/ControllerProxy'
 import {ControllerMpca} from './controller/ControllerMpca'
 import {ControllerShelter} from './controller/ControllerShelter'
 import {ControllerMealVerification} from './controller/ControllerMealVerification'
+import {ControllerGroup} from './controller/ControllerGroup'
 
 export interface AuthenticatedRequest extends Request {
   user?: UserSession
@@ -73,6 +74,7 @@ export const getRoutes = (
   const session = new ControllerSession(prisma)
   const wfp = new ControllerWfp(prisma)
   const access = new ControllerAccess(prisma)
+  const accessGroup = new ControllerGroup(prisma)
   const user = new ControllerUser(prisma)
   const proxy = new ControllerProxy(prisma)
   const shelter = new ControllerShelter(prisma)
@@ -117,24 +119,26 @@ export const getRoutes = (
     router.delete('/proxy/:id', errorCatcher(proxy.delete))
     router.get('/proxy', errorCatcher(proxy.search))
 
+    router.get('/group/item', auth(), errorCatcher(accessGroup.getItems))
+    router.post('/group/item/:id', auth(), errorCatcher(accessGroup.updateItem))
+    router.delete('/group/item/:id', auth(), errorCatcher(accessGroup.removeItem))
+    router.put('/group/:id/item', auth(), errorCatcher(accessGroup.createItem))
+    router.get('/group', auth(), errorCatcher(accessGroup.getAllWithItems))
+    router.put('/group', auth(), errorCatcher(accessGroup.create))
+    router.post('/group/:id', auth(), errorCatcher(accessGroup.update))
+    router.delete('/group/:id', auth(), errorCatcher(accessGroup.remove))
+
     router.get('/access/me', auth(), errorCatcher(access.searchMine))
     router.get('/access', auth(), errorCatcher(access.search))
     router.put('/access', auth(), errorCatcher(access.create))
     router.post('/access/:id', auth(), errorCatcher(access.update))
     router.delete('/access/:id', auth(), errorCatcher(access.remove))
 
+
     router.post('/user/me', auth(), errorCatcher(user.updateMe))
     router.get('/user', auth(), errorCatcher(user.search))
 
     router.post('/activity-info/activity', auth({adminOnly: true}), errorCatcher(activityInfo.submitActivity))
-
-    router.get('/kobo/server', auth(), errorCatcher(koboServer.getServers))
-    router.get('/kobo/form', auth(), errorCatcher(koboForm.getAll))
-    router.get('/kobo/form/:id', auth(), errorCatcher(koboForm.get))
-    router.put('/kobo/form', auth(), errorCatcher(koboForm.create))
-    router.post('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
-    router.post('/kobo/answer/:formId/by-access', auth(), errorCatcher(koboAnswer.searchByUserAccess))
-    router.post('/kobo/answer/:formId/tag', auth(), errorCatcher(koboAnswer.updateTag))
 
     router.post('/proxy-request', errorCatcher(main.proxy))
 
@@ -146,6 +150,14 @@ export const getRoutes = (
     router.get('/kobo-api/:id', auth(), errorCatcher(koboApi.getForms))
     router.get('/kobo-api/:id/:formId', auth(), errorCatcher(cache('24 hour')), errorCatcher(koboApi.getSchema))
     router.get('/kobo-api/:id/:formId/:answerId/edit-url', errorCatcher(koboApi.edit))
+
+    router.get('/kobo/server', auth(), errorCatcher(koboServer.getServers))
+    router.get('/kobo/form', auth(), errorCatcher(koboForm.getAll))
+    router.get('/kobo/form/:id', auth(), errorCatcher(koboForm.get))
+    router.put('/kobo/form', auth(), errorCatcher(koboForm.create))
+    router.post('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
+    router.post('/kobo/answer/:formId/by-access', auth(), errorCatcher(koboAnswer.searchByUserAccess))
+    router.post('/kobo/answer/:formId/tag', auth(), errorCatcher(koboAnswer.updateTag))
 
     router.post('/shelter/search', errorCatcher(shelter.search))
 

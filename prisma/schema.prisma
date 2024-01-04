@@ -147,15 +147,37 @@ enum FeatureAccessType {
 model FeatureAccess {
   id          String             @id @default(uuid())
   createdBy   String?
-  featureType FeatureAccessType?
-  featureId   String?
-  params      Json?
-  level       FeatureAccessLevel
-  email       String?
-  drcJob      String?
-  drcOffice   String?
   createdAt   DateTime           @default(now())
   updatedAt   DateTime?
+  featureType FeatureAccessType?
+  featureId   String?
+  email       String?
+  drcOffice   String?
+  drcJob      String?
+  level       FeatureAccessLevel
+  params      Json?
+  groupId     String?
+  group       Group?             @relation(fields: [groupId], references: [id])
+}
+
+model Group {
+  id        String          @id @default(uuid())
+  createdAt DateTime        @default(now())
+  name      String          @unique
+  desc      String?
+  accesses  FeatureAccess[]
+  items     GroupItem[]
+}
+
+model GroupItem {
+  id        String             @id @default(uuid())
+  createdAt DateTime           @default(now())
+  drcJob    String?
+  drcOffice String?
+  email     String?
+  level     FeatureAccessLevel
+  group     Group?             @relation(fields: [groupId], references: [id])
+  groupId   String?
 }
 
 model AccessToken {

@@ -1,4 +1,4 @@
-import {FeatureAccessLevel, Prisma, PrismaClient} from '@prisma/client'
+import {FeatureAccess, FeatureAccessLevel, PrismaClient} from '@prisma/client'
 import {Access, AppFeatureId, KoboDatabaseFeatureParams, WfpDeduplicationAccessParams} from './AccessType'
 import {yup} from '../../helper/Utils'
 import {Enum} from '@alexandreannic/ts-utils'
@@ -6,10 +6,14 @@ import {InferType} from 'yup'
 import {DrcOffice} from '../../core/DrcUa'
 import {UserSession} from '../session/UserSession'
 import {UUID} from '../../core/Type'
+import {logger, Logger} from '../../helper/Logger'
 
 export type AccessSearchParams = InferType<typeof AccessService.searchSchema>
 export type AccessCreateParams = InferType<typeof AccessService.createSchema>
 
+export interface FeatureAccesses extends FeatureAccess {
+  groupName?: string
+}
 
 interface SearchByFeature {
   ({featureId, user}: {featureId: AppFeatureId.kobo_database, user?: UserSession}): Promise<Access<KoboDatabaseFeatureParams>[]>
@@ -19,20 +23,28 @@ interface SearchByFeature {
 
 export class AccessService {
 
-  constructor(private prisma: PrismaClient) {
+  constructor(
+    private prisma: PrismaClient,
+    private log: Logger = logger('AccessService'),
+  ) {
   }
 
   static readonly idParamsSchema = yup.object({
     id: yup.string().required(),
   })
 
+  static readonly drcOfficeSchema = yup.mixed<DrcOffice>().oneOf(Enum.values(DrcOffice))
+  static readonly drcJobSchema = yup.string().required()//yup.mixed<DrcJob>().oneOf(Enum.values(DrcJob)),
+  static readonly levelSchema = yup.mixed<FeatureAccessLevel>().oneOf(Enum.values(FeatureAccessLevel)).required()
+  static readonly featureIdSchema = yup.mixed<AppFeatureId>().oneOf(Enum.values(AppFeatureId))
+
   static readonly createSchema = yup.object({
-    level: yup.mixed<FeatureAccessLevel>().oneOf(Enum.values(FeatureAccessLevel)).required(),
-    drcJob: yup.array().of(yup.string().required()),//yup.mixed<DrcJob>().oneOf(Enum.values(DrcJob)),
-    // drcOffice: yup.string().optional(),
-    drcOffice: yup.mixed<DrcOffice>().oneOf(Enum.values(DrcOffice)),
+    featureId: AccessService.featureIdSchema,
+    level: AccessService.levelSchema,
+    drcOffice: AccessService.drcOfficeSchema,
+    drcJob: yup.array().of(AccessService.drcJobSchema),
     email: yup.string(),
-    featureId: yup.mixed<AppFeatureId>().oneOf(Enum.values(AppFeatureId)),
+    groupId: yup.string().optional(),
     params: yup.mixed().optional(),
   })
 
@@ -46,14 +58,7 @@ export class AccessService {
     featureId: yup.mixed<AppFeatureId>().oneOf(Enum.values(AppFeatureId))
   })
 
-  // @ts-ignore
-  readonly search: SearchByFeature = async ({featureId, user}: any) => {
-    // const ids = await this.prisma.$queryRaw<{id: number}[]>(Prisma.sql`
-    //     SELECT DISTINCT id
-    //     FROM "FeatureAccess"
-    //     WHERE "featureId" = '${featureId}'
-    //     ORDER BY "createdAt" DESC
-    // `)
+  private readonly searchFromAccess = async ({featureId, user}: {featureId?: AppFeatureId, user?: UserSession}) => {
     return this.prisma.featureAccess.findMany({
         distinct: ['id'],
         where: {
@@ -61,15 +66,39 @@ export class AccessService {
             {featureId: featureId},
             ...user ? [{
               OR: [
-                {
-                  email: {
-                    equals: user.email,
-                    mode: 'insensitive' as const,
-                  }
-                },
+                {email: {equals: user.email, mode: 'insensitive' as const,}},
                 {
                   OR: [
-                    {drcOffice: user.drcOffice}, // Replace 'value' with the specific value you want to check against
+                    {drcOffice: user.drcOffice},
+                    {drcOffice: null},
+                    {drcOffice: ''},
+                  ],
+                  drcJob: {equals: user.drcJob, mode: 'insensitive' as const,}
+                }
+              ]
+            }] : []
+          ]
+        },
+        orderBy: {createdAt: 'desc',}
+      }
+    )
+  }
+
+  private readonly searchFromGroup = async ({featureId, user}: {featureId?: AppFeatureId, user?: UserSession}) => {
+    return this.prisma.featureAccess.findMany({
+      include: {
+        group: true,
+      },
+      where: {
+        featureId: featureId,
+        group: user ? {
+          items: {
+            some: {
+              OR: [
+                {email: {equals: user.email, mode: 'insensitive' as const,}},
+                {
+                  OR: [
+                    {drcOffice: user.drcOffice},
                     {drcOffice: null},
                     {drcOffice: ''},
                   ],
@@ -79,30 +108,39 @@ export class AccessService {
                   }
                 }
               ]
-            }] : []
-          ]
-        },
-        orderBy: {
-          createdAt: 'desc',
-        }
+            }
+          }
+        } : {},
       }
-    )
-    // .then(_ => _.filter(_ => {
-    // console.log(_)
-    // return _.drcOffice === null || _.drcOffice === user.drcOffice
-    // }))
+    })
   }
+
+  // @ts-ignore
+  readonly searchForUser: SearchByFeature = async ({featureId, user}: any) => {
+    const [
+      fromGroup,
+      fromAccess,
+    ] = await Promise.all([
+      this.searchFromGroup({featureId, user}),
+      this.searchFromAccess({featureId, user}),
+    ])
+    const tt: FeatureAccesses[] = fromAccess
+    const zz: FeatureAccesses[] = fromGroup.map(_ => {
+      return ({
+        ..._,
+        groupName: _.group?.name,
+      })
+    })
+    return [...tt, ...zz]
+  }
+
 
   readonly create = (body: AccessCreateParams) => {
     return Promise.all((body.drcJob ?? [undefined]).map(drcJob =>
       this.prisma.featureAccess.create({
         data: {
-          level: body.level,
+          ...body,
           drcJob,
-          drcOffice: body.drcOffice,
-          email: body.email,
-          featureId: body.featureId,
-          params: body.params,
         },
       })
     ))
@@ -131,18 +169,35 @@ export class AccessService {
     return this.prisma.featureAccess.findMany({
         distinct: ['id'],
         where: {
-          OR: [
-            {
-              email: user.email,
-            },
-            {
-              AND: {
-                drcJob: user.drcJob,
-                drcOffice: {in: user.drcOffice},
+          OR: [{
+            group: {
+              items: {
+                some: {
+                  OR: [
+                    {drcJob: {equals: user.drcJob, mode: 'insensitive' as const,}},
+                    {email: {equals: user.email, mode: 'insensitive' as const,}}
+                  ]
+                }
               }
             }
-          ]
+          }, {
+            OR: [
+              {email: {equals: user.email, mode: 'insensitive' as const,}},
+              {
+                OR: [
+                  {drcOffice: user.drcOffice},
+                  {drcOffice: null},
+                  {drcOffice: ''},
+                ],
+                drcJob: {
+                  equals: user.drcJob,
+                  mode: 'insensitive' as const,
+                }
+              }
+            ]
+          }]
         },
+        orderBy: {createdAt: 'desc',}
       }
     )
   }
