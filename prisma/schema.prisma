@@ -156,13 +156,14 @@ model FeatureAccess {
   drcJob      String?
   level       FeatureAccessLevel
   params      Json?
-  groups      Group[]
+  groupId     String?
+  group       Group?             @relation(fields: [groupId], references: [id])
 }
 
 model Group {
   id        String          @id @default(uuid())
   createdAt DateTime        @default(now())
-  name      String
+  name      String          @unique
   desc      String?
   accesses  FeatureAccess[]
   items     GroupItem[]
@@ -172,6 +173,7 @@ model GroupItem {
   id        String             @id @default(uuid())
   createdAt DateTime           @default(now())
   drcJob    String?
+  drcOffice String?
   email     String?
   level     FeatureAccessLevel
   group     Group?             @relation(fields: [groupId], references: [id])

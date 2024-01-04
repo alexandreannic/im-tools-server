@@ -105,40 +105,40 @@ export const getRoutes = (
   }
 
   try {
-    router.get(   '/', errorCatcher(main.htmlStats))
+    router.get('/', errorCatcher(main.htmlStats))
 
-    router.post(  '/session/track', errorCatcher(session.track))
-    router.post(  '/session/login', errorCatcher(session.login))
-    router.post(  '/session/connect-as', auth({adminOnly: true}), errorCatcher(session.connectAs))
-    router.post(  '/session/connect-as-revert', auth(), errorCatcher(session.revertConnectAs))
+    router.post('/session/track', errorCatcher(session.track))
+    router.post('/session/login', errorCatcher(session.login))
+    router.post('/session/connect-as', auth({adminOnly: true}), errorCatcher(session.connectAs))
+    router.post('/session/connect-as-revert', auth(), errorCatcher(session.revertConnectAs))
     router.delete('/session', errorCatcher(session.logout))
-    router.get(   '/session', errorCatcher(session.get))
+    router.get('/session', errorCatcher(session.get))
 
-    router.put(   '/proxy', errorCatcher(proxy.create))
-    router.post(  '/proxy/:id', errorCatcher(proxy.update))
+    router.put('/proxy', errorCatcher(proxy.create))
+    router.post('/proxy/:id', errorCatcher(proxy.update))
     router.delete('/proxy/:id', errorCatcher(proxy.delete))
-    router.get(   '/proxy', errorCatcher(proxy.search))
+    router.get('/proxy', errorCatcher(proxy.search))
 
-    router.get(   '/group/item', auth(), errorCatcher(accessGroup.getItems))
-    router.post(  '/group/item/:id', auth(), errorCatcher(accessGroup.updateItem))
+    router.get('/group/item', auth(), errorCatcher(accessGroup.getItems))
+    router.post('/group/item/:id', auth(), errorCatcher(accessGroup.updateItem))
     router.delete('/group/item/:id', auth(), errorCatcher(accessGroup.removeItem))
-    router.put(   '/group/:id/item', auth(), errorCatcher(accessGroup.createItem))
-    router.get(   '/group', auth(), errorCatcher(accessGroup.getAllWithItems))
-    router.put(   '/group', auth(), errorCatcher(accessGroup.create))
-    router.post(  '/group/:id', auth(), errorCatcher(accessGroup.update))
+    router.put('/group/:id/item', auth(), errorCatcher(accessGroup.createItem))
+    router.get('/group', auth(), errorCatcher(accessGroup.getAllWithItems))
+    router.put('/group', auth(), errorCatcher(accessGroup.create))
+    router.post('/group/:id', auth(), errorCatcher(accessGroup.update))
     router.delete('/group/:id', auth(), errorCatcher(accessGroup.remove))
 
-    router.get(   '/access/me', auth(), errorCatcher(access.searchMine))
-    router.get(   '/access', auth(), errorCatcher(access.search))
-    router.put(   '/access', auth(), errorCatcher(access.create))
-    router.post(  '/access/:id', auth(), errorCatcher(access.update))
+    router.get('/access/me', auth(), errorCatcher(access.searchMine))
+    router.get('/access', auth(), errorCatcher(access.search))
+    router.put('/access', auth(), errorCatcher(access.create))
+    router.post('/access/:id', auth(), errorCatcher(access.update))
     router.delete('/access/:id', auth(), errorCatcher(access.remove))
 
 
-    router.post(  '/user/me', auth(), errorCatcher(user.updateMe))
-    router.get(   '/user', auth(), errorCatcher(user.search))
+    router.post('/user/me', auth(), errorCatcher(user.updateMe))
+    router.get('/user', auth(), errorCatcher(user.search))
 
-    router.post(  '/activity-info/activity', auth({adminOnly: true}), errorCatcher(activityInfo.submitActivity))
+    router.post('/activity-info/activity', auth({adminOnly: true}), errorCatcher(activityInfo.submitActivity))
 
     router.post('/proxy-request', errorCatcher(main.proxy))
 
@@ -151,14 +151,13 @@ export const getRoutes = (
     router.get('/kobo-api/:id/:formId', auth(), errorCatcher(cache('24 hour')), errorCatcher(koboApi.getSchema))
     router.get('/kobo-api/:id/:formId/:answerId/edit-url', errorCatcher(koboApi.edit))
 
-    router.get(   '/kobo-api/local-form', auth(), errorCatcher(koboApi.getAnswersFromLocalCsv))
-    router.post(  '/kobo-api/sync', auth({adminOnly: true}), errorCatcher(koboApi.synchronizeAllAnswersFromKoboServer))
-    router.post(  '/kobo-api/:id/:formId/sync', auth(), errorCatcher(koboApi.synchronizeAnswersFromKoboServer))
-    router.get(   '/kobo-api/:id/attachment', auth(), errorCatcher(koboApi.getAttachementsWithoutAuth))
-    router.get(   '/kobo-api/:id/:formId/answers', auth(), errorCatcher(koboApi.getAnswers))
-    router.get(   '/kobo-api/:id', auth(), errorCatcher(koboApi.getForms))
-    router.get(   '/kobo-api/:id/:formId', cache('24 hour'), auth(), errorCatcher(koboApi.getSchema))
-    router.get(   '/kobo-api/:id/:formId/:answerId/edit-url', errorCatcher(koboApi.edit))
+    router.get('/kobo/server', auth(), errorCatcher(koboServer.getServers))
+    router.get('/kobo/form', auth(), errorCatcher(koboForm.getAll))
+    router.get('/kobo/form/:id', auth(), errorCatcher(koboForm.get))
+    router.put('/kobo/form', auth(), errorCatcher(koboForm.create))
+    router.post('/kobo/answer/:formId', errorCatcher(koboAnswer.search))
+    router.post('/kobo/answer/:formId/by-access', auth(), errorCatcher(koboAnswer.searchByUserAccess))
+    router.post('/kobo/answer/:formId/tag', auth(), errorCatcher(koboAnswer.updateTag))
 
     router.post('/shelter/search', errorCatcher(shelter.search))
 
