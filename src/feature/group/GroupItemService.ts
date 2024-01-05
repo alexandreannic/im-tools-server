@@ -15,15 +15,16 @@ export class GroupItemService {
 
   static readonly createSchema = yup.object({
     level: AccessService.levelSchema,
-    drcJob: yup.array().of(AccessService.drcJobSchema),
-    drcOffice: AccessService.drcOfficeSchema,
-    email: yup.string(),
+    drcJob: yup.array().of(AccessService.drcJobSchema).nullable(),
+    drcOffice: AccessService.drcOfficeSchema.nullable(),
+    email: yup.string().nullable(),
   })
 
   static readonly updateSchema = yup.object({
-    level: yup.mixed<FeatureAccessLevel>().oneOf(Enum.values(FeatureAccessLevel)),
-    drcJob: AccessService.drcJobSchema,
-    drcOffice: AccessService.drcOfficeSchema,
+    level: yup.mixed<FeatureAccessLevel>().oneOf(Enum.values(FeatureAccessLevel)).optional(),
+    drcJob: AccessService.drcJobSchema.optional().nullable(),
+    drcOffice: AccessService.drcOfficeSchema.optional().nullable(),
+    email: yup.string().optional().nullable(),
   })
 
   readonly create = (groupId: UUID, body: GroupItemCreateParams) => {
@@ -47,6 +48,7 @@ export class GroupItemService {
         level: body.level,
         drcOffice: body.drcOffice,
         drcJob: body.drcJob,
+        email: body.email,
       },
     })
   }

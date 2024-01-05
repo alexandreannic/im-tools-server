@@ -1,4 +1,4 @@
-import {FeatureAccess, FeatureAccessLevel, PrismaClient} from '@prisma/client'
+import {FeatureAccess, FeatureAccessLevel, Prisma, PrismaClient} from '@prisma/client'
 import {Access, AppFeatureId, KoboDatabaseFeatureParams, WfpDeduplicationAccessParams} from './AccessType'
 import {yup} from '../../helper/Utils'
 import {Enum} from '@alexandreannic/ts-utils'
@@ -8,7 +8,6 @@ import {UserSession} from '../session/UserSession'
 import {UUID} from '../../core/Type'
 import {logger, Logger} from '../../helper/Logger'
 
-export type AccessSearchParams = InferType<typeof AccessService.searchSchema>
 export type AccessCreateParams = InferType<typeof AccessService.createSchema>
 
 export interface FeatureAccesses extends FeatureAccess {
@@ -41,11 +40,11 @@ export class AccessService {
   static readonly createSchema = yup.object({
     featureId: AccessService.featureIdSchema,
     level: AccessService.levelSchema,
-    drcOffice: AccessService.drcOfficeSchema,
-    drcJob: yup.array().of(AccessService.drcJobSchema),
-    email: yup.string(),
-    groupId: yup.string().optional(),
-    params: yup.mixed().optional(),
+    drcOffice: AccessService.drcOfficeSchema.optional().nullable(),
+    drcJob: yup.array().of(AccessService.drcJobSchema).optional().nullable(),
+    email: yup.string().optional().nullable(),
+    groupId: yup.string().optional().nullable(),
+    params: yup.mixed().optional().nullable(),
   })
 
   static readonly updateSchema = yup.object({
@@ -63,6 +62,7 @@ export class AccessService {
         distinct: ['id'],
         where: {
           AND: [
+            {groupId: null},
             {featureId: featureId},
             ...user ? [{
               OR: [
@@ -91,6 +91,7 @@ export class AccessService {
       },
       where: {
         featureId: featureId,
+        groupId: {not: null},
         group: user ? {
           items: {
             some: {
@@ -111,10 +112,12 @@ export class AccessService {
             }
           }
         } : {},
-      }
+      },
+      orderBy: {createdAt: 'desc',}
     })
   }
 
+  // TODO Perf can be optimized using a single SQL query
   // @ts-ignore
   readonly searchForUser: SearchByFeature = async ({featureId, user}: any) => {
     const [
@@ -124,23 +127,28 @@ export class AccessService {
       this.searchFromGroup({featureId, user}),
       this.searchFromAccess({featureId, user}),
     ])
-    const tt: FeatureAccesses[] = fromAccess
-    const zz: FeatureAccesses[] = fromGroup.map(_ => {
-      return ({
+    return [
+      ...fromAccess,
+      ...fromGroup.map(_ => ({
         ..._,
         groupName: _.group?.name,
-      })
-    })
-    return [...tt, ...zz]
+      }))
+    ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
   }
 
-
   readonly create = (body: AccessCreateParams) => {
+    console.log('body', body)
     return Promise.all((body.drcJob ?? [undefined]).map(drcJob =>
       this.prisma.featureAccess.create({
         data: {
           ...body,
           drcJob,
+          level: body.level,
+          drcOffice: body.drcOffice,
+          email: body.email,
+          groupId: body.groupId,
+          featureId: body.featureId,
+          params: body.params ?? Prisma.DbNull,
         },
       })
     ))
@@ -163,42 +171,5 @@ export class AccessService {
         id
       },
     })
-  }
-
-  readonly byUser = (user: UserSession) => {
-    return this.prisma.featureAccess.findMany({
-        distinct: ['id'],
-        where: {
-          OR: [{
-            group: {
-              items: {
-                some: {
-                  OR: [
-                    {drcJob: {equals: user.drcJob, mode: 'insensitive' as const,}},
-                    {email: {equals: user.email, mode: 'insensitive' as const,}}
-                  ]
-                }
-              }
-            }
-          }, {
-            OR: [
-              {email: {equals: user.email, mode: 'insensitive' as const,}},
-              {
-                OR: [
-                  {drcOffice: user.drcOffice},
-                  {drcOffice: null},
-                  {drcOffice: ''},
-                ],
-                drcJob: {
-                  equals: user.drcJob,
-                  mode: 'insensitive' as const,
-                }
-              }
-            ]
-          }]
-        },
-        orderBy: {createdAt: 'desc',}
-      }
-    )
   }
 }
