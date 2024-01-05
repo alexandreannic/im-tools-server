@@ -114,19 +114,19 @@ export const getRoutes = (
     router.delete('/session', errorCatcher(session.logout))
     router.get('/session', errorCatcher(session.get))
 
-    router.put('/proxy', errorCatcher(proxy.create))
-    router.post('/proxy/:id', errorCatcher(proxy.update))
-    router.delete('/proxy/:id', errorCatcher(proxy.delete))
+    router.put('/proxy', auth({adminOnly: true}), errorCatcher(proxy.create))
+    router.post('/proxy/:id', auth({adminOnly: true}), errorCatcher(proxy.update))
+    router.delete('/proxy/:id', auth({adminOnly: true}), errorCatcher(proxy.delete))
     router.get('/proxy', errorCatcher(proxy.search))
 
-    router.get('/group/item', auth(), errorCatcher(accessGroup.getItems))
-    router.post('/group/item/:id', auth(), errorCatcher(accessGroup.updateItem))
-    router.delete('/group/item/:id', auth(), errorCatcher(accessGroup.removeItem))
-    router.put('/group/:id/item', auth(), errorCatcher(accessGroup.createItem))
-    router.get('/group', auth(), errorCatcher(accessGroup.getAllWithItems))
-    router.put('/group', auth(), errorCatcher(accessGroup.create))
-    router.post('/group/:id', auth(), errorCatcher(accessGroup.update))
-    router.delete('/group/:id', auth(), errorCatcher(accessGroup.remove))
+    router.get('/group/item', auth({adminOnly: true}), errorCatcher(accessGroup.getItems))
+    router.post('/group/item/:id', auth({adminOnly: true}), errorCatcher(accessGroup.updateItem))
+    router.delete('/group/item/:id', auth({adminOnly: true}), errorCatcher(accessGroup.removeItem))
+    router.put('/group/:id/item', auth({adminOnly: true}), errorCatcher(accessGroup.createItem))
+    router.get('/group', auth({adminOnly: true}), errorCatcher(accessGroup.getAllWithItems))
+    router.put('/group', auth({adminOnly: true}), errorCatcher(accessGroup.create))
+    router.post('/group/:id', auth({adminOnly: true}), errorCatcher(accessGroup.update))
+    router.delete('/group/:id', auth({adminOnly: true}), errorCatcher(accessGroup.remove))
 
     router.get('/access/me', auth(), errorCatcher(access.searchMine))
     router.get('/access', auth(), errorCatcher(access.search))
@@ -184,7 +184,8 @@ export const getRoutes = (
     // router.get('/ecrec', auth(), errorCatcher(ecrec.index))
     // router.get('/*', errorCatcher(ecrec.index))
   } catch (e) {
-    console.error('ROUTES CAUGHT!!!')
+    logger.error('Error caught in Routes.')
+    console.error(e)
   }
   return router
 }
