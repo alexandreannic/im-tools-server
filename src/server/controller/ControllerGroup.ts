@@ -58,7 +58,6 @@ export class ControllerGroup {
   readonly updateItem = async (req: Request, res: Response, next: NextFunction) => {
     const {id} = await ControllerGroup.idSchema.validate(req.params)
     const body = await GroupItemService.updateSchema.validate(req.body)
-    console.log('body,', body)
     const data = await this.itemService.update(id, body)
     res.send(data)
   }
