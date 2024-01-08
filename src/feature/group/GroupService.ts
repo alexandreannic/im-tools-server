@@ -70,7 +70,8 @@ export class GroupService {
         accesses: {
           every: {featureId}
         }
-      }
+      },
+      orderBy: {createdAt: 'desc'}
     })
   }
 }
