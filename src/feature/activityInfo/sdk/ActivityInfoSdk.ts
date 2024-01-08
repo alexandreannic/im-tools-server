@@ -14,7 +14,7 @@ interface ApiParams extends Omit<RequestInit, 'body'> {
 class Api {
 
   readonly request = (path: string, init?: ApiParams) => {
-    return fetch('https://www.activityinfo.org/' + path, {
+    return fetch('https://www.activityinfo.org' + path, {
       ...init,
       credentials: 'include',
       // body: init?.method === 'POST' ? body as any : undefined,

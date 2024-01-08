@@ -1964,6 +1964,7 @@ mdp: {
 	'YUK': `Yulia Kulakova`,
 	'KC': `Kateryna Chulska`,
 	'OD': `Olesya Dantseva`,
+	'LA': `Liliia Antonova`,
 	'IB': `Iryna Bidna`,
 	'ISMA': `Isabel Mary Pearson`,
 	'AC': `Anna Chuprina`,
@@ -1999,6 +2000,7 @@ mdd_001: {
 	'uhf3': `UKR-000276 UHF3`,
 	'uhf4': `UKR-000314 UHF4`,
 	'uhf5': `UKR-000316 UHF5`,
+	'uhf7': `UKR-000352 UHF7`,
 	'unhcr': `UKR-000291_292 UNHCR`,
 	'unhc': `UKR-000308 UNHCR`,
 	'danid': `UKR-000266 DANIDA`,
@@ -2022,6 +2024,13 @@ mdt: {
 	'gbv': `GBV`,
 	'livelihood': `Livelihood`,
 	'oth': `Other:`
+},
+visit_type: {
+	'shadowing': `Shadowing/”tag-along”`,
+	'monitoring': `Monitoring visit: conducting interviews/case stories`,
+	'handover': `Handover or Activity completion visit`,
+	'meeting': `Meeting with community, authorities, mobilizers etc.`,
+	'other': `Other`
 },
 pan: {
 	'mpca': `MPCA`,
@@ -2048,7 +2057,8 @@ pas: {
 	'harm': `House/ apartment repair (Handover completion visit)`,
 	'ipb': `Institution/ public building repair (mid-term assessment of the repair work)`,
 	'ipbm': `Institution/ public building repair (Handover completion visit)`,
-	'cfr': `Cash for Repair (cash for building repair registration)`
+	'cfr': `Cash for Repair (cash for building repair registration)`,
+	'cfs': `Cash for Shelter (cash for building repair assessment)`
 },
 pal: {
 	'mc': `Mobile Clinic`
@@ -2085,11 +2095,4 @@ visp: {
 	'mof': `Misappropriation of funds/ suspected corruption`,
 	'fod': `Falsification of documents`,
 	'oth': `Other`
-},
-visit_type: {
-	'shadowing': `Shadowing/”tag-along”`,
-	'monitoring': `Monitoring visit: conducting interviews/case stories`,
-	'handover': `Handover or Activity completion visit`,
-	'meeting': `Meeting with community, authorities, mobilizers etc.`,
-	'other': `Other`
 }}

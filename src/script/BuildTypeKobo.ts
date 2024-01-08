@@ -48,6 +48,12 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
       ]
     },
     {
+      formName: 'Protection_gbv', formId: koboFormsId.prod.protection_gbv, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
       formName: 'Protection_pss', formId: koboFormsId.prod.protection_groupSession, skipQuestionTyping: [
         'ben_det_hromada',
         'ben_det_raion',

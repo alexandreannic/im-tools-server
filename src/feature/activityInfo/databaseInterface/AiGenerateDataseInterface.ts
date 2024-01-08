@@ -41,6 +41,24 @@ export const ActivityInfoBuildType = {
     }
   }),
 
+  gbv: () => generateDatabaseInterface({
+    formId: activityInfoForms.gbv,
+    name: 'Gbv',
+    filterOptions: {
+      'Partner Organization': _ => {
+        return _.includes('Danish Refugee Council')
+      },
+    },
+    skipQuestionsOptions: [
+      /Oblast/,
+      /Raion/,
+      /Hromada/,
+      /Settlement/,
+      /Collective Centre/,
+      /Implementing Partner/,
+    ],
+  }),
+
   snfiRmm: () => generateDatabaseInterface({
     formId: activityInfoForms.snfiRmm,
     name: 'snfiRmm',
@@ -67,7 +85,7 @@ export const ActivityInfoBuildType = {
   }),
 
   mpcaRmm: () => generateDatabaseInterface({
-    optionsLimit: 200,
+    optionsLimit: 2000,
     formId: activityInfoForms.mpcaRmm,
     name: 'mpcaRmm',
     ignoredQuestions: [],
@@ -110,7 +128,7 @@ interface AIFormInformation {
 const generateDatabaseInterface = async ({
   formId,
   name,
-  optionsLimit = 20,
+  optionsLimit = 2000,
   ignoredQuestions = [],
   pickSpecificOptionSet = {},
   skipQuestionsOptions = [],
@@ -129,8 +147,8 @@ const generateDatabaseInterface = async ({
   outputDir?: string
 }) => {
   name = capitalizeFirstLetter(name)
-  const x = new ActivityInfoSdk()
-  const formDesc = await x.fetchForm(formId)
+  const sdk = new ActivityInfoSdk()
+  const formDesc = await sdk.fetchForm(formId)
 
   const getElements = (f: FormDescs, ids: AIID[]): FormDesc['schema']['elements'] => {
     const ignoredInputs = [
@@ -154,8 +172,8 @@ const generateDatabaseInterface = async ({
       .filter(_ => !ignoredQuestions.includes(_.label))
 
     const subFormsIds = seq(elements)
-      // .filter(_ => !!_.typeParameters.formId)
-      .map(_ => _.typeParameters.formId ?? _.typeParameters.range?.[0]?.formId)
+      .filter(_ => _.type === 'subform')
+      .map(_ => _.typeParameters?.formId ?? _.typeParameters?.range?.[0]?.formId)
       .compact()
       .get()
 
@@ -180,7 +198,7 @@ const generateDatabaseInterface = async ({
       return (f[optionId].schema.elements.find(_ => (_.code ?? '').includes('ENG')) ?? f[optionId].schema.elements[0]).id
     }
     const optionDefId = pickSpecificOptionSet[optionId] ?? columnsListMap[optionId]?.listId ?? getRandomOptions()
-    const options = await x.fetchColumns(optionId, optionDefId)
+    const options = await sdk.fetchColumns(optionId, optionDefId)
     const filter = filterOptions[e.label]
     return {
       formId: e.id,
@@ -192,7 +210,6 @@ const generateDatabaseInterface = async ({
 
   const print = async () => {
     const forms = getElements(formDesc, [formId])
-    console.log(forms)
     const options = await Promise.all(forms
       .filter(_ => _.type === 'reference' && !pickSpecificOptionSet[_.id])
       .map(_ => getOptions(formDesc, _))
