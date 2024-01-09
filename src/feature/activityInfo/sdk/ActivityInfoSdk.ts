@@ -98,7 +98,21 @@ export class ActivityInfoSdk {
 
   readonly fetchColumns = async (formId: AIID, optionDefId: AIID, filter?: string): Promise<{id: AIID, label: string}[]> => {
     return this.api.post(`/resources/query/columns`, {
-      body: {
+      body: formId === 'c3vbxtgldsw1as42' ? {
+        'rowSources': [{'rootFormId': 'c3vbxtgldsw1as42'}],
+        'columns': [
+          {'id': '_id', 'expression': '_id'},
+          {
+            'id': 'k[Protection Indicators.Activity: c3vbxtgldsw1as42.cykkilxldsw1s0h3]',
+            'expression': 'cykkilxldsw1s0h3'
+          }, {
+            'id': 'k[Protection Indicators.Indicator: c3vbxtgldsw1as42.ck5orstldsw7jfn5]',
+            'expression': 'ck5orstldsw7jfn5'
+          }],
+        'truncateStrings': false,
+        'filter': 'cvjz2klldswbsqzu.cuch0tlldswcanfw',
+        'tags': ['data-entry-ref', 'key-matrix']
+      } : {
         // filter: filter ? `_id == \\"${filter}\\"` : undefined,
         rowSources: [{'rootFormId': formId}],
         columns: [{'id': 'id', 'expression': '_id'}, {'id': 'k1', 'expression': optionDefId}],

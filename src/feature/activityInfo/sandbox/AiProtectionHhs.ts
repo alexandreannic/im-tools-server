@@ -1,4 +1,3 @@
-import {makeid} from '../../../helper/Utils'
 import {aiOblasts} from '../location/aiOblasts'
 import {aiRaions} from '../location/aiRaions'
 import {aiHromada} from '../location/aiHromada'

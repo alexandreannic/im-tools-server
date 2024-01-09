@@ -1,11 +1,11 @@
-import {AiProtectionHhs} from '../sandbox/AiProtectionHhs'
-import {ActivityInfoSdk} from '../sdk/ActivityInfoSdk'
-import {activityInfoForms, AIID, FormDesc, FormDescs} from '../model/ActivityInfo'
+import {AiProtectionHhs} from './sandbox/AiProtectionHhs'
+import {ActivityInfoSdk} from './sdk/ActivityInfoSdk'
+import {activityInfoForms, AIID, FormDesc, FormDescs} from './model/ActivityInfo'
 import {seq, fnSwitch} from '@alexandreannic/ts-utils'
 import fs from 'fs'
-import {capitalize, capitalizeFirstLetter} from '../../../helper/Utils'
+import {capitalize, capitalizeFirstLetter} from '../../helper/Utils'
 import columnsListMap = AiProtectionHhs.columnsListMap
-import {appConf} from '../../../core/conf/AppConf'
+import {appConf} from '../../core/conf/AppConf'
 
 export const ActivityInfoBuildType = {
   washRMM: () => generateDatabaseInterface({
@@ -233,7 +233,7 @@ const generateDatabaseInterface = async ({
 
   const generate = (data: AIFormInformation[]) => {
     fs.writeFileSync(outputDir + '/AiType' + capitalize(name) + '.ts',
-      `export namespace AiType${capitalize(name)} {` +
+      `export namespace Ai${capitalize(name)}Interface {` +
       generateInterface(data) + '\n\n' +
       generateMappingFn(data) + '\n\n' +
       generateOptions(data) + '\n\n' +
