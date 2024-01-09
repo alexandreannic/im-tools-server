@@ -87,7 +87,7 @@ export class AccessService {
   private readonly searchFromGroup = async ({featureId, user}: {featureId?: AppFeatureId, user?: UserSession}) => {
     return this.prisma.featureAccess.findMany({
       include: {
-        group: true,
+        group: {include: {items: true}},
       },
       where: {
         featureId: featureId,
@@ -127,12 +127,16 @@ export class AccessService {
       this.searchFromGroup({featureId, user}),
       this.searchFromAccess({featureId, user}),
     ])
+    const accessPriority = {[FeatureAccessLevel.Admin]: 2, [FeatureAccessLevel.Write]: 1, [FeatureAccessLevel.Read]: 0}
     return [
       ...fromAccess,
-      ...fromGroup.map(_ => ({
-        ..._,
-        groupName: _.group?.name,
-      }))
+      ...fromGroup.map(_ => {
+        return ({
+          ..._,
+          level: _.group?.items?.sort((a, b) => accessPriority[a.level] - accessPriority[b.level])[0]?.level ?? _.level,
+          groupName: _.group?.name,
+        })
+      })
     ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
   }
 
