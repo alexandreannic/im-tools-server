@@ -24,7 +24,6 @@ export class Server {
   constructor(
     private conf: AppConf = appConf,
     private pgClient: PrismaClient,
-    private koboClient: KoboSdk,
     // private ecrecSdk: EcrecSdk,
     // private legalaidSdk: LegalaidSdk,
     private services: Services,
@@ -111,7 +110,6 @@ export class Server {
     app.use(bodyParser.urlencoded({extended: false}))
     app.use(getRoutes(
       this.pgClient,
-      this.koboClient,
       // this.ecrecSdk,
       // this.legalaidSdk,
       this.services,

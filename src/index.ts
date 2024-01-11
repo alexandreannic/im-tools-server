@@ -1,8 +1,5 @@
-import {ApiClient} from './core/client/ApiClient'
-import {KoboSdk} from './feature/connector/kobo/KoboClient/KoboSdk'
 import {appConf} from './core/conf/AppConf'
 import {Server} from './server/Server'
-import {ServiceNfi} from './server/services/ServiceNfi'
 import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
 import {PrismaClient} from '@prisma/client'
@@ -14,28 +11,29 @@ import {ScheduledTask} from './scheduledTask/ScheduledTask'
 import {MpcaCachedDb} from './feature/mpca/db/MpcaCachedDb'
 import {EventEmitter} from 'events'
 import {ShelterCachedDb} from './feature/shelter/db/ShelterCachedDb'
+import {KoboSdkGenerator} from './feature/kobo/KoboSdkGenerator'
 
 export const appEventEmitter = new EventEmitter()
 
 const initServices = (
-  koboClient: KoboSdk,
+  // koboClient: KoboSdk,
   // ecrecSdk: EcrecSdk,
   // legalaidSdk: LegalaidSdk,
   prisma: PrismaClient
 ): Services => {
   // const ecrec = new ServiceEcrec(ecrecSdk)
   // const legalAid = new ServiceLegalAid(legalaidSdk)
-  const nfi = new ServiceNfi(koboClient)
+  // const nfi = new ServiceNfi(koboClient)
   const mpcaPayment = new MpcaPaymentService(prisma)
   const stats = new ServiceStats(
     // ecrec,
     // legalAid,
-    nfi,
+    // nfi,
   )
   return {
     // ecrec,
     // legalAid,
-    nfi,
+    // nfi,
     stats,
     mpcaPayment,
   }
@@ -53,13 +51,27 @@ const startApp = async () => {
   await new DbInit(conf, prisma).initializeDatabase()
   log.info(`Database initialized.`)
 
-  const koboSdk = new KoboSdk(new ApiClient({
-      baseUrl: conf.kobo.url + '/api',
-      headers: {
-        Authorization: KoboSdk.makeAuthorizationHeader(conf.kobo.token),
-      }
-    })
-  )
+  console.log(new Date().getTimezoneOffset())
+  const sdk = await new KoboSdkGenerator(prisma).get('4820279f-6c3d-47ba-8afe-47f86b16ab5d')
+  // await sdk.getFormv1().then(console.log)
+  // await sdk.getForms()
+  // .then(_ => console.log(JSON.stringify(_).slice(0, 100)))
+  // .then(_ => _.results.find(x => x.name === 'test')).then(console.log)
+  // await Promise.all([
+  //   sdk.submitSubmission({
+  //     formId: 'aExm7mBotx5mraTAdu8QNf',
+  //     versionId: 'vJKGn6BcW2jnmV4kac96Vq',
+  //   }).catch(e => console.error(1, e.details.code, e.message)),
+    // sdk.submitSubmission1({
+    //   formId: 'aExm7mBotx5mraTAdu8QNf',
+    //   versionId: 'vJKGn6BcW2jnmV4kac96Vq',
+    // }).catch(e => console.error(2, e.details.code, e.message)),
+    // sdk.submitSubmission2({
+    //   formId: 'aExm7mBotx5mraTAdu8QNf',
+    //   versionId: 'vJKGn6BcW2jnmV4kac96Vq',
+    // }).catch(e => console.error(3, e.details.code, e.message)),
+  // ])
+  // process.exit()
   // await KoboMigrateHHS2({
   //   prisma,
   //   serverId: koboServerId.prod,
@@ -91,7 +103,7 @@ const startApp = async () => {
   //   }
   // }))
   const services = initServices(
-    koboSdk,
+    // koboSdk,
     // ecrecAppSdk,
     // legalAidSdk,
     prisma,
@@ -107,7 +119,6 @@ const startApp = async () => {
   new Server(
     conf,
     prisma,
-    koboSdk,
     // ecrecAppSdk,
     // legalAidSdk,
     services,

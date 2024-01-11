@@ -1,7 +1,3 @@
-import {ServiceEcrec} from './ServiceEcrec'
-import {ServiceLegalAid} from './ServiceLegalAid'
-import {ServiceNfi} from './ServiceNfi'
-import {nfisTranslations} from '../../feature/connector/kobo/KoboFormTransformer/KoboNfiMcpa'
 import {Cache} from '@alexandreannic/ts-utils'
 import {MaybePeriod} from '../../core/Type'
 
@@ -40,7 +36,6 @@ const translations = {
     totalNFIs: 'total NFIs distributed',
     totalBabyKits: 'received with baby winter clothing and hygiene kits for children',
     totalWinterizationKits: 'received Winterisation support (blankets, baby winter clothing)',
-    ...nfisTranslations,
   }
 }
 
@@ -49,7 +44,7 @@ export class ServiceStats {
   constructor(
     // private ecrec: ServiceEcrec,
     // private legalAid: ServiceLegalAid,
-    private nfi: ServiceNfi,
+    // private nfi: ServiceNfi,
   ) {
   }
 

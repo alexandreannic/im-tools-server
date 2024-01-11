@@ -1,6 +1,4 @@
 import express, {NextFunction, Request, Response} from 'express'
-import {ControllerNfiMpca} from './controller/ControllerNfiMpca'
-import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
 import {Logger} from '../helper/Logger'
 import {ControllerMain} from './controller/ControllerMain'
 import {Services} from './services'
@@ -42,7 +40,6 @@ export const errorCatcher = (handler: (req: Request, res: Response, next: NextFu
 
 export const getRoutes = (
   prisma: PrismaClient,
-  koboSdk: KoboSdk,
   // ecrecSdk: EcrecSdk,
   // legalAidSdk: LegalaidSdk,
   services: Services,
@@ -51,11 +48,6 @@ export const getRoutes = (
   const cache = apicache.middleware
 
   const router = express.Router()
-  const nfi = new ControllerNfiMpca(
-    koboSdk,
-    services.nfi,
-    logger
-  )
   // const ecrec = new ControllerEcrec(
   //   ecrecSdk,
   // )
@@ -179,8 +171,6 @@ export const getRoutes = (
     router.post('/meal-verification/answer/:id', auth(), errorCatcher(mealVerification.updateAnswerStatus))
 
     // router.get('/legalaid', auth(), errorCatcher(legalaid.index))
-    router.get('/nfi/raw', auth(), errorCatcher(nfi.raw))
-    router.get('/nfi', auth(), errorCatcher(nfi.index))
     // router.get('/ecrec', auth(), errorCatcher(ecrec.index))
     // router.get('/*', errorCatcher(ecrec.index))
   } catch (e) {
