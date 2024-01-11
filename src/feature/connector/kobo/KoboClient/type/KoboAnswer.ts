@@ -105,6 +105,10 @@ export class KoboAnswerUtils {
     }
   }
 
+  static readonly mapKoboSubmissionTime = (_: any): Date => {
+    return new Date(_)
+  }
+
   static readonly mapAnswer = (k: ApiKoboAnswerMetaData & Record<string, any>): KoboAnswer => {
     delete k['formhub/uuid']
     delete k['meta/instanceId']
@@ -125,14 +129,13 @@ export class KoboAnswerUtils {
       _submitted_by,
       ...answers
     } = k
+    const submissionTime = KoboAnswerUtils.mapKoboSubmissionTime(_submission_time)
     return {
-      // start: start,
-      // end: end,
       attachments: _attachments,
       geolocation: _geolocation,
-      start: new Date(start ?? _submission_time),
-      end: new Date(end ?? _submission_time),
-      submissionTime: new Date(_submission_time),
+      start: start ? new Date(start) : submissionTime,
+      end: end ? new Date(end) : submissionTime,
+      submissionTime,
       version: __version__,
       id: '' + _id,
       uuid: _uuid,
