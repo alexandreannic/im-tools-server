@@ -21,7 +21,7 @@ export class KoboEvent {
 
   readonly emitTagEdited = (params: KoboEventTagEdited) => {
     this.emitter.emit(KoboEvent.TAG_EDITED, params)
-    this.log.info(`Emitted ${KoboEvent.TAG_EDITED}`)
+    this.log.info(`Emitted ${KoboEvent.TAG_EDITED}`, params.formId, params.tags)
   }
 
   readonly listenTagEdited = (cb: (_: KoboEventTagEdited) => void) => {

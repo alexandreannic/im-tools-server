@@ -69,6 +69,7 @@ export class KoboSyncServer {
     const handleCreate = async () => {
       const notInsertedAnswers = remoteAnswers.filter(_ => !localAnswersIndex.has(_.id))
       const inserts = notInsertedAnswers.map(_ => {
+        this.log.info(`handle create _.submissionTime ${_.submissionTime.toISOString()}; ${_.submissionTime.toLocaleTimeString()}.`)
         const res: Prisma.KoboAnswersUncheckedCreateInput = {
           formId,
           answers: _.answers,

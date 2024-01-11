@@ -44,6 +44,8 @@ const initServices = (
 const startApp = async () => {
   const log = logger('')
   log.info(`Starting...`)
+  const date = new Date()
+  log.info(date.toISOString() + ', offset: ' + date.getTimezoneOffset())
   const conf = appConf
 
   const prisma = new PrismaClient()
