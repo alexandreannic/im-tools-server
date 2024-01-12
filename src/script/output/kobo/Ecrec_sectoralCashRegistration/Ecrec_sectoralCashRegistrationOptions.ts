@@ -29,7 +29,6 @@ back_enum: {
 	'polina_prusakova': `Polina Prusakova`,
 	'nlv_ex1': `Extra 1`,
 	'nlv_ex2': `Extra 2`,
-	'oleh_vyshnevskyi': `Oleh Vyshevskyi`,
 	'alina_bondarenko': `Alina Bondarenko`,
 	'serhii_dolzhenko': `Serhii Dolzhenko`,
 	'viktoria_klymenko': `Viktoria Klymenko`,
@@ -44,6 +43,8 @@ back_enum: {
 	'vita_zolotarevska': `Vita Zolotarevska`,
 	'olha_sakharnova': `Olha Sakharnova`,
 	'andrii_matvieiev': `Andrii Matvieiev`,
+	'sofiia_berezhna': `Sofiia Berezhna`,
+	'illia_kutsenko': `Illia Kutsenko`,
 	'dnk_ex1': `Extra 1`,
 	'dnk_ex2': `Extra 2`,
 	'yurii_volkov': `Yurii Volkov`,
@@ -53,6 +54,7 @@ back_enum: {
 	'tetiana_konovshii': `Tetiana Konovshii`,
 	'bohdan_taranushchenko': `Bohdan Taranushchenko`,
 	'olena_buglo': `Olena Buglo`,
+	'vitalii_shapoval': `Vitalii Shapoval`,
 	'hrk_ex1': `Extra 1`,
 	'hrk_ex2': `Extra 2`,
 	'dmytro_chernukha': `Chernukha Dmytro`,
@@ -79,7 +81,8 @@ back_enum: {
 	'umy_ex1': `Extra 1`,
 	'umy_ex2': `Extra 2`,
 	'umy_ex3': `Extra 3`,
-	'umy_ex4': `Extra 4`
+	'umy_ex4': `Extra 4`,
+	'oleh_vyshnevskyi': `Oleh Vyshevskyi`
 },
 back_donor: {
 	'uhf6': `UHF-6 (UKR-000336)`,
