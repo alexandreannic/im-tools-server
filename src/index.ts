@@ -1,4 +1,4 @@
-import {appConf} from './core/conf/AppConf'
+import {AppConf, appConf} from './core/conf/AppConf'
 import {Server} from './server/Server'
 import {ServiceStats} from './server/services/ServiceStats'
 import {Services} from './server/services'
@@ -39,76 +39,21 @@ const initServices = (
   }
 }
 
-const startApp = async () => {
+const startApp = async (conf: AppConf) => {
   const log = logger('')
   log.info(`Starting...`)
-  const date = new Date()
-  log.info(date.toISOString() + ', offset: ' + date.getTimezoneOffset())
-  const conf = appConf
 
   const prisma = new PrismaClient()
   log.info(`Initialize database ${conf.db.url.split('@')[1]}...`)
   await new DbInit(conf, prisma).initializeDatabase()
   log.info(`Database initialized.`)
 
-  console.log(new Date().getTimezoneOffset())
-  const sdk = await new KoboSdkGenerator(prisma).get('4820279f-6c3d-47ba-8afe-47f86b16ab5d')
-  // await sdk.getFormv1().then(console.log)
-  // await sdk.getForms()
-  // .then(_ => console.log(JSON.stringify(_).slice(0, 100)))
-  // .then(_ => _.results.find(x => x.name === 'test')).then(console.log)
-  // await Promise.all([
-  //   sdk.submitSubmission({
-  //     formId: 'aExm7mBotx5mraTAdu8QNf',
-  //     versionId: 'vJKGn6BcW2jnmV4kac96Vq',
-  //   }).catch(e => console.error(1, e.details.code, e.message)),
-    // sdk.submitSubmission1({
-    //   formId: 'aExm7mBotx5mraTAdu8QNf',
-    //   versionId: 'vJKGn6BcW2jnmV4kac96Vq',
-    // }).catch(e => console.error(2, e.details.code, e.message)),
-    // sdk.submitSubmission2({
-    //   formId: 'aExm7mBotx5mraTAdu8QNf',
-    //   versionId: 'vJKGn6BcW2jnmV4kac96Vq',
-    // }).catch(e => console.error(3, e.details.code, e.message)),
-  // ])
-  // process.exit()
-  // await KoboMigrateHHS2({
-  //   prisma,
-  //   serverId: koboServerId.prod,
-  //   oldFormId: koboFormsId.prod.protectionHh_2,
-  //   newFormId: koboFormsId.prod.protectionHh_2_1,
-  // }).run()
-
-  // try {
-  //   await new KoboService(prisma).generateXLSForHHS({
-  //     // start: new Date(2023, 5, 1),
-  //     // end: new Date(2023, 6, 1),
-  // })
-  // } catch (e) {
-  //   console.error(e)
-  // }
-
-  // const wfpSdk = new WFPBuildingBlockSdk(await new WfpBuildingBlockClient({
-  //   login: appConf.buildingBlockWfp.login,
-  //   password: appConf.buildingBlockWfp.password,
-  //   otpUrl: appConf.buildingBlockWfp.otpURL,
-  // }).generate())
-  // await new WfpDeduplicationUpload(prisma, wfpSdk).saveAll()
-
-  // const ecrecAppSdk = new EcrecSdk(new EcrecClient(appConf.ecrecApp))
-  // const legalAidSdk = new LegalaidSdk(new ApiClient({
-  //   baseUrl: 'https://api.lau-crm.org.ua',
-  //   headers: {
-  //     'x-auth-token': appConf.legalAid.apiToken,
-  //   }
-  // }))
   const services = initServices(
     // koboSdk,
     // ecrecAppSdk,
     // legalAidSdk,
     prisma,
   )
-
 
   if (conf.production) {
     new ScheduledTask(prisma).start()
@@ -126,4 +71,4 @@ const startApp = async () => {
 }
 
 // runAi.washRMM()
-startApp()
+startApp(appConf)

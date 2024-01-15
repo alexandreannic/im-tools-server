@@ -2,8 +2,8 @@ import {ApiPaginate} from '../../../../core/Type'
 import {ApiClient} from '../../../../core/client/ApiClient'
 import {KoboAnswer, KoboAnswerId, KoboAnswerParams, KoboAnswerUtils, KoboApiList, KoboApiVersion, KoboId} from './type/KoboAnswer'
 import {KoboApiForm} from './type/KoboApiForm'
-import {Cache, map} from '@alexandreannic/ts-utils'
-import axios, {AxiosError} from 'axios'
+import {map} from '@alexandreannic/ts-utils'
+import axios from 'axios'
 import {appConf} from '../../../../core/conf/AppConf'
 
 const koboToApiPaginate = <T>(_: KoboApiList<T>): ApiPaginate<T> => {

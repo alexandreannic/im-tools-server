@@ -50,8 +50,8 @@ export class Server {
       // console.error('[errorHandler()]', err)
       this.log.error(`[${errorId}] Error ${err.code}: ${err.message}\n${err.stack} on ${req.method} ${req.url} - ${JSON.stringify(req.body)}`)
       console.log({data: err.code === 500 ? 'Something went wrong.' : err.message, errorId})
-      res.status(err.code ?? 500).json({
-        data: err.code === 500 ? 'Something went wrong.' : err.message,
+      res.status(500).json({
+        data: err.message ?? 'Something went wrong.',
         errorId
       })
     } catch (e) {
