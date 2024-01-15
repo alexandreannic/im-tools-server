@@ -40,9 +40,10 @@ export class ShelterDbService {
 
     nta.forEach(d => {
       if (!index[d.id]) index[d.id] = {}
+      const oblast = OblastIndex.byKoboName(d.ben_det_oblast)
       index[d.id].nta = d
-      index[d.id].oblastIso = fnSwitch(d.ben_det_oblast!, OblastIndex.koboOblastIndexIso, () => '')
-      index[d.id].oblast = fnSwitch(d.ben_det_oblast!, OblastIndex.koboOblastIndex, () => '')
+      index[d.id].oblastIso = oblast?.iso
+      index[d.id].oblast = oblast?.name
       index[d.id].office = fnSwitch(d.back_office!, {
         cej: DrcOffice.Chernihiv,
         dnk: DrcOffice.Dnipro,

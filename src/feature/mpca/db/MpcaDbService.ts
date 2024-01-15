@@ -2,7 +2,7 @@ import {PrismaClient} from '@prisma/client'
 import {KoboMappedAnswersService} from '../../kobo/KoboMappedAnswersService'
 import {fnSwitch, Seq, seq} from '@alexandreannic/ts-utils'
 import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcUa'
-import {OblastIndex} from '../../../core/oblastIndex'
+import {OblastIndex, OblastKoboName} from '../../../core/oblastIndex'
 import {KoboAnswerFilter} from '../../kobo/KoboService'
 import {ApiPaginate, Gender, toApiPaginate} from '../../../core/Type'
 import {WfpDeduplicationService} from '../../wfpDeduplication/WfpDeduplicationService'
@@ -129,6 +129,7 @@ export class MpcaDbService {
     }).then(_ => {
       return _.data.map(_ => {
         const group = [..._.hh_char_hh_det ?? [], {hh_char_hh_det_age: _.hh_char_hhh_age, hh_char_hh_det_gender: _.hh_char_hhh_gender}]
+        const oblast = OblastIndex.byKoboName(_.ben_det_oblast!)
         return {
           source: 'bn_re',
           enumerator: Bn_ReOptions.back_enum[_.back_enum!],
@@ -142,8 +143,8 @@ export class MpcaDbService {
             nlv: DrcOffice.Mykolaiv,
             umy: DrcOffice.Sumy,
           }, () => undefined),
-          oblast: fnSwitch(_.ben_det_oblast!, OblastIndex.koboOblastIndex, () => undefined),
-          oblastIso: fnSwitch(_.ben_det_oblast!, OblastIndex.koboOblastIndexIso, () => undefined),
+          oblast: oblast.name,
+          oblastIso: oblast.iso,
           raion: Bn_ReOptions.ben_det_raion[_.ben_det_raion!],
           hromada: Bn_ReOptions.ben_det_hromada[_.ben_det_hromada!],
           prog: seq(_.back_prog_type)?.map(prog => fnSwitch(prog.split('_')[0], {
@@ -257,36 +258,39 @@ export class MpcaDbService {
   private readonly searchBn_cashForRepair = (filters: KoboAnswerFilter): Promise<MpcaEntity[]> => {
     return this.kobo.searchShelter_cashForRepair(filters)
       .then(_ => {
-        return _.data.map(_ => ({
-          source: 'shelter_cashForRepair',
-          prog: [MpcaProgram.CashForRent],
-          enumerator: Shelter_cashForRepairOptions.name_enum[_.name_enum!],
-          oblast: fnSwitch(_.ben_det_oblast ?? (_ as any).ben_det_oblastgov!, OblastIndex.koboOblastIndex, () => undefined),
-          oblastIso: fnSwitch(_.ben_det_oblast ?? (_ as any).ben_det_oblastgov!, OblastIndex.koboOblastIndexIso, () => undefined),
-          office: fnSwitch(_.back_office!, {
-            dnk: DrcOffice.Dnipro,
-            hrk: DrcOffice.Kharkiv,
-            nlv: DrcOffice.Mykolaiv,
-            cej: DrcOffice.Chernihiv,
-            umy: DrcOffice.Sumy,
-          }, () => undefined),
-          id: _.id,
-          date: _.submissionTime,
-          donor: undefined,
-          lastName: _.bis,
-          firstName: _.bif,
-          patronyme: _.bip,
-          hhSize: _.bihm,
-          // passportSerie: _.pay_det_pass_ser,
-          passportNum: _.pay_det_pass_num,
-          taxId: _.pay_det_tax_id_num,
-          taxIdFileName: _.pay_det_tax_id_ph,
-          taxIdFileURL: _.attachments?.find(x => x.filename.includes(_.pay_det_tax_id_ph)),
-          idFileName: _.pay_det_id_ph,
-          idFileURL: _.attachments?.find(x => x.filename.includes(_.pay_det_id_ph)),
-          phone: _.bin ? '' + _.bin : undefined,
-          tags: _.tags as MpcaDataTag,
-        }))
+        return _.data.map(_ => {
+          const oblast = OblastIndex.byKoboName(_.ben_det_oblast ?? (_ as any).ben_det_oblastgov)
+          return ({
+            source: 'shelter_cashForRepair',
+            prog: [MpcaProgram.CashForRent],
+            enumerator: Shelter_cashForRepairOptions.name_enum[_.name_enum!],
+            oblast: oblast.name,
+            oblastIso: oblast.iso,
+            office: fnSwitch(_.back_office!, {
+              dnk: DrcOffice.Dnipro,
+              hrk: DrcOffice.Kharkiv,
+              nlv: DrcOffice.Mykolaiv,
+              cej: DrcOffice.Chernihiv,
+              umy: DrcOffice.Sumy,
+            }, () => undefined),
+            id: _.id,
+            date: _.submissionTime,
+            donor: undefined,
+            lastName: _.bis,
+            firstName: _.bif,
+            patronyme: _.bip,
+            hhSize: _.bihm,
+            // passportSerie: _.pay_det_pass_ser,
+            passportNum: _.pay_det_pass_num,
+            taxId: _.pay_det_tax_id_num,
+            taxIdFileName: _.pay_det_tax_id_ph,
+            taxIdFileURL: _.attachments?.find(x => x.filename.includes(_.pay_det_tax_id_ph)),
+            idFileName: _.pay_det_id_ph,
+            idFileURL: _.attachments?.find(x => x.filename.includes(_.pay_det_id_ph)),
+            phone: _.bin ? '' + _.bin : undefined,
+            tags: _.tags as MpcaDataTag,
+          })
+        })
       })
   }
 
@@ -315,7 +319,10 @@ export class MpcaDbService {
     }).then(_ => {
       return _.data.map(_ => {
         const group = [..._.hh_char_hh_det_l ?? [], {hh_char_hh_det_age_l: _.hh_char_hhh_age_l, hh_char_hh_det_gender_l: _.hh_char_hhh_gender_l}]
-        const oblast = fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndex, () => _.submissionTime.getMonth() === 5 ? 'Mykolaivska' : undefined)
+        const oblastIso = fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!,
+          OblastIndex.koboOblastIndexIso,
+          () => _.submissionTime.getMonth() === 5 ? OblastIndex.byName('Mykolaivska').iso : undefined)
+        const oblast = OblastIndex.byIso(oblastIso)?.name
         return ({
           source: 'bn_rapidResponse',
           enumerator: Bn_RapidResponseOptions.back_enum_l[_.back_enum ?? _.back_enum_l!],
@@ -379,7 +386,7 @@ export class MpcaDbService {
               }, () => undefined)
           })(),
           oblast,
-          oblastIso: fnSwitch(_.ben_det_oblast ?? _.ben_det_oblast_l!, OblastIndex.koboOblastIndexIso, () => _.submissionTime.getMonth() === 5 ? 'UA48' : undefined),
+          oblastIso,
           raion: Bn_RapidResponseOptions.ben_det_raion_l[_.ben_det_raion_l!],
           hromada: Bn_RapidResponseOptions.ben_det_hromada_l[_.ben_det_hromada_l!],
           // amountUahSupposed: _.ass_inc_mpca_ben_l as any,
@@ -430,7 +437,7 @@ export class MpcaDbService {
     }).then(_ => {
       return _.data.map(_ => {
         const group = [..._.group_in3fh72 ?? [], {GenderHH: _.gender_respondent, AgeHH: _.agex}]
-        const oblast = fnSwitch(_.oblast!, OblastIndex.koboOblastIndex, () => undefined)
+        const oblast = OblastIndex.byKoboName(_.oblast)
         return ({
           source: 'bn_1_mpcaNfi',
           id: _.id,
@@ -460,8 +467,8 @@ export class MpcaDbService {
           //   Chernihivska: DrcOffice.Chernihiv,
           //   Kharkivska: DrcOffice.Kharkiv,
           // }, () => undefined),
-          oblast,
-          oblastIso: fnSwitch(_.oblast!, OblastIndex.koboOblastIndexIso, () => undefined),
+          oblast: oblast?.name,
+          oblastIso: oblast?.iso,
           donor: DrcDonor.BHA,
           project: DrcProject['UKR-000284 BHA'],
           benefStatus: fnSwitch(_.status!, {
@@ -508,18 +515,13 @@ export class MpcaDbService {
     return this.kobo.searchBn_0_mpcaRegNewShort(filters)
       .then(_ => {
         return _.data.map(_ => {
-          const oblastIso = fnSwitch(_.oblast!, {
-            chernihivska: OblastIndex.findISOByName('Chernihivska'),
-          }, d => {
-            if (d === undefined) return undefined
-            throw new Error(`Unhandled oblast ${_.oblast}`)
-          })
+          const oblast = OblastIndex.byKoboName(_.oblast)
           return {
             source: 'bn_0_mpcaRegNewShort',
             prog: [MpcaProgram.MPCA],
             enumerator: Bn_OldMpcaNfiOptions.staff_names[_.staff_names!],
-            oblast: OblastIndex.oblastByISO[oblastIso!],
-            oblastIso,
+            oblast: oblast?.name,
+            oblastIso: oblast?.iso,
             office: fnSwitch(_.drc_base!, {
               chj: DrcOffice.Chernihiv,
             }, () => {
@@ -553,24 +555,23 @@ export class MpcaDbService {
     return this.kobo.searchBn_0_mpcaReg(filters)
       .then(_ => {
         return _.data.map(_ => {
-          const oblastIso = fnSwitch(_.oblast!, {
-            dnipropetrovska: OblastIndex.findISOByName('Dnipropetrovska'),
-            lvivska: OblastIndex.findISOByName('Lvivska'),
-            chernihivska: OblastIndex.findISOByName('Chernihivska'),
-            chernivetska: OblastIndex.findISOByName('Chernivetska'),
-            mykolaivska: OblastIndex.findISOByName('Mykolaivska'),
-            khersonska: OblastIndex.findISOByName('Khersonska'),
-            donetska: OblastIndex.findISOByName('Donetska'),
+          const oblast = fnSwitch(_.oblast!, {
+            dnipropetrovska: OblastIndex.byName('Dnipropetrovska'),
+            lvivska: OblastIndex.byName('Lvivska'),
+            chernihivska: OblastIndex.byName('Chernihivska'),
+            chernivetska: OblastIndex.byName('Chernivetska'),
+            mykolaivska: OblastIndex.byName('Mykolaivska'),
+            khersonska: OblastIndex.byName('Khersonska'),
+            donetska: OblastIndex.byName('Donetska'),
           }, d => {
-            if (d === undefined) return undefined
-            throw new Error(`Unhandled oblast ${_.oblast}`)
+            return OblastIndex.byKoboName(d)
           })
           return {
             source: 'bn_0_mpcaReg',
             prog: [MpcaProgram.MPCA],
             enumerator: Bn_OldMpcaNfiOptions.staff_names[_.staff_names!],
-            oblast: OblastIndex.oblastByISO[oblastIso!],
-            oblastIso,
+            oblast: oblast?.name,
+            oblastIso: oblast?.iso,
             office: fnSwitch(_.drc_base!, {
               dnk: DrcOffice.Dnipro,
               lwo: DrcOffice.Lviv,
@@ -607,23 +608,22 @@ export class MpcaDbService {
     return this.kobo.searchBn_0_mpcaRegNoSig(filters)
       .then(_ => {
         return _.data.map(_ => {
-          const oblastIso = fnSwitch(_.oblast!, {
-            dnipropetrovska: OblastIndex.findISOByName('Dnipropetrovska'),
-            lvivska: OblastIndex.findISOByName('Lvivska'),
-            chernihivska: OblastIndex.findISOByName('Chernihivska'),
-            chernivetska: OblastIndex.findISOByName('Chernivetska'),
-            mykolaivska: OblastIndex.findISOByName('Mykolaivska'),
-            khersonska: OblastIndex.findISOByName('Khersonska'),
-            donetska: OblastIndex.findISOByName('Donetska'),
+          const oblast = fnSwitch(_.oblast!, {
+            dnipropetrovska: OblastIndex.byName('Dnipropetrovska'),
+            lvivska: OblastIndex.byName('Lvivska'),
+            chernihivska: OblastIndex.byName('Chernihivska'),
+            chernivetska: OblastIndex.byName('Chernivetska'),
+            mykolaivska: OblastIndex.byName('Mykolaivska'),
+            khersonska: OblastIndex.byName('Khersonska'),
+            donetska: OblastIndex.byName('Donetska'),
           }, d => {
-            if (d === undefined) return undefined
-            throw new Error(`Unhandled oblast ${_.oblast}`)
+            return OblastIndex.byKoboName(d)
           })
           return {
             source: 'bn_0_mpcaRegNoSig',
             prog: [MpcaProgram.MPCA],
-            oblast: OblastIndex.oblastByISO[oblastIso!],
-            oblastIso,
+            oblast: oblast.name,
+            oblastIso: oblast.iso,
             office: fnSwitch(_.drc_base!, {
               dnk: DrcOffice.Dnipro,
               lwo: DrcOffice.Lviv,
@@ -654,28 +654,27 @@ export class MpcaDbService {
     return this.kobo.searchBn_0_mpcaRegESign(filters)
       .then(_ => {
         return _.data.map(_ => {
-          const oblastIso = fnSwitch(_.oblast!, {
-            dnipropetrovska: OblastIndex.findISOByName('Dnipropetrovska'),
-            lvivska: OblastIndex.findISOByName('Lvivska'),
-            chernihivska: OblastIndex.findISOByName('Chernihivska'),
-            chernivetska: OblastIndex.findISOByName('Chernivetska'),
-            mykolaivska: OblastIndex.findISOByName('Mykolaivska'),
-            khersonska: OblastIndex.findISOByName('Khersonska'),
-            donetska: OblastIndex.findISOByName('Donetska'),
-            kharkivska: OblastIndex.findISOByName('Kharkivska'),
-            kyivska: OblastIndex.findISOByName('Kyivska'),
-            luhanska: OblastIndex.findISOByName('Luhanska'),
-            zaporizka: OblastIndex.findISOByName('Zaporizka'),
-            odeska: OblastIndex.findISOByName('Odeska'),
+          const oblast = fnSwitch(_.oblast!, {
+            dnipropetrovska: OblastIndex.byName('Dnipropetrovska'),
+            lvivska: OblastIndex.byName('Lvivska'),
+            chernihivska: OblastIndex.byName('Chernihivska'),
+            chernivetska: OblastIndex.byName('Chernivetska'),
+            mykolaivska: OblastIndex.byName('Mykolaivska'),
+            khersonska: OblastIndex.byName('Khersonska'),
+            donetska: OblastIndex.byName('Donetska'),
+            kharkivska: OblastIndex.byName('Kharkivska'),
+            kyivska: OblastIndex.byName('Kyivska'),
+            luhanska: OblastIndex.byName('Luhanska'),
+            zaporizka: OblastIndex.byName('Zaporizka'),
+            odeska: OblastIndex.byName('Odeska'),
           }, d => {
-            if (d === undefined) return undefined
-            throw new Error(`Unhandled oblast ${_.oblast}`)
+            return OblastIndex.byKoboName(_.oblast)
           })
           return {
             source: 'bn_0_mpcaRegESign',
             prog: [MpcaProgram.MPCA],
-            oblast: OblastIndex.oblastByISO[oblastIso!],
-            oblastIso,
+            oblast: oblast?.name,
+            oblastIso: oblast?.iso,
             office: fnSwitch(_.drc_base!, {
               dnk: DrcOffice.Dnipro,
               lwo: DrcOffice.Lviv,
