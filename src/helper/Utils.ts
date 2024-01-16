@@ -113,6 +113,15 @@ export const removeHtml = (_?: string) => _?.replace(/(<([^>]+)>)/gi, '')
 
 export namespace Util {
 
+  export const promiseSequentially = async <T>(promises: (() => Promise<T>)[]): Promise<T[]> => {
+    const results: T[] = []
+    for (const promise of promises) {
+      const result = await promise()
+      results.push(result)
+    }
+    return results
+  }
+
   export const logThen = (log: string) => <T>(args: T): T => {
     console.log(log, args)
     return args

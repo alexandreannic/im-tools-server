@@ -3,6 +3,7 @@ import {ActivityInfoSdk} from '../../feature/activityInfo/sdk/ActivityInfoSdk'
 import {logger, Logger} from '../../helper/Logger'
 import {appConf} from '../../core/conf/AppConf'
 import {AppError} from '../../helper/Errors'
+import {Util} from '../../helper/Utils'
 
 export class ControllerActivityInfo {
 
@@ -22,14 +23,14 @@ export class ControllerActivityInfo {
         throw new AppError.Forbidden('only_owner_can_submit_ai')
       }
       this.log.info(`Insert ${activities.length} activities`)
-      const status = await Promise.all(activities.map(this.api.publish)).then(_ => _.map(_ => JSON.parse(_))).catch(console.log)
-      console.log(status)
-      if (status?.find(_ => !!_.code)) {
-        console.error(status)
-        throw new AppError.BadRequest('cannot insert activity')
-      }
+      const status = await Util.promiseSequentially(activities.map(_ => () => this.api.publish(_)))//.then(_ => _.map(_ => JSON.parse(_)))
+      // const status = await Promise.all(activities.map(this.api.publish))//.then(_ => _.map(_ => JSON.parse(_)))
+      // if (status?.find(_ => !!_.code)) {
+      //   console.error(status)
+      //   throw new AppError.BadRequest('cannot insert activity')
+      // }
       this.log.info(`${activities.length} activities inserted !`)
-      res.send()
+      res.send(status)
     } catch (e) {
       console.error(activities)
       this.log.error(`Failed to insert ${activities.length} activities`)
