@@ -22,6 +22,13 @@ export const appConf = {
     login: e(required)('BUILDINGBLOCK_WFP_LOGIN'),
     password: e(required)('BUILDINGBLOCK_WFP_PASSWORD'),
   },
+  dbAzureHdp: {
+    host: e(required)('DBAZUREHDP_HOST'),
+    user: e(required)('DBAZUREHDP_USER'),
+    password: e(required)('DBAZUREHDP_PWD'),
+    port: e(required, int)('DBAZUREHDP_PORT'),
+    schema: 'hdp',
+  },
   db: {
     maxConcurrency: e(int, defaultValue(100))('DATABASE_MAX_CONCURRENCY'),
     url: e(required)('DATABASE_URL')
