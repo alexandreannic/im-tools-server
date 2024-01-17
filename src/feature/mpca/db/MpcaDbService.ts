@@ -128,7 +128,16 @@ export class MpcaDbService {
       }
     }).then(_ => {
       return _.data.map(_ => {
-        const group = [..._.hh_char_hh_det ?? [], {hh_char_hh_det_age: _.hh_char_hhh_age, hh_char_hh_det_gender: _.hh_char_hhh_gender}]
+        const group = [..._.hh_char_hh_det ?? [],
+          {
+            hh_char_hh_det_age: _.hh_char_hhh_age,
+            hh_char_hh_det_gender: _.hh_char_hhh_gender
+          },
+          {
+            hh_char_hh_det_age: _.hh_char_res_age,
+            hh_char_hh_det_gender: _.hh_char_res_gender,
+          },
+        ]
         const oblast = OblastIndex.byKoboName(_.ben_det_oblast!)
         return {
           source: 'bn_re',
