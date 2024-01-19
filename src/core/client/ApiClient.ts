@@ -30,7 +30,7 @@ export interface ApiClientApi {
   readonly patch: <T = any>(uri: string, options?: RequestOption) => Promise<T>
 }
 
-export type StatusCode = 'front-side' | 200 | 301 | 302 | 400 | 401 | 403 | 404 | 423 | 500 | 504
+export type StatusCode = 'uncaught' | 200 | 301 | 302 | 400 | 401 | 403 | 404 | 423 | 500 | 504
 
 export interface ApiErrorDetails {
   code: StatusCode
@@ -105,9 +105,8 @@ export class ApiClient {
                 error: _,
               })
             }
-            console.error(_)
             throw new ApiError(`Something not caught went wrong`, {
-              code: 'front-side',
+              code: 'uncaught',
               error: _,
               request,
             })

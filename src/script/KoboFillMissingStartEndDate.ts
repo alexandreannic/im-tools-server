@@ -17,7 +17,7 @@ export const KoboFillMissingStartEndDate = async ({
   const promises = answers.map(answer => {
     return sdk.updateData({
       formId,
-      submissionId: answer.id,
+      submissionIds: [answer.id],
       questionName: 'start',
       newValue: answer.submissionTime.toISOString(),
     })

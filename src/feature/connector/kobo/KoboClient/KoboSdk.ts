@@ -5,6 +5,7 @@ import {KoboApiForm} from './type/KoboApiForm'
 import {map} from '@alexandreannic/ts-utils'
 import axios from 'axios'
 import {appConf} from '../../../../core/conf/AppConf'
+import {KoboForm} from '@prisma/client'
 
 const koboToApiPaginate = <T>(_: KoboApiList<T>): ApiPaginate<T> => {
   return {
@@ -35,6 +36,7 @@ export class KoboSdk {
       return _
     })
   }
+
   readonly edit = (formId: KoboId, answerId: KoboAnswerId) => {
     return this.api.get<{url: string, detail?: string}>(`/v2/assets/${formId}/data/${answerId}/enketo/edit/?return_url=false`)
   }
@@ -52,13 +54,13 @@ export class KoboSdk {
 
   readonly updateData = ({
     formId,
-    submissionId,
+    submissionIds,
     group,
     questionName,
     newValue,
   }: {
     formId: KoboId,
-    submissionId: string,
+    submissionIds: string[],
     group?: string,
     questionName: string,
     newValue: string
@@ -69,10 +71,10 @@ export class KoboSdk {
     //   }
     // })
     return this.api.patch(`/v2/assets/${formId}/data/bulk/`, {
-      qs: {format: 'json'},
+      // qs: {format: 'json'},
       body: {
         payload: {
-          submissionId: [submissionId],
+          submission_ids: submissionIds,
           data: {[(group ? group + '/' : '') + questionName]: newValue}
         }
       }
@@ -109,7 +111,7 @@ export class KoboSdk {
 
   readonly getForms = () => {
     // return this.api.get(`/v2/assets/`)
-    return this.api.get(`/v2/assets/?q=asset_type%3Asurvey&limit=200`)
+    return this.api.get<KoboApiList<KoboForm>>(`/v2/assets/?q=asset_type%3Asurvey&limit=200`)
   }
 
   readonly getAttachement = (path: string) => {
