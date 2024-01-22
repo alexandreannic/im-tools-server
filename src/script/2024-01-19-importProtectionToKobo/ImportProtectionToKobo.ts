@@ -4,9 +4,11 @@ import fs from 'fs'
 import {appConf} from '../../core/conf/AppConf'
 import * as csvToJson from 'csvtojson'
 import {PromisePool} from '@supercharge/promise-pool'
-import {Seq, seq} from '@alexandreannic/ts-utils'
+import {Enum, fnSwitch, Seq, seq} from '@alexandreannic/ts-utils'
 import {ImporterGroupSessionHrk} from './ImporterGroupSessionHrk'
 import {ImportPssLwo} from './ImporterPssLwo'
+import {ImportPssCej} from './ImporterPssCej'
+import {ImporterGroupSessionCej} from './ImporterGroupSessionCej'
 
 
 (async () => {
@@ -59,7 +61,6 @@ import {ImportPssLwo} from './ImporterPssLwo'
     })
   }
 
-
   // await submit({
   //   filePath: config.fileName.pssLwo,
   //   formId: config.formId.pss,
@@ -75,6 +76,33 @@ import {ImportPssLwo} from './ImporterPssLwo'
   //   formId: config.formId.groupSession,
   //   activity: (csv, i) => ImporterGroupSessionHrk.map(csv, config.importComment((i))),
   // })
+  await submit<ImportPssCej.Csv, ImportPssCej.GroupedRow>({
+    filePath: config.fileName.pssCej,
+    formId: config.formId.pss,
+    transform: (data) => {
+      const gb = data.groupBy(_ => _['Session No'])
+      return Enum.values(gb).map((rows) => {
+        return {
+          ...rows[0],
+          participants: rows.map(_ => ({
+            hh_char_hh_det_age: +_.Age,
+            hh_char_hh_det_gender: fnSwitch(_.Gender, {
+              Male: 'male',
+              Female: 'female',
+            }),
+            hh_char_hh_det_status: fnSwitch(_.Status, {
+              'Conflict affected': 'unspec',
+              'IDP': 'idp',
+              'Refugee': 'other',
+              'Host community': 'other',
+              'IDP Returnee': 'returnee',
+            }),
+          }))
+        }
+      })
+    },
+    activity: (csv, i) => ImportPssCej.map(csv, `Imported programmatically from CSV tracker. Index: ${i}`),
+  })
   // await submit<ImporterGroupSessionCej.Csv, ImporterGroupSessionCej.GroupedRow>({
   //   filePath: config.fileName.groupSessionCej,
   //   formId: config.formId.groupSession,

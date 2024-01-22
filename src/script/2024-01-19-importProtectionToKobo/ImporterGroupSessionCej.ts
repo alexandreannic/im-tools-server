@@ -27,26 +27,7 @@ export namespace ImporterGroupSessionCej {
     'Comments': string
   }
 
-  export interface GroupedRow {
-    'Area code': string
-    'Donor': string
-    'Project Code': string
-    'Session No': string
-    'legal or protection': string
-    'Oblast': string
-    'Raion': string
-    'Hromada': string
-    'Location name': string
-    'Date': string
-    'Topic': string
-    'Language': string
-    'Facilitator': string
-    'Settlement type': string
-    'Gender': string
-    'Age': string
-    'Status': string
-    'Delivered': string
-    'Comments': string
+  export interface GroupedRow extends Omit<Csv, 'Age' | 'Gender' | 'Status'> {
     participants: NonNullable<Protection_groupSession['hh_char_hh_det']>
   }
 
