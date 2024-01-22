@@ -207,7 +207,7 @@ export class WfpDeduplicationUpload {
             where: prismaSearch.where,
             data: {
               office: office ? officeMapping[office] : undefined,
-              filePath: _.fileName,
+              fileName: _.fileName,
               fileUpload: new Date(_.finishedAt)
             }
           })

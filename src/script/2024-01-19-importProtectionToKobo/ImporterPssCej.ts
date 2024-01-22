@@ -44,7 +44,8 @@ export namespace ImportPssCej {
   }
 
   export const map = (_: GroupedRow, comments: string): ImportKoboPss => {
-    const date = mapDate(_.Date)
+    console.log(_.Hromada, _['Location name'])
+    const date = setHours(parse(_.Date, 'dd MMMM yyyy', new Date()), 11).toISOString() as any
     return {
       start: date,
       end: date,
@@ -60,12 +61,16 @@ export namespace ImportPssCej {
           'Chernihivskyi': 'chernihivskyi',
           'Koriukivskyi': 'koriukivskyi',
           'Novhorod-Siverskyi': 'novhorod',
+          'Nizhinskyi': 'nizhynskyi',
+          'Prylutskyi': 'prylutskyi',
+          'Pryluski': 'prylutskyi',
           'Vyshhorodskyi': 'vysochanska',
-
         }),
         ben_det_hromada: fnSwitch(_.Hromada, {
           'Horodnianska': 'horodnianska',
           'Novobilouska': 'novobilouska',
+          'Kyselivska': 'kyselivska',
+          'Ivanivska': 'ivanivska_i',
           'Novhorod-Siverska': 'novhorod',
           'Menska': 'menska',
           'Kiptivska': 'kiptivska',
@@ -73,13 +78,23 @@ export namespace ImportPssCej {
           'Tupychivska': 'tupychivska',
           'Kyinska': 'kyinska',
           'Kholmynska': 'kholmynska',
-          'Mykhailo-Kotsiubynska': 'mykhailo',
+          'Nizhinskyi': 'nizhynskyi',
+          'Mykhailo-Kotsiubynska': 'mykhailo-kotsiubynska',
+          'Mykhajlo-Kotsiubynska': 'mykhailo-kotsiubynska',
+          'Koriukivska': 'koriukivska',
+          'Snovska': 'Snovska',
+          'Chernihivska': 'chernihivska_2',
+          'Ichnianska': 'ichnianska',
+          'Ponornytska': 'ponornytska',
+          'Sednivska': 'sednivska',
+          'Prylutskyi': 'prylutskyi',
+          Bakhmachska: 'bakhmatska',
         }),
         ben_det_hromada_001: _['Location Name'],
         location: fnSwitch(_['Settlement type'], {
           'Rural': 'other',
           'Urban': 'other',
-        }),
+        }, () => 'other'),
       },
       gi: {
         activity: 'pss',
