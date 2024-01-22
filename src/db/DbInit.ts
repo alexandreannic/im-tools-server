@@ -151,16 +151,18 @@ export class DbInit {
           data: {
             id: koboServerId.prod,
             url: 'https://kobo.humanitarianresponse.info',
+            urlV1: 'https://kc-eu.kobotoolbox.org',
             token: appConf.kobo.token,
           }
         }),
-        // this.prisma.koboServer.create({
-        //   data: {
-        //     id: koboServerId.dev,
-        //     url: 'https://kf.kobotoolbox.org',
-        //     token: 'TODO',
-        //   }
-        // })
+        this.prisma.koboServer.create({
+          data: {
+            id: koboServerId.dev,
+            url: 'https://kf.kobotoolbox.org',
+            urlV1: 'https://kc.kobotoolbox.org',
+            token: 'TODO',
+          }
+        })
       ])
     }
   }

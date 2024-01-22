@@ -12,6 +12,7 @@ import {MpcaCachedDb} from './feature/mpca/db/MpcaCachedDb'
 import {EventEmitter} from 'events'
 import {ShelterCachedDb} from './feature/shelter/db/ShelterCachedDb'
 import {KoboSdkGenerator} from './feature/kobo/KoboSdkGenerator'
+import {koboFormsId} from './core/conf/KoboFormsId'
 
 export const appEventEmitter = new EventEmitter()
 
@@ -48,6 +49,37 @@ const startApp = async (conf: AppConf) => {
   await new DbInit(conf, prisma).initializeDatabase()
   log.info(`Database initialized.`)
 
+  // process.exit()
+  // await KoboMigrateHHS2({
+  //   prisma,
+  //   serverId: koboServerId.prod,
+  //   oldFormId: koboFormsId.prod.protectionHh_2,
+  //   newFormId: koboFormsId.prod.protectionHh_2_1,
+  // }).run()
+
+  // try {
+  //   await new KoboService(prisma).generateXLSForHHS({
+  //     // start: new Date(2023, 5, 1),
+  //     // end: new Date(2023, 6, 1),
+  // })
+  // } catch (e) {
+  //   console.error(e)
+  // }
+
+  // const wfpSdk = new WFPBuildingBlockSdk(await new WfpBuildingBlockClient({
+  //   login: appConf.buildingBlockWfp.login,
+  //   password: appConf.buildingBlockWfp.password,
+  //   otpUrl: appConf.buildingBlockWfp.otpURL,
+  // }).generate())
+  // await new WfpDeduplicationUpload(prisma, wfpSdk).saveAll()
+
+  // const ecrecAppSdk = new EcrecSdk(new EcrecClient(appConf.ecrecApp))
+  // const legalAidSdk = new LegalaidSdk(new ApiClient({
+  //   baseUrl: 'https://api.lau-crm.org.ua',
+  //   headers: {
+  //     'x-auth-token': appConf.legalAid.apiToken,
+  //   }
+  // }))
   const services = initServices(
     // koboSdk,
     // ecrecAppSdk,
