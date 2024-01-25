@@ -1,4 +1,49 @@
-export const Protection_groupSessionOptions = {
+export namespace Protection_groupSession {
+export type Option<T extends keyof typeof options> = keyof (typeof options)[T]
+	// Form id: a8Tn94arrSaH2FQBhUa9Zo
+	export interface T {
+	    start: string,
+	    end: string,
+	  // [date] Date
+  date: Date | undefined,
+	  // [select_one] DRC office
+  staff_to_insert_their_DRC_office: undefined | Option<'staff_to_insert_their_DRC_office'>,
+	  // [select_one] Staff code (facilitator)
+  staff_code: undefined | Option<'staff_code_001'>,
+	  // [select_one] Staff code (facilitator)
+  staff_code_001: undefined | Option<'staff_code_001'>,
+	  // [select_one] Project code
+  project: undefined | Option<'project'>,
+	  // [select_one] Select oblast
+  ben_det_oblast: undefined | Option<'ben_det_oblast'>,
+	  // [select_one] Select raion
+  ben_det_raion: undefined | string,
+	  // [select_one] Select hromada
+  ben_det_hromada: undefined | string,
+	  // [text] Specify settlement/village/city neighborhood
+  ben_det_hromada_001: string | undefined,
+	  // [select_one] Location
+  location: undefined | Option<'location'>,
+	  // [text] If "Other", please specify
+  location_other: string | undefined,
+	  // [select_one] Which topic was the group information session about?
+  activity: undefined | Option<'activity'>,
+	  // [text] If "Other", please specify
+  activity_other: string | undefined,
+	  // [text] Precise topic
+  activity_topic: string | undefined,
+	  // [select_one] Are they new beneficiaries?
+  new_ben: undefined | Option<'new_ben'>,
+	  // [integer] If no new beneficiaries, session number
+  new_ben_no: number | undefined,
+	  // [integer] Number of participants
+  numb_part: number | undefined,
+	  // [begin_repeat] Participant
+  hh_char_hh_det: {hh_char_hh_det_gender: undefined | Option<'hh_char_hh_det_gender'> | undefined,hh_char_hh_det_age: number | undefined | undefined,hh_char_hh_det_status: undefined | Option<'hh_char_hh_det_status'> | undefined}[] | undefined,
+	  // [text] Comments
+  comments: string | undefined,
+	}
+export const options = {
 staff_to_insert_their_DRC_office: {
 	'chernihiv': `Chernihiv`,
 	'dnipro': `Dnipro`,
@@ -2074,3 +2119,22 @@ hh_char_hh_det_status: {
 	'unspec': `Unspecified`,
 	'other': `Other`
 }}
+
+const extractQuestionName = (_: Record<string, any>) => {
+  const output: any = {}
+  Object.entries(_).forEach(([k, v]) => {
+    const arr = k.split('/')
+    const qName = arr[arr.length - 1]
+    output[qName] = v
+  })
+  return output
+}
+
+export const map = (_: Record<keyof T, any>): T => ({
+	..._,
+	date: _.date ? new Date(_.date) : undefined,
+	new_ben_no: _.new_ben_no ? +_.new_ben_no : undefined,
+	numb_part: _.numb_part ? +_.numb_part : undefined,
+	hh_char_hh_det: _.hh_char_hh_det?.map(extractQuestionName),
+}) as T
+}
