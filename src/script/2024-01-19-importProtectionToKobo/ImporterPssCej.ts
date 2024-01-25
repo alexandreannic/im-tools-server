@@ -44,14 +44,13 @@ export namespace ImportPssCej {
   }
 
   export const map = (_: GroupedRow, comments: string): ImportKoboPss => {
-    console.log(_.Hromada, _['Location name'])
     const date = setHours(parse(_.Date, 'dd MMMM yyyy', new Date()), 11).toISOString() as any
     return {
       start: date,
       end: date,
       introduction: {
         date: date,
-        staff_to_insert_their_DRC_office: 'lviv',
+        staff_to_insert_their_DRC_office: 'chernihiv',
         project: 'echo',
         ben_det_oblast: fnSwitch(_.Oblast, {
           Kyivska: 'kyivska',
