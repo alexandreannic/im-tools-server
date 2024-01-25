@@ -6,6 +6,16 @@ export interface KoboV1Form {
   id_string: KoboId
 }
 
+interface SubmitResponse {
+  message?: 'Successful submission.',
+  formid?: KoboId
+  encrypted?: boolean,
+  instanceID?: string,
+  submissionDate?: string,
+  markedAsCompleteDate?: string
+  error?: 'Duplicate submission'
+}
+
 export class KoboSdkV1 {
   constructor(private api: ApiClient) {
   }
@@ -19,13 +29,11 @@ export class KoboSdkV1 {
   }) => {
     const uuid = await this.getForms().then(_ => _.find(f => f.id_string === formId)?.uuid)
     if (!uuid) throw new Error(`Kobo form id ${formId} not found.`)
-    return this.api.post(`/submissions.json`, {
+    return this.api.post<SubmitResponse>(`/submissions.json`, {
       body: {
         id: formId,
         submission: {
-          formhub: {
-            uuid,
-          },
+          formhub: {uuid,},
           ...data,
         }
       }

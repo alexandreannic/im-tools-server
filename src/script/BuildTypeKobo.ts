@@ -43,14 +43,14 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
     },
     {
       formName: 'Protection_groupSession', formId: koboFormsId.prod.protection_groupSession, skipQuestionTyping: [
-        'ben_det_hromada',
-        'ben_det_raion',
+        // 'ben_det_hromada',
+        // 'ben_det_raion',
       ]
     },
     {
       formName: 'Protection_pss', formId: koboFormsId.prod.protection_groupSession, skipQuestionTyping: [
-        'ben_det_hromada',
-        'ben_det_raion',
+        // 'ben_det_hromada',
+        // 'ben_det_raion',
       ]
     },
     {formName: 'Bn_cashForRentApplication', formId: koboFormsId.prod.bn_cashForRentApplication},

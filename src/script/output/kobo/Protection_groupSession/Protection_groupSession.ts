@@ -19,9 +19,9 @@ export interface Protection_groupSession {
   // [select_one] Select oblast
   ben_det_oblast: undefined | Opt<'ben_det_oblast'>,
   // [select_one] Select raion
-  ben_det_raion: undefined | string,
+  ben_det_raion: undefined | Opt<'ben_det_raion'>,
   // [select_one] Select hromada
-  ben_det_hromada: undefined | string,
+  ben_det_hromada: undefined | Opt<'ben_det_hromada'>,
   // [text] Specify settlement/village/city neighborhood
   ben_det_hromada_001: string | undefined,
   // [select_one] Location

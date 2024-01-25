@@ -145,7 +145,7 @@ export class DbInit {
 
   private readonly createServer = async () => {
     const serversCount = await this.prisma.koboServer.count()
-    if (serversCount === 0) {
+    if (serversCount < 2) {
       return Promise.all([
         this.prisma.koboServer.create({
           data: {

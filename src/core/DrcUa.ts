@@ -98,6 +98,10 @@ export const drcDonorProjectCode: Record<DrcDonor, DrcProject[]> = {
   [DrcDonor.HoffmansAndHusmans]: [DrcProject['UKR-000341 Hoffmans & Husmans']],
 }
 
+export const findDrcProject = (_: string) => {
+  return Object.keys(DrcProject).find(_ => _.includes(_)) as DrcProject
+}
+
 export const donorByProject: Record<DrcProject, DrcDonor> = Enum.entries(drcDonorProjectCode)
   .reduce((acc, [donor, projects]) => {
     projects.forEach(project => {

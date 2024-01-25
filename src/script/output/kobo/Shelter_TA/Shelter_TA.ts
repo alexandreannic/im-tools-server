@@ -10,6 +10,8 @@ export interface Shelter_TA {
   nta_form: undefined | Opt<'nta_form'>,
   // [text] NTA ID
   nta_id: string | undefined,
+  // [text] Interwiever's name
+  interwiever_name: string | undefined,
   // [select_one] Specify the Oblast
   ben_det_oblast: undefined | Opt<'ben_det_oblast'>,
   // [select_one] Specify the Rayon
@@ -22,39 +24,39 @@ export interface Shelter_TA {
   ben_det_addres: string | undefined,
   // [select_one] House or Apartment
   house_or_apartment: undefined | Opt<'house_or_apartment'>,
-  // [decimal] 1.1 Dismantling of structures (M3)
+  // [decimal] ####1.1 Dismantling of structures (M3)
   dismantling_of_structures: number | undefined,
-  // [note] 1.2 Single-shutter window, triple-glazed
+  // [note] ####1.2 Single-shutter window, triple-glazed
   singleshutter_window_tripleglazed: string,
   // [decimal] pc
   singleshutter_window_tripleglazed_pc: number | undefined,
   // [decimal] m2
   singleshutter_window_tripleglazed_m: number | undefined,
-  // [note] 1.3 Single-shutter window,double-glazed
+  // [note] ####1.3 Single-shutter window,double-glazed
   singleshutter_windowdoubleglazed: string,
   // [decimal] pc
   singleshutter_windowdoubleglazed_pc: number | undefined,
   // [decimal] m2
   singleshutter_windowdoubleglazed_m: number | undefined,
-  // [note] 1.4 Double-shutter window triple-glazed
+  // [note] ####1.4 Double-shutter window triple-glazed
   doubleshutter_window_tripleglazed: string,
   // [decimal] pc
   doubleshutter_window_tripleglazed_pc: number | undefined,
   // [decimal] m2
   doubleshutter_window_tripleglazed_m: number | undefined,
-  // [note] 1.5 Double-shutter window double-glazed
+  // [note] ####1.5 Double-shutter window double-glazed
   doubleshutter_window_doubleglazed: string,
   // [decimal] pc
   doubleshutter_window_doubleglazed_pc: number | undefined,
   // [decimal] m2
   doubleshutter_window_doubleglazed_m: number | undefined,
-  // [note] 1.6 Glass replacement double-glazed
+  // [note] ####1.6 Glass replacement double-glazed
   glass_replacement_doubleglazed: string,
   // [decimal] pc
   glass_replacement_doubleglazed_pc: number | undefined,
   // [decimal] m2
   glass_replacement_doubleglazed_m: number | undefined,
-  // [note] 1.7 Glass replacement triple-glazed
+  // [note] ####1.7 Glass replacement triple-glazed
   glass_replacement_tripleglazed: string,
   // [decimal] pc
   glass_replacement_tripleglazed_pc: number | undefined,
@@ -62,11 +64,11 @@ export interface Shelter_TA {
   glass_replacement_tripleglazed_m: number | undefined,
   // [decimal] 1.8 Outer seels galvanized with PVC coating (lm)
   outer_seels_galvanized_with_pvc_coating_lm: number | undefined,
-  // [decimal] 1.9 Window slopes (m2)
+  // [decimal] ####1.9 Window slopes (m2)
   window_slopes_m: number | undefined,
-  // [decimal] 1.10 Minor window repairs (pc)
+  // [decimal] ####1.10 Minor window repairs (pc)
   minor_window_repairs_pc: number | undefined,
-  // [note] 1.11 Double-glazed UPVC door (pc)
+  // [note] ####1.11 Double-glazed UPVC door (pc)
   doubleglazed_upvc_door: string,
   // [decimal] pc
   doubleglazed_upvc_door_pc: number | undefined,
@@ -92,13 +94,13 @@ export interface Shelter_TA {
   mineral_wool_for_the_ceiling_m: number | undefined,
   // [decimal] 2.10 Plaster, primer and finishing painting (m2)
   plaster_primer_and_finishing_painting_m: number | undefined,
-  // [decimal] 2.11 Wooden lathing (20 mm x 200 mm) (ml)
+  // [decimal] ####2.11 Wooden lathing (20 mm x 200 mm) (m2)
   wooden_lathing__mm_x__mm_ml: number | undefined,
-  // [decimal] 2.12 Wooden beams (50 mm x 300 mm) (ml)
+  // [decimal] ####2.12 Wooden beams (50 mm x 300 mm) (m2)
   wooden_beams__mm_x__mm_ml: number | undefined,
-  // [decimal] 2.13 Roof Shiffer (m2)
+  // [decimal] ####2.13 Roof Shiffer (m2)
   roof_shiffer_m: number | undefined,
-  // [decimal] 2.14 Roof metal sheets (m2)
+  // [decimal] ####2.14 Roof metal sheets (m2)
   roof_metal_sheets_m: number | undefined,
   // [decimal] 2.15 Roof onduline sheets (m2)
   roof_onduline_sheets_m: number | undefined,
@@ -110,9 +112,9 @@ export interface Shelter_TA {
   waterproofing_barrier_sheet_m: number | undefined,
   // [decimal] 2.19 Steam vapor barrier sheet (m2)
   steam_vapor_barrier_sheet_m: number | undefined,
-  // [decimal] 2.20 External doors (pc)
+  // [decimal] ####2.20 External doors (pc)
   external_doors_pc: number | undefined,
-  // [decimal] 2.21 Internal wooden doors (pc)
+  // [decimal] ####2.21 Internal wooden doors (pc)
   internal_wooden_doors_pc: number | undefined,
   // [decimal] 2.22 Electrical wiring (lm)
   electrical_wiring_lm: number | undefined,
@@ -136,13 +138,13 @@ export interface Shelter_TA {
   compact_toilet_bowl_including_seat_and_lid_pc: number | undefined,
   // [decimal] 2.32 Water heater of up to 50 liters dry ten (pc)
   water_heater_of_up_to__liters_dry_ten_pc: number | undefined,
-  // [note] 2.33 Steel radiator
+  // [note] #####2.33 Steel radiator
   steel_radiator: string,
   // [decimal] 600 mm
   steel_radiator_600mm: number | undefined,
   // [decimal] 800mm
   steel_radiator_800mm: number | undefined,
-  // [note] 2.34 Steel radiator
+  // [note] #####2.34 Steel radiator
   steel_radiator2: string,
   // [decimal] 1000mm
   steel_radiator_1000: number | undefined,
