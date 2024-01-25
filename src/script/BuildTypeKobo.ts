@@ -18,23 +18,23 @@ interface KoboInterfaceGeneratorParams {
 
 export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) => {
   const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
-    {
-      formName: 'Shelter_north', formId: koboFormsId.prod.shelter_north,
-    },
-    {
-      formName: 'Partnership_partnersDatabase', formId: koboFormsId.prod.partnership_partnersDatabase,
-      overrideOptionsByQuestion: {
-        Type_of_organization: {
-          'municipal_organization_or_othe': [`Government-run entity`],
-        }
-      }
-    },
-    {
-      formName: 'Partnership_assessment', formId: koboFormsId.prod.partnership_assessment,
-    },
-    {
-      formName: 'Partnership_initialQuestionnaire', formId: koboFormsId.prod.partnership_initialQuestionnaire,
-    },
+    // {
+    //   formName: 'Shelter_north', formId: koboFormsId.prod.shelter_north,
+    // },
+    // {
+    //   formName: 'Partnership_partnersDatabase', formId: koboFormsId.prod.partnership_partnersDatabase,
+    //   overrideOptionsByQuestion: {
+    //     Type_of_organization: {
+    //       'municipal_organization_or_othe': [`Government-run entity`],
+    //     }
+    //   }
+    // },
+    // {
+    //   formName: 'Partnership_assessment', formId: koboFormsId.prod.partnership_assessment,
+    // },
+    // {
+    //   formName: 'Partnership_initialQuestionnaire', formId: koboFormsId.prod.partnership_initialQuestionnaire,
+    // },
     {
       formName: 'Protection_communityMonitoring', formId: koboFormsId.prod.protection_communityMonitoring, skipQuestionTyping: [
         'ben_det_hromada',
@@ -42,70 +42,80 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
       ]
     },
     {
+      formName: 'Protection_gbv', formId: koboFormsId.prod.protection_gbv, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
       formName: 'Protection_groupSession', formId: koboFormsId.prod.protection_groupSession, skipQuestionTyping: [
-        // 'ben_det_hromada',
-        // 'ben_det_raion',
+        'ben_det_hromada',
+        'ben_det_raion',
       ]
     },
     {
       formName: 'Protection_pss', formId: koboFormsId.prod.protection_groupSession, skipQuestionTyping: [
-        // 'ben_det_hromada',
-        // 'ben_det_raion',
-      ]
-    },
-    {formName: 'Bn_cashForRentApplication', formId: koboFormsId.prod.bn_cashForRentApplication},
-    {formName: 'Bn_RapidResponse', formId: koboFormsId.prod.bn_rapidResponse},
-    {formName: 'Shelter_cashForRepair', formId: koboFormsId.prod.shelter_cashForRepair},
-    {
-      formName: 'Ecrec_sectoralCashRegistration', formId: koboFormsId.prod.ecrec_sectoralCashRegistration, skipQuestionTyping: [
         'ben_det_hromada',
         'ben_det_raion',
       ]
     },
+    // {formName: 'Bn_cashForRentApplication', formId: koboFormsId.prod.bn_cashForRentApplication},
+    // {formName: 'Bn_RapidResponse', formId: koboFormsId.prod.bn_rapidResponse},
+    // {formName: 'Shelter_cashForRepair', formId: koboFormsId.prod.shelter_cashForRepair},
+    // {
+    //   formName: 'Ecrec_sectoralCashRegistration', formId: koboFormsId.prod.ecrec_sectoralCashRegistration, skipQuestionTyping: [
+    //     'ben_det_hromada',
+    //     'ben_det_raion',
+    //   ]
+    // },
+    // {
+    //   formName: 'Meal_VerificationEcrec', formId: koboFormsId.prod.meal_VerificationEcrec, skipQuestionTyping: [
+    //     'ben_det_hromada',
+    //     'ben_det_raion',
+    //   ]
+    // },
+    // {
+    //   formName: 'Meal_VerificationWinterization', formId: koboFormsId.prod.meal_VerificationWinterization, skipQuestionTyping: [
+    //     'ben_det_hromada',
+    //     'ben_det_raion',
+    //   ]
+    // },
+    // {
+    //   formName: 'Meal_VisitMonitoring', formId: koboFormsId.prod.meal_VisitMonitoring, skipQuestionTyping: [
+    //     'ben_det_hromada',
+    //     'ben_det_raion',
+    //   ]
+    // },
+    // {
+    //   formName: 'Meal_CfmInternal', formId: koboFormsId.prod.mealCfmInternal, skipQuestionTyping: [
+    //     'ben_det_hromada',
+    //     'ben_det_raion',
+    //   ]
+    // },
+    // {
+    //   formName: 'Meal_CfmExternal', formId: koboFormsId.prod.mealCfmExternal, skipQuestionTyping: [
+    //     'ben_det_hromada',
+    //     'ben_det_raion',
+    //   ]
+    // },
+    // {
+    //   formName: 'Shelter_NTA', formId: koboFormsId.prod.shelter_NTA, skipQuestionTyping: [
+    //     'ben_det_hromada',
+    //     'ben_det_raion',
+    //   ]
+    // },
+    // {
+    //   formName: 'Shelter_TA', formId: koboFormsId.prod.shelter_TA, skipQuestionTyping: [
+    //     'ben_det_hromada',
+    //     'ben_det_raion',
+    //   ]
+    // },
     {
-      formName: 'Meal_VerificationEcrec', formId: koboFormsId.prod.meal_VerificationEcrec, skipQuestionTyping: [
-        'ben_det_hromada',
-        'ben_det_raion',
-      ]
+      formName: 'Bn_rapidResponseSidar',
+      formId: koboFormsId.prod.bn_rapidResponseSidar,
     },
     {
-      formName: 'Meal_VerificationWinterization', formId: koboFormsId.prod.meal_VerificationWinterization, skipQuestionTyping: [
-        'ben_det_hromada',
-        'ben_det_raion',
-      ]
-    },
-    {
-      formName: 'Meal_VisitMonitoring', formId: koboFormsId.prod.meal_VisitMonitoring, skipQuestionTyping: [
-        'ben_det_hromada',
-        'ben_det_raion',
-      ]
-    },
-    {
-      formName: 'Meal_CfmInternal', formId: koboFormsId.prod.mealCfmInternal, skipQuestionTyping: [
-        'ben_det_hromada',
-        'ben_det_raion',
-      ]
-    },
-    {
-      formName: 'Meal_CfmExternal', formId: koboFormsId.prod.mealCfmExternal, skipQuestionTyping: [
-        'ben_det_hromada',
-        'ben_det_raion',
-      ]
-    },
-    {
-      formName: 'Shelter_NTA', formId: koboFormsId.prod.shelter_NTA, skipQuestionTyping: [
-        'ben_det_hromada',
-        'ben_det_raion',
-      ]
-    },
-    {
-      formName: 'Shelter_TA', formId: koboFormsId.prod.shelter_TA, skipQuestionTyping: [
-        'ben_det_hromada',
-        'ben_det_raion',
-      ]
-    },
-    {
-      formName: 'Protection_Hhs2_1',
+      formName: 'Protection_hhs',
       formId: koboFormsId.prod.protection_Hhs2_1,
       overrideAllOptions: {
         other_specify: ['Other'],
@@ -133,23 +143,23 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
         }
       }
     },
-    {
-      formName: 'Bn_0_mpcaRegNewShort', formId: koboFormsId.prod.bn_0_mpcaRegNewShort, skipQuestionTyping: ['hromada', 'raion']
-    },
-    {
-      formName: 'Bn_0_mpcaReg', formId: koboFormsId.prod.bn_0_mpcaReg, skipQuestionTyping: ['hromada', 'raion']
-    },
-    {
-      formName: 'Bn_0_mpcaRegNoSig', formId: koboFormsId.prod.bn_0_mpcaRegNoSig, skipQuestionTyping: ['hromada', 'raion']
-    },
-    {
-      formName: 'Bn_0_mpcaRegESign', formId: koboFormsId.prod.bn_0_mpcaRegESign, skipQuestionTyping: ['hromada', 'raion']
-    },
-    {formName: 'Bn_Re', formId: koboFormsId.prod.bn_re},
-    {formName: 'Bn_OldMpcaNfi', formId: koboFormsId.prod.bn_1_mpcaNfi},
-    {formName: 'Bn_OldMpcaNfiNaa', formId: koboFormsId.prod.bn_1_mpcaNfiNaa},
-    {formName: 'Bn_OldMpcaNfiMyko', formId: koboFormsId.prod.bn_1_mpcaNfiMyko},
-    {formName: 'Protection_Hhs2', formId: koboFormsId.prod.protection_Hhs2},
+    // {
+    //   formName: 'Bn_0_mpcaRegNewShort', formId: koboFormsId.prod.bn_0_mpcaRegNewShort, skipQuestionTyping: ['hromada', 'raion']
+    // },
+    // {
+    //   formName: 'Bn_0_mpcaReg', formId: koboFormsId.prod.bn_0_mpcaReg, skipQuestionTyping: ['hromada', 'raion']
+    // },
+    // {
+    //   formName: 'Bn_0_mpcaRegNoSig', formId: koboFormsId.prod.bn_0_mpcaRegNoSig, skipQuestionTyping: ['hromada', 'raion']
+    // },
+    // {
+    //   formName: 'Bn_0_mpcaRegESign', formId: koboFormsId.prod.bn_0_mpcaRegESign, skipQuestionTyping: ['hromada', 'raion']
+    // },
+    // {formName: 'Bn_Re', formId: koboFormsId.prod.bn_re},
+    // {formName: 'Bn_OldMpcaNfi', formId: koboFormsId.prod.bn_1_mpcaNfi},
+    // {formName: 'Bn_OldMpcaNfiNaa', formId: koboFormsId.prod.bn_1_mpcaNfiNaa},
+    // {formName: 'Bn_OldMpcaNfiMyko', formId: koboFormsId.prod.bn_1_mpcaNfiMyko},
+    // {formName: 'Protection_Hhs2', formId: koboFormsId.prod.protection_Hhs2},
   ]
   return Promise.all(forms.map(f => new KoboInterfaceGenerator(koboSdk, {
     outDir,
@@ -197,13 +207,17 @@ class KoboInterfaceGenerator {
     const mainInterface = this.generateInterface(survey, this.options.formId)
     const options = this.generateOptionsType(survey, form.content.choices)
     const mapping = this.generateFunctionMapping(survey)
-    const location = this.options.outDir + '/' + this.options.formName
+    const location = this.options.outDir + '/'
     if (!fs.existsSync(location)) {
       fs.mkdirSync(location)
     }
-    fs.writeFileSync(location + '/' + this.options.formName + '.ts', mainInterface)
-    fs.writeFileSync(location + '/' + this.options.formName + 'Options.ts', options)
-    fs.writeFileSync(location + '/' + this.options.formName + 'Mapping.ts', mapping)
+    fs.writeFileSync(location + '/' + this.options.formName + '.ts', [
+      `export namespace ${this.options.formName} {`,
+      mainInterface.join('\n\t'),
+      options,
+      mapping,
+      `}`,
+    ].join(`\n`))
   }
 
   readonly extractQuestionNameFromGroupFn = `
@@ -237,12 +251,11 @@ const extractQuestionName = (_: Record<string, any>) => {
         ]
       })
       .filter(_ => _[1] !== undefined)
-    return `import {${this.options.formName}} from './${this.options.formName}'\n\n`
-      + this.extractQuestionNameFromGroupFn + '\n\n'
-      + `export const map${this.options.formName} = (_: Record<keyof ${this.options.formName}, any>): ${this.options.formName} => ({\n`
+    return this.extractQuestionNameFromGroupFn + '\n\n'
+      + `export const map = (_: Record<keyof T, any>): T => ({\n`
       + `\t..._,\n`
       + `${fnMappings.map(([questionName, fn]) => `\t${questionName}: ${fn},`).join('\n')}\n`
-      + `}) as ${this.options.formName}`
+      + `}) as T`
   }
 
   // readonly skipQuestionInBeginRepeat = (survey: KoboApiForm['content']['survey']) => (_: KoboApiForm['content']['survey'][0]) => {
@@ -258,7 +271,7 @@ const extractQuestionName = (_: Record<string, any>) => {
     return survey.filter(_ => _.type === 'begin_repeat')
   }
 
-  readonly generateInterface = (survey: KoboApiForm['content']['survey'], formId: KoboId) => {
+  readonly generateInterface = (survey: KoboApiForm['content']['survey'], formId: KoboId): string[] => {
     const indexOptionId = seq(survey).groupBy(_ => _.select_from_list_name!)
     const repeatItems = this.getBeginRepeatQuestion(survey)
     const properties = survey
@@ -269,8 +282,8 @@ const extractQuestionName = (_: Record<string, any>) => {
       .map(x => {
         const lastQuestionNameHavingOptionId = seq(indexOptionId[x.select_from_list_name ?? '']).last()?.name
         const basicQuestionTypeMapping = (lastQuestionNameHavingOptionId?: string) => ({
-          'select_one': () => 'undefined | ' + (this.options.skipQuestionTyping?.includes(x.name) ? 'string' : `Opt<'${lastQuestionNameHavingOptionId}'>`),
-          'select_multiple': () => 'undefined | ' + (this.options.skipQuestionTyping?.includes(x.name) ? 'string[]' : `Opt<'${lastQuestionNameHavingOptionId}'>[]`),
+          'select_one': () => 'undefined | ' + (this.options.skipQuestionTyping?.includes(x.name) ? 'string' : `Option<'${lastQuestionNameHavingOptionId}'>`),
+          'select_multiple': () => 'undefined | ' + (this.options.skipQuestionTyping?.includes(x.name) ? 'string[]' : `Option<'${lastQuestionNameHavingOptionId}'>[]`),
           'integer': () => 'number | undefined',
           'decimal': () => 'number | undefined',
           'text': () => 'string | undefined',
@@ -287,13 +300,16 @@ const extractQuestionName = (_: Record<string, any>) => {
 
           }
         }, () => 'string')
-        return (x.label ? `  // [${x.type}] ${x.label[0]?.replace(/\s/g, ' ')}\n` : '')
+        return (x.label ? `// [${x.type}] ${x.label[0]?.replace(/\s/g, ' ')}\n` : '')
           + `  ${x.name ?? x.$autoname}: ${type},`
       })
-    return `import {${this.options.formName}Options} from './${this.options.formName}Options'\n\n`
-      + `type Opt<T extends keyof typeof ${this.options.formName}Options> = keyof (typeof ${this.options.formName}Options)[T]\n\n`
-      + `// Form id: ${formId}\n`
-      + `export interface ${this.options.formName} {\n${properties.join('\n')}\n}`
+    return [
+      `export type Option<T extends keyof typeof options> = keyof (typeof options)[T]`,
+      `// Form id: ${formId}`,
+      `export interface T {`,
+      ...properties.map(_ => `  ${_}`),
+      `}`
+    ]
   }
 
   readonly generateOptionsType = (survey: KoboApiForm['content']['survey'], choices: KoboApiForm['content']['choices']) => {
@@ -315,7 +331,7 @@ const extractQuestionName = (_: Record<string, any>) => {
         }
       })()
     })
-    return `export const ${this.options.formName}Options = {\n`
+    return `export const options = {\n`
       + Object.entries(res).map(([k, v]) => `${k}: {\n` +
         Object.keys(v)
           .map(sk => `\t'${sk.replaceAll(`'`, `\\'`)}': \`${v[sk]?.replace('`', '')}\``)
