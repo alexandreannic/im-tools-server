@@ -4,45 +4,45 @@ export type Option<T extends keyof typeof options> = keyof (typeof options)[T]
 	export interface T {
 	    start: string,
 	    end: string,
-	  // [date] Date
+	  // introduction/date [date] Date
   date: Date | undefined,
-	  // [select_one] DRC office
+	  // introduction/staff_to_insert_their_DRC_office [select_one] DRC office
   staff_to_insert_their_DRC_office: undefined | Option<'staff_to_insert_their_DRC_office'>,
-	  // [select_one] Staff code (facilitator)
+	  // introduction/staff_code [select_one] Staff code (facilitator)
   staff_code: undefined | Option<'staff_code_001'>,
-	  // [select_one] Staff code (notetaker)
+	  // introduction/staff_code_001 [select_one] Staff code (notetaker)
   staff_code_001: undefined | Option<'staff_code_001'>,
-	  // [select_one] Select oblast
+	  // introduction/ben_det_oblast [select_one] Select oblast
   ben_det_oblast: undefined | Option<'ben_det_oblast'>,
-	  // [select_one] Select raion
+	  // introduction/ben_det_raion [select_one] Select raion
   ben_det_raion: undefined | string,
-	  // [select_one] Select hromada
+	  // introduction/ben_det_hromada [select_one] Select hromada
   ben_det_hromada: undefined | string,
-	  // [text] Specify settlement/village/city neighborhood
+	  // introduction/ben_det_hromada_001 [text] Specify settlement/village/city neighborhood
   ben_det_hromada_001: string | undefined,
-	  // [select_one] Type of site
+	  // introduction/ben_det_type_site [select_one] Type of site
   ben_det_type_site: undefined | Option<'ben_det_type_site'>,
-	  // [select_one] Which activity have you conducted?
+	  // gi/activity [select_one] Which activity have you conducted?
   activity: undefined | Option<'activity'>,
-	  // [select_one] Is it a PMT KII (NPC)?
+	  // gi/pmt_npc [select_one] Is it a PMT KII (NPC)?
   pmt_npc: undefined | Option<'pmt_npc'>,
-	  // [select_one] Key informant role
+	  // gi/informant_role [select_one] Key informant role
   informant_role: undefined | Option<'informant_role'>,
-	  // [text] If "Other", please specify
+	  // gi/informant_role_other [text] If "Other", please specify
   informant_role_other: string | undefined,
-	  // [select_one] Key informant gender
+	  // gi/informant_gender [select_one] Key informant gender
   informant_gender: undefined | Option<'hh_char_hh_det_gender'>,
-	  // [integer] Key informant age
+	  // gi/informant_age [integer] Key informant age
   informant_age: number | undefined,
-	  // [select_one] Key informant displacement status
+	  // gi/informant_status [select_one] Key informant displacement status
   informant_status: undefined | Option<'hh_char_hh_det_status'>,
-	  // [integer] Number of participants
+	  // gi/numb_part [integer] Number of participants
   numb_part: number | undefined,
-	  // [begin_repeat] FGD participant
+	  // gi/hh_char_hh_det [begin_repeat] FGD participant
   hh_char_hh_det: {hh_char_hh_det_gender: undefined | Option<'hh_char_hh_det_gender'> | undefined,hh_char_hh_det_age: number | undefined | undefined,hh_char_hh_det_status: undefined | Option<'hh_char_hh_det_status'> | undefined}[] | undefined,
-	  // [text] Topic
+	  // gi/topic [text] Topic
   topic: string | undefined,
-	  // [text] Comments
+	  // gi/comments [text] Comments
   comments: string | undefined,
 	}
 export const options = {

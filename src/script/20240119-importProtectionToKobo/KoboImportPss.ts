@@ -1,12 +1,12 @@
-import {Protection_groupSessionOptions} from '../output/kobo/Protection_groupSession/Protection_groupSessionOptions'
+import {Protection_pss} from '../output/kobo/Protection_pss'
 
-type Opt<T extends keyof typeof Protection_groupSessionOptions> = keyof (typeof Protection_groupSessionOptions)[T]
+type Opt<T extends keyof typeof Protection_pss.options> = keyof (typeof Protection_pss.options)[T]
 
-export interface KoboImportGroupSession {
+export interface ImportKoboPss {
   start: string,
   end: string,
-  // [date] Date
-  introduction: {
+  'introduction': {
+    // [date] Date
     date: Date | undefined,
     // [select_one] DRC office
     staff_to_insert_their_DRC_office: undefined | Opt<'staff_to_insert_their_DRC_office'>,
@@ -19,9 +19,9 @@ export interface KoboImportGroupSession {
     // [select_one] Select oblast
     ben_det_oblast: undefined | Opt<'ben_det_oblast'>,
     // [select_one] Select raion
-    ben_det_raion: Opt<'ben_det_raion'> | string,
+    ben_det_raion: undefined | string,
     // [select_one] Select hromada
-    ben_det_hromada: Opt<'ben_det_hromada'> | string,
+    ben_det_hromada: undefined | string,
     // [text] Specify settlement/village/city neighborhood
     ben_det_hromada_001: string | undefined,
     // [select_one] Location
@@ -29,7 +29,7 @@ export interface KoboImportGroupSession {
     // [text] If "Other", please specify
     location_other?: string | undefined,
   }
-  gi: {
+  'gi': {
     // [select_one] Which topic was the group information session about?
     activity: undefined | Opt<'activity'>,
     // [text] If "Other", please specify
@@ -48,8 +48,7 @@ export interface KoboImportGroupSession {
       hh_char_hh_det_age: number | undefined | undefined,
       hh_char_hh_det_status: undefined | Opt<'hh_char_hh_det_status'> | undefined
     }[] | undefined,
-
     // [text] Comments
-    comments: string | undefined,
+    comments: string,
   }
 }

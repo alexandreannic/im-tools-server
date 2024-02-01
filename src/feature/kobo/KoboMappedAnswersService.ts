@@ -17,6 +17,8 @@ import {ShelterNtaTags, ShelterTaTags} from './tags/ShelterTags'
 import {mapShelter_NTA} from '../../script/output/kobo/Shelter_NTA/Shelter_NTAMapping'
 import {mapShelter_north} from '../../script/output/kobo/Shelter_north/Shelter_northMapping'
 import {mapEcrec_sectoralCashRegistration} from '../../script/output/kobo/Ecrec_sectoralCashRegistration/Ecrec_sectoralCashRegistrationMapping'
+import {ProtectionHhsTags} from '../../db/koboForm/DbHelperProtectionHhs'
+import {Protection_hhs} from '../../script/output/kobo/Protection_hhs'
 
 export class KoboMappedAnswersService {
 
@@ -26,7 +28,7 @@ export class KoboMappedAnswersService {
   ) {
   }
 
-  private static readonly map = <
+  static readonly map = <
     T extends Record<string, any> = Record<string, any>,
     TTag extends Record<string, any> = any
   >(
@@ -58,6 +60,7 @@ export class KoboMappedAnswersService {
     }).then(KoboMappedAnswersService.map(fn, fnTag))
   }
 
+  readonly searchProtectionHss = this.buildMappedSearch(koboFormsId.prod.protection_Hhs2_1, Protection_hhs.map, _ => _ as ProtectionHhsTags)
   readonly searchShelter_Ta = this.buildMappedSearch(koboFormsId.prod.shelter_TA, mapShelter_TA, _ => _ as ShelterTaTags)
   readonly searchShelter_Nta = this.buildMappedSearch(koboFormsId.prod.shelter_NTA, mapShelter_NTA, _ => _ as ShelterNtaTags)
   readonly searchShelter_north = this.buildMappedSearch(koboFormsId.prod.shelter_north, mapShelter_north, _ => _ as ShelterNtaTags & ShelterTaTags)

@@ -4,43 +4,43 @@ export type Option<T extends keyof typeof options> = keyof (typeof options)[T]
 	export interface T {
 	    start: string,
 	    end: string,
-	  // [date] Date of activity
+	  // introduction/date [date] Date of activity
   date: Date | undefined,
-	  // [select_one] DRC office
+	  // introduction/staff_to_insert_their_DRC_office [select_one] DRC office
   staff_to_insert_their_DRC_office: undefined | Option<'staff_to_insert_their_DRC_office'>,
-	  // [select_one] Staff code (facilitator 1)
+	  // introduction/staff_code [select_one] Staff code (facilitator 1)
   staff_code: undefined | Option<'staff_code_001'>,
-	  // [select_one] Staff code (facilitator 2)
+	  // introduction/staff_code_001 [select_one] Staff code (facilitator 2)
   staff_code_001: undefined | Option<'staff_code_001'>,
-	  // [select_one] Project code
+	  // introduction/project [select_one] Project code
   project: undefined | Option<'project'>,
-	  // [select_one] Select oblast
+	  // introduction/ben_det_oblast [select_one] Select oblast
   ben_det_oblast: undefined | Option<'ben_det_oblast'>,
-	  // [select_one] Select raion
+	  // introduction/ben_det_raion [select_one] Select raion
   ben_det_raion: undefined | string,
-	  // [select_one] Select hromada
+	  // introduction/ben_det_hromada [select_one] Select hromada
   ben_det_hromada: undefined | string,
-	  // [text] Specify settlement/village/city neighborhood
+	  // introduction/ben_det_hromada_001 [text] Specify settlement/village/city neighborhood
   ben_det_hromada_001: string | undefined,
-	  // [select_one] Location
+	  // introduction/location [select_one] Location
   location: undefined | Option<'location'>,
-	  // [text] If "Other", please specify
+	  // introduction/location_other [text] If "Other", please specify
   location_other: string | undefined,
-	  // [select_one] Which activity have you conducted?
+	  // gi/activity [select_one] Which activity have you conducted?
   activity: undefined | Option<'activity'>,
-	  // [text] If "Other", please specify
+	  // gi/activity_other [text] If "Other", please specify
   activity_other: string | undefined,
-	  // [select_one] Are there new beneficiaries in the group activity?
+	  // gi/new_ben [select_one] Are there new beneficiaries in the group activity?
   new_ben: undefined | Option<'new_ben'>,
-	  // [integer] If yes there are new beneficairies, how many new beneficiaries in the session?
+	  // gi/new_ben_yes [integer] If yes there are new beneficairies, how many new beneficiaries in the session?
   new_ben_yes: number | undefined,
-	  // [integer] Number of participants
+	  // gi/numb_part [integer] Number of participants
   numb_part: number | undefined,
-	  // [begin_repeat] Participant
+	  // gi/hh_char_hh_det [begin_repeat] Participant
   hh_char_hh_det: {hh_char_hh_det_gender: undefined | Option<'hh_char_hh_det_gender'> | undefined,hh_char_hh_det_age: number | undefined | undefined,hh_char_hh_det_status: undefined | Option<'hh_char_hh_det_status'> | undefined}[] | undefined,
-	  // [text] Topic/Type of activity
+	  // gi/topic_activity [text] Topic/Type of activity
   topic_activity: string | undefined,
-	  // [text] Comments
+	  // gi/comments [text] Comments
   comments: string | undefined,
 	}
 export const options = {

@@ -5,12 +5,9 @@ import {appConf} from '../../core/conf/AppConf'
 import * as csvToJson from 'csvtojson'
 import {PromisePool} from '@supercharge/promise-pool'
 import {Enum, fnSwitch, Seq, seq} from '@alexandreannic/ts-utils'
-import {ImporterGroupSessionHrk} from './ImporterGroupSessionHrk'
-import {ImportPssLwo} from './ImporterPssLwo'
 import {ImportPssCej} from './ImporterPssCej'
 import {ImporterGroupSessionCej} from './ImporterGroupSessionCej'
-import {ImporterGroupSessionLwo} from './ImporterGroupSessionLwo'
-
+import {scriptConf} from '../ScriptConf'
 
 (async () => {
   const config = {
@@ -28,12 +25,10 @@ import {ImporterGroupSessionLwo} from './ImporterGroupSessionLwo'
   } as const
   const serverConfig = Object.freeze({
     prod: {
-      id: '4820279f-6c3d-47ba-8afe-47f86b16ab5d',
       groupSessionId: 'a8Tn94arrSaH2FQBhUa9Zo',
       pssId: 'a52hN5iiCW73mxqqfmEAfp'
     },
     dev: {
-      id: 'b90ec4b4-4426-48f3-a924-f6a1866ee698',
       groupSessionId: 'aMCHFcQ8TkymRqmPz2M3Do',
       pssId: 'aPoqNpPkwfUy4HLaJ7Y7v9'
     },
@@ -41,7 +36,7 @@ import {ImporterGroupSessionLwo} from './ImporterGroupSessionLwo'
 
   const prisma = new PrismaClient()
 
-  const sdk = await new KoboSdkGenerator(prisma).getV1(serverConfig.id)
+  const sdk = await new KoboSdkGenerator(prisma).getV1(scriptConf.kobo[config.server].serverId)
 
   const submit = async <TCsv, TCsvTransform = any>({
     formId,

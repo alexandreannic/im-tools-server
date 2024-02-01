@@ -51,7 +51,7 @@ export const koboAnswerMetaData: (keyof KoboAnswerMetaData)[] = [
   'lastValidatedTimestamp',
 ]
 
-interface ApiKoboAnswerMetaData {
+export interface ApiKoboAnswerMetaData {
   _id: string,
   start: Date,
   end: Date,

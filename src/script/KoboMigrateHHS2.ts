@@ -2,8 +2,7 @@ import {PrismaClient} from '@prisma/client'
 import {logger, Logger} from '../helper/Logger'
 import {KoboSyncServer} from '../feature/kobo/KoboSyncServer'
 import {KoboApiService} from '../feature/kobo/KoboApiService'
-import {Protection_Hhs2_1Options} from './output/kobo/Protection_Hhs2_1/Protection_Hhs2_1Options'
-import {Protection_Hhs2_1} from './output/kobo/Protection_Hhs2_1/Protection_Hhs2_1'
+import {Protection_hhs} from './output/kobo/Protection_hhs'
 
 export const KoboMigrateHHS2 = ({
     prisma,
@@ -30,7 +29,7 @@ export const KoboMigrateHHS2 = ({
     const unhandledOptions: Record<string, string> = {}
 
     const checkOptions = (questionName: string, values: string) => {
-      const options = Protection_Hhs2_1Options[questionName]
+      const options = Protection_hhs.options[questionName]
       const value = values.split(' ')
       if (!options) return
       const possibleValues = Object.keys(options)
@@ -67,7 +66,7 @@ export const KoboMigrateHHS2 = ({
     const newData = res.data.map(row => {
       row.id = transformIdToAvoidCollision(row.id)
       const answersArr = Object.entries(row.answers).map(([questionName, value]) => [questionName/*.split('/')[1]*/, value]) as [string, any][]
-      const answers = {} as Protection_Hhs2_1
+      const answers = {} as Protection_hhs.T
       answersArr.forEach(([questionName, value], index) => {
         value = fixOptions(value)
         if (questionName === 'where_are_you_current_living_hromada' && value === 'UA7410003') {

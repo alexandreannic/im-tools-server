@@ -42,6 +42,10 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
       ]
     },
     {
+      formName: 'Protection_hhs2_2',
+      formId: 'aQBCaoRUxvtb5BQcv7wnTK',
+    },
+    {
       formName: 'Protection_gbv', formId: koboFormsId.prod.protection_gbv, skipQuestionTyping: [
         'ben_det_hromada',
         'ben_det_raion',
@@ -300,7 +304,7 @@ const extractQuestionName = (_: Record<string, any>) => {
 
           }
         }, () => 'string')
-        return (x.label ? `// [${x.type}] ${x.label[0]?.replace(/\s/g, ' ')}\n` : '')
+        return (x.label ? `// ${x.$xpath} [${x.type}] ${x.label[0]?.replace(/\s/g, ' ')}\n` : '')
           + `  ${x.name ?? x.$autoname}: ${type},`
       })
     return [

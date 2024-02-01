@@ -52,7 +52,7 @@ export class KoboSdk {
       })
   }
 
-  readonly updateData = ({
+  readonly updateDataSimple = ({
     formId,
     submissionIds,
     group,
@@ -76,6 +76,31 @@ export class KoboSdk {
         payload: {
           submission_ids: submissionIds,
           data: {[(group ? group + '/' : '') + questionName]: newValue}
+        }
+      }
+    })
+  }
+
+  readonly updateData = <TData extends any>({
+    formId,
+    submissionIds,
+    data,
+  }: {
+    formId: KoboId,
+    submissionIds: string[],
+    data: TData
+  }) => {
+    // return this.api.patch(`/v2/assets/${formId}/data/${submissionId}/`, {
+    //   body: {
+    //     'start': new Date().toISOString(),
+    //   }
+    // })
+    return this.api.patch(`/v2/assets/${formId}/data/bulk/`, {
+      // qs: {format: 'json'},
+      body: {
+        payload: {
+          submission_ids: submissionIds,
+          data,
         }
       }
     })
