@@ -2,9 +2,9 @@ import {OblastISO, OblastName} from '../../../core/oblastIndex'
 import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcUa'
 import {KoboAttachment} from '../../connector/kobo/KoboClient/type/KoboAnswer'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
-import {Bn_Re} from '../../../script/output/kobo/Bn_Re/Bn_Re'
 import {MaybePeriod, Person} from '../../../core/Type'
 import {koboFormsId} from '../../../core/conf/KoboFormsId'
+import {Bn_Re} from '../../../script/output/kobo/Bn_Re'
 
 
 // export enum MpcaRowSource {
@@ -71,7 +71,7 @@ export interface MpcaEntity {
   amountUahSupposed?: number
   amountUahDedup?: number
   amountUahFinal?: number
-  benefStatus?: Bn_Re['ben_det_res_stat']
+  benefStatus?: Bn_Re.T['ben_det_res_stat']
   lastName?: string
   firstName?: string
   patronyme?: string

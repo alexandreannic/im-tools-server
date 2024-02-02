@@ -3,22 +3,22 @@ import {PrismaClient} from '@prisma/client'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
 import {ApiPaginate} from '../../core/Type'
 import {DbKoboAnswer, KoboAnswerFlat, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
-import {mapBn_Re} from '../../script/output/kobo/Bn_Re/Bn_ReMapping'
-import {mapShelter_cashForRepair} from '../../script/output/kobo/Shelter_cashForRepair/Shelter_cashForRepairMapping'
-import {mapBn_OldMpcaNfi} from '../../script/output/kobo/Bn_OldMpcaNfi/Bn_OldMpcaNfiMapping'
-import {mapBn_RapidResponse} from '../../script/output/kobo/Bn_RapidResponse/Bn_RapidResponseMapping'
-import {mapBn_0_mpcaReg} from '../../script/output/kobo/Bn_0_mpcaReg/Bn_0_mpcaRegMapping'
-import {mapBn_0_mpcaRegNoSig} from '../../script/output/kobo/Bn_0_mpcaRegNoSig/Bn_0_mpcaRegNoSigMapping'
-import {mapBn_0_mpcaRegESign} from '../../script/output/kobo/Bn_0_mpcaRegESign/Bn_0_mpcaRegESignMapping'
-import {mapBn_0_mpcaRegNewShort} from '../../script/output/kobo/Bn_0_mpcaRegNewShort/Bn_0_mpcaRegNewShortMapping'
-import {mapShelter_TA} from '../../script/output/kobo/Shelter_TA/Shelter_TAMapping'
 import {map} from '@alexandreannic/ts-utils'
 import {ShelterNtaTags, ShelterTaTags} from './tags/ShelterTags'
-import {mapShelter_NTA} from '../../script/output/kobo/Shelter_NTA/Shelter_NTAMapping'
-import {mapShelter_north} from '../../script/output/kobo/Shelter_north/Shelter_northMapping'
-import {mapEcrec_sectoralCashRegistration} from '../../script/output/kobo/Ecrec_sectoralCashRegistration/Ecrec_sectoralCashRegistrationMapping'
 import {ProtectionHhsTags} from '../../db/koboForm/DbHelperProtectionHhs'
 import {Protection_hhs} from '../../script/output/kobo/Protection_hhs'
+import {Shelter_TA} from '../../script/output/kobo/Shelter_TA'
+import {Shelter_NTA} from '../../script/output/kobo/Shelter_NTA'
+import {Shelter_north} from '../../script/output/kobo/Shelter_north'
+import {Shelter_cashForRepair} from '../../script/output/kobo/Shelter_cashForRepair'
+import {Bn_Re} from '../../script/output/kobo/Bn_Re'
+import {Bn_RapidResponse} from '../../script/output/kobo/Bn_RapidResponse'
+import {Bn_OldMpcaNfi} from '../../script/output/kobo/Bn_OldMpcaNfi'
+import {Bn_0_mpcaRegNewShort} from '../../script/output/kobo/Bn_0_mpcaRegNewShort'
+import {Bn_0_mpcaReg} from '../../script/output/kobo/Bn_0_mpcaReg'
+import {Bn_0_mpcaRegESign} from '../../script/output/kobo/Bn_0_mpcaRegESign'
+import {Bn_0_mpcaRegNoSig} from '../../script/output/kobo/Bn_0_mpcaRegNoSig'
+import {Ecrec_sectoralCashRegistration} from '../../script/output/kobo/Ecrec_sectoralCashRegistration'
 
 export class KoboMappedAnswersService {
 
@@ -61,17 +61,17 @@ export class KoboMappedAnswersService {
   }
 
   readonly searchProtectionHss = this.buildMappedSearch(koboFormsId.prod.protection_Hhs2_1, Protection_hhs.map, _ => _ as ProtectionHhsTags)
-  readonly searchShelter_Ta = this.buildMappedSearch(koboFormsId.prod.shelter_TA, mapShelter_TA, _ => _ as ShelterTaTags)
-  readonly searchShelter_Nta = this.buildMappedSearch(koboFormsId.prod.shelter_NTA, mapShelter_NTA, _ => _ as ShelterNtaTags)
-  readonly searchShelter_north = this.buildMappedSearch(koboFormsId.prod.shelter_north, mapShelter_north, _ => _ as ShelterNtaTags & ShelterTaTags)
-  readonly searchShelter_cashForRepair = this.buildMappedSearch(koboFormsId.prod.shelter_cashForRepair, mapShelter_cashForRepair)
-  readonly searchBn_re = this.buildMappedSearch(koboFormsId.prod.bn_re, mapBn_Re)
-  readonly searchBn_RapidResponseMechanism = this.buildMappedSearch(koboFormsId.prod.bn_rapidResponse, mapBn_RapidResponse)
-  readonly searchBn_1_mpcaNfi = this.buildMappedSearch(koboFormsId.prod.bn_1_mpcaNfi, mapBn_OldMpcaNfi)
-  readonly searchBn_0_mpcaRegNewShort = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegNewShort, mapBn_0_mpcaRegNewShort)
-  readonly searchBn_0_mpcaReg = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaReg, mapBn_0_mpcaReg)
-  readonly searchBn_0_mpcaRegNoSig = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegNoSig, mapBn_0_mpcaRegNoSig)
-  readonly searchBn_0_mpcaRegESign = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegESign, mapBn_0_mpcaRegESign)
-  readonly searchBn_ecrecCashRegistration = this.buildMappedSearch(koboFormsId.prod.ecrec_sectoralCashRegistration, mapEcrec_sectoralCashRegistration)
+  readonly searchShelter_Ta = this.buildMappedSearch(koboFormsId.prod.shelter_TA, Shelter_TA.map, _ => _ as ShelterTaTags)
+  readonly searchShelter_Nta = this.buildMappedSearch(koboFormsId.prod.shelter_NTA, Shelter_NTA.map, _ => _ as ShelterNtaTags)
+  readonly searchShelter_north = this.buildMappedSearch(koboFormsId.prod.shelter_north, Shelter_north.map, _ => _ as ShelterNtaTags & ShelterTaTags)
+  readonly searchShelter_cashForRepair = this.buildMappedSearch(koboFormsId.prod.shelter_cashForRepair, Shelter_cashForRepair.map)
+  readonly searchBn_re = this.buildMappedSearch(koboFormsId.prod.bn_re, Bn_Re.map)
+  readonly searchBn_RapidResponseMechanism = this.buildMappedSearch(koboFormsId.prod.bn_rapidResponse, Bn_RapidResponse.map)
+  readonly searchBn_1_mpcaNfi = this.buildMappedSearch(koboFormsId.prod.bn_1_mpcaNfi, Bn_OldMpcaNfi.map)
+  readonly searchBn_0_mpcaRegNewShort = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegNewShort, Bn_0_mpcaRegNewShort.map)
+  readonly searchBn_0_mpcaReg = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaReg, Bn_0_mpcaReg.map)
+  readonly searchBn_0_mpcaRegNoSig = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegNoSig, Bn_0_mpcaRegNoSig.map)
+  readonly searchBn_0_mpcaRegESign = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegESign, Bn_0_mpcaRegESign.map)
+  readonly searchBn_ecrecCashRegistration = this.buildMappedSearch(koboFormsId.prod.ecrec_sectoralCashRegistration, Ecrec_sectoralCashRegistration.map)
 }
 

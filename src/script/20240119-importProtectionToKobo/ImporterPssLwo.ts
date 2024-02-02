@@ -1,7 +1,7 @@
 import {fnSwitch, mapFor} from '@alexandreannic/ts-utils'
 import {parse, setHours} from 'date-fns'
-import {Bn_ReOptions} from '../output/kobo/Bn_Re/Bn_ReOptions'
 import {ImportKoboPss} from './KoboImportPss'
+import {Bn_Re} from '../output/kobo/Bn_Re'
 
 export namespace ImportPssLwo {
 
@@ -54,20 +54,20 @@ export namespace ImportPssLwo {
         project: 'echo',
         ben_det_oblast: 'lvivska',
         ben_det_raion: fnSwitch(_.Raion, {
-          Lviv: Bn_ReOptions.ben_det_raion.lvivskyi,
-          Drohobytskyi: Bn_ReOptions.ben_det_raion.drohobytskyi,
-          Sosnivka: Bn_ReOptions.ben_det_raion.rivnenskyi,
-          Brody: Bn_ReOptions.ben_det_raion.zolochivskyi,
-          Skoly: Bn_ReOptions.ben_det_raion.stryiskyi,
-          // Sosnivka: Bn_ReOptions.ben_det_raion.sos,
-          // Brody: Bn_ReOptions.ben_det_raion.brodivska,
-          // Skoly: Bn_ReOptions.ben_det_raion.skolivska,
+          Lviv: Bn_Re.options.ben_det_raion.lvivskyi,
+          Drohobytskyi: Bn_Re.options.ben_det_raion.drohobytskyi,
+          Sosnivka: Bn_Re.options.ben_det_raion.rivnenskyi,
+          Brody: Bn_Re.options.ben_det_raion.zolochivskyi,
+          Skoly: Bn_Re.options.ben_det_raion.stryiskyi,
+          // Sosnivka: Bn_Re.options.ben_det_raion.sos,
+          // Brody: Bn_Re.options.ben_det_raion.brodivska,
+          // Skoly: Bn_Re.options.ben_det_raion.skolivska,
         }),
         ben_det_hromada: fnSwitch(_.Hromada, {
-          Lvivska: Bn_ReOptions.ben_det_hromada.lvivska_2,
-          Chervonogradska: Bn_ReOptions.ben_det_hromada.chernovska,
-          Brodivska: Bn_ReOptions.ben_det_hromada.brodivska,
-          Stryiska: Bn_ReOptions.ben_det_hromada.stryiska,
+          Lvivska: Bn_Re.options.ben_det_hromada.lvivska_2,
+          Chervonogradska: Bn_Re.options.ben_det_hromada.chernovska,
+          Brodivska: Bn_Re.options.ben_det_hromada.brodivska,
+          Stryiska: Bn_Re.options.ben_det_hromada.stryiska,
         }),
         ben_det_hromada_001: _['Location Name'],
         location: fnSwitch(_['Settlement type'], {

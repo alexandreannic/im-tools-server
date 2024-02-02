@@ -18,33 +18,33 @@ interface KoboInterfaceGeneratorParams {
 
 export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) => {
   const forms: Omit<KoboInterfaceGeneratorParams, 'outDir'>[] = [
-    // {
-    //   formName: 'Shelter_north', formId: koboFormsId.prod.shelter_north,
-    // },
-    // {
-    //   formName: 'Partnership_partnersDatabase', formId: koboFormsId.prod.partnership_partnersDatabase,
-    //   overrideOptionsByQuestion: {
-    //     Type_of_organization: {
-    //       'municipal_organization_or_othe': [`Government-run entity`],
-    //     }
-    //   }
-    // },
-    // {
-    //   formName: 'Partnership_assessment', formId: koboFormsId.prod.partnership_assessment,
-    // },
-    // {
-    //   formName: 'Partnership_initialQuestionnaire', formId: koboFormsId.prod.partnership_initialQuestionnaire,
-    // },
+    {
+      formName: 'Shelter_north', formId: koboFormsId.prod.shelter_north,
+    },
+    {
+      formName: 'Partnership_partnersDatabase', formId: koboFormsId.prod.partnership_partnersDatabase,
+      overrideOptionsByQuestion: {
+        Type_of_organization: {
+          'municipal_organization_or_othe': [`Government-run entity`],
+        }
+      }
+    },
+    {
+      formName: 'Partnership_assessment', formId: koboFormsId.prod.partnership_assessment,
+    },
+    {
+      formName: 'Partnership_initialQuestionnaire', formId: koboFormsId.prod.partnership_initialQuestionnaire,
+    },
     {
       formName: 'Protection_communityMonitoring', formId: koboFormsId.prod.protection_communityMonitoring, skipQuestionTyping: [
         'ben_det_hromada',
         'ben_det_raion',
       ]
     },
-    {
-      formName: 'Protection_hhs2_2',
-      formId: 'aQBCaoRUxvtb5BQcv7wnTK',
-    },
+    // {
+    //   formName: 'Protection_hhs2_2',
+    //   formId: 'aQBCaoRUxvtb5BQcv7wnTK',
+    // },
     {
       formName: 'Protection_gbv', formId: koboFormsId.prod.protection_gbv, skipQuestionTyping: [
         'ben_det_hromada',
@@ -63,57 +63,57 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
         'ben_det_raion',
       ]
     },
-    // {formName: 'Bn_cashForRentApplication', formId: koboFormsId.prod.bn_cashForRentApplication},
-    // {formName: 'Bn_RapidResponse', formId: koboFormsId.prod.bn_rapidResponse},
-    // {formName: 'Shelter_cashForRepair', formId: koboFormsId.prod.shelter_cashForRepair},
-    // {
-    //   formName: 'Ecrec_sectoralCashRegistration', formId: koboFormsId.prod.ecrec_sectoralCashRegistration, skipQuestionTyping: [
-    //     'ben_det_hromada',
-    //     'ben_det_raion',
-    //   ]
-    // },
-    // {
-    //   formName: 'Meal_VerificationEcrec', formId: koboFormsId.prod.meal_VerificationEcrec, skipQuestionTyping: [
-    //     'ben_det_hromada',
-    //     'ben_det_raion',
-    //   ]
-    // },
-    // {
-    //   formName: 'Meal_VerificationWinterization', formId: koboFormsId.prod.meal_VerificationWinterization, skipQuestionTyping: [
-    //     'ben_det_hromada',
-    //     'ben_det_raion',
-    //   ]
-    // },
-    // {
-    //   formName: 'Meal_VisitMonitoring', formId: koboFormsId.prod.meal_VisitMonitoring, skipQuestionTyping: [
-    //     'ben_det_hromada',
-    //     'ben_det_raion',
-    //   ]
-    // },
-    // {
-    //   formName: 'Meal_CfmInternal', formId: koboFormsId.prod.mealCfmInternal, skipQuestionTyping: [
-    //     'ben_det_hromada',
-    //     'ben_det_raion',
-    //   ]
-    // },
-    // {
-    //   formName: 'Meal_CfmExternal', formId: koboFormsId.prod.mealCfmExternal, skipQuestionTyping: [
-    //     'ben_det_hromada',
-    //     'ben_det_raion',
-    //   ]
-    // },
-    // {
-    //   formName: 'Shelter_NTA', formId: koboFormsId.prod.shelter_NTA, skipQuestionTyping: [
-    //     'ben_det_hromada',
-    //     'ben_det_raion',
-    //   ]
-    // },
-    // {
-    //   formName: 'Shelter_TA', formId: koboFormsId.prod.shelter_TA, skipQuestionTyping: [
-    //     'ben_det_hromada',
-    //     'ben_det_raion',
-    //   ]
-    // },
+    {formName: 'Bn_cashForRentApplication', formId: koboFormsId.prod.bn_cashForRentApplication},
+    {formName: 'Bn_RapidResponse', formId: koboFormsId.prod.bn_rapidResponse},
+    {formName: 'Shelter_cashForRepair', formId: koboFormsId.prod.shelter_cashForRepair},
+    {
+      formName: 'Ecrec_sectoralCashRegistration', formId: koboFormsId.prod.ecrec_sectoralCashRegistration, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Meal_VerificationEcrec', formId: koboFormsId.prod.meal_VerificationEcrec, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Meal_VerificationWinterization', formId: koboFormsId.prod.meal_VerificationWinterization, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Meal_VisitMonitoring', formId: koboFormsId.prod.meal_VisitMonitoring, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Meal_CfmInternal', formId: koboFormsId.prod.mealCfmInternal, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Meal_CfmExternal', formId: koboFormsId.prod.mealCfmExternal, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Shelter_NTA', formId: koboFormsId.prod.shelter_NTA, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
+    {
+      formName: 'Shelter_TA', formId: koboFormsId.prod.shelter_TA, skipQuestionTyping: [
+        'ben_det_hromada',
+        'ben_det_raion',
+      ]
+    },
     {
       formName: 'Bn_rapidResponseSidar',
       formId: koboFormsId.prod.bn_rapidResponseSidar,
@@ -147,23 +147,23 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
         }
       }
     },
-    // {
-    //   formName: 'Bn_0_mpcaRegNewShort', formId: koboFormsId.prod.bn_0_mpcaRegNewShort, skipQuestionTyping: ['hromada', 'raion']
-    // },
-    // {
-    //   formName: 'Bn_0_mpcaReg', formId: koboFormsId.prod.bn_0_mpcaReg, skipQuestionTyping: ['hromada', 'raion']
-    // },
-    // {
-    //   formName: 'Bn_0_mpcaRegNoSig', formId: koboFormsId.prod.bn_0_mpcaRegNoSig, skipQuestionTyping: ['hromada', 'raion']
-    // },
-    // {
-    //   formName: 'Bn_0_mpcaRegESign', formId: koboFormsId.prod.bn_0_mpcaRegESign, skipQuestionTyping: ['hromada', 'raion']
-    // },
-    // {formName: 'Bn_Re', formId: koboFormsId.prod.bn_re},
-    // {formName: 'Bn_OldMpcaNfi', formId: koboFormsId.prod.bn_1_mpcaNfi},
-    // {formName: 'Bn_OldMpcaNfiNaa', formId: koboFormsId.prod.bn_1_mpcaNfiNaa},
-    // {formName: 'Bn_OldMpcaNfiMyko', formId: koboFormsId.prod.bn_1_mpcaNfiMyko},
-    // {formName: 'Protection_Hhs2', formId: koboFormsId.prod.protection_Hhs2},
+    {
+      formName: 'Bn_0_mpcaRegNewShort', formId: koboFormsId.prod.bn_0_mpcaRegNewShort, skipQuestionTyping: ['hromada', 'raion']
+    },
+    {
+      formName: 'Bn_0_mpcaReg', formId: koboFormsId.prod.bn_0_mpcaReg, skipQuestionTyping: ['hromada', 'raion']
+    },
+    {
+      formName: 'Bn_0_mpcaRegNoSig', formId: koboFormsId.prod.bn_0_mpcaRegNoSig, skipQuestionTyping: ['hromada', 'raion']
+    },
+    {
+      formName: 'Bn_0_mpcaRegESign', formId: koboFormsId.prod.bn_0_mpcaRegESign, skipQuestionTyping: ['hromada', 'raion']
+    },
+    {formName: 'Bn_Re', formId: koboFormsId.prod.bn_re},
+    {formName: 'Bn_OldMpcaNfi', formId: koboFormsId.prod.bn_1_mpcaNfi},
+    {formName: 'Bn_OldMpcaNfiNaa', formId: koboFormsId.prod.bn_1_mpcaNfiNaa},
+    {formName: 'Bn_OldMpcaNfiMyko', formId: koboFormsId.prod.bn_1_mpcaNfiMyko},
+    {formName: 'Protection_Hhs2', formId: koboFormsId.prod.protection_Hhs2},
   ]
   return Promise.all(forms.map(f => new KoboInterfaceGenerator(koboSdk, {
     outDir,

@@ -2,20 +2,20 @@ import {PrismaClient} from '@prisma/client'
 import {KoboMappedAnswersService} from '../../kobo/KoboMappedAnswersService'
 import {fnSwitch, Seq, seq} from '@alexandreannic/ts-utils'
 import {DrcDonor, DrcOffice, DrcProject} from '../../../core/DrcUa'
-import {OblastIndex, OblastKoboName} from '../../../core/oblastIndex'
+import {OblastIndex} from '../../../core/oblastIndex'
 import {KoboAnswerFilter} from '../../kobo/KoboService'
 import {ApiPaginate, Gender, toApiPaginate} from '../../../core/Type'
 import {WfpDeduplicationService} from '../../wfpDeduplication/WfpDeduplicationService'
 import {appConf} from '../../../core/conf/AppConf'
 import {MpcaDataTag, MpcaEntity, MpcaProgram} from './MpcaDbType'
 import {WfpDeduplication} from '../../wfpDeduplication/WfpDeduplicationType'
-import {Bn_ReOptions} from '../../../script/output/kobo/Bn_Re/Bn_ReOptions'
-import {Bn_RapidResponseOptions} from '../../../script/output/kobo/Bn_RapidResponse/Bn_RapidResponseOptions'
 import {Utils} from '../../../helper/Utils'
 import {KoboSyncServer} from '../../kobo/KoboSyncServer'
 import {koboFormsId} from '../../../core/conf/KoboFormsId'
-import {Shelter_cashForRepairOptions} from '../../../script/output/kobo/Shelter_cashForRepair/Shelter_cashForRepairOptions'
-import {Bn_OldMpcaNfiOptions} from '../../../script/output/kobo/Bn_OldMpcaNfi/Bn_OldMpcaNfiOptions'
+import {Bn_Re} from '../../../script/output/kobo/Bn_Re'
+import {Bn_OldMpcaNfi} from '../../../script/output/kobo/Bn_OldMpcaNfi'
+import {Bn_RapidResponse} from '../../../script/output/kobo/Bn_RapidResponse'
+import {Shelter_cashForRepair} from '../../../script/output/kobo/Shelter_cashForRepair'
 
 export class MpcaDbService {
 
@@ -141,7 +141,7 @@ export class MpcaDbService {
         const oblast = OblastIndex.byKoboName(_.ben_det_oblast!)
         return {
           source: 'bn_re',
-          enumerator: Bn_ReOptions.back_enum[_.back_enum!],
+          enumerator: Bn_Re.options.back_enum[_.back_enum!],
           id: _.id,
           date: _.submissionTime,
           office: fnSwitch(_.back_office!, {
@@ -154,8 +154,8 @@ export class MpcaDbService {
           }, () => undefined),
           oblast: oblast.name,
           oblastIso: oblast.iso,
-          raion: Bn_ReOptions.ben_det_raion[_.ben_det_raion!],
-          hromada: Bn_ReOptions.ben_det_hromada[_.ben_det_hromada!],
+          raion: Bn_Re.options.ben_det_raion[_.ben_det_raion!],
+          hromada: Bn_Re.options.ben_det_hromada[_.ben_det_hromada!],
           prog: seq(_.back_prog_type)?.map(prog => fnSwitch(prog.split('_')[0], {
             'cfr': MpcaProgram.CashForRent,
             'cfe': MpcaProgram.CashForEducation,
@@ -272,7 +272,7 @@ export class MpcaDbService {
           return ({
             source: 'shelter_cashForRepair',
             prog: [MpcaProgram.CashForRent],
-            enumerator: Shelter_cashForRepairOptions.name_enum[_.name_enum!],
+            enumerator: Shelter_cashForRepair.options.name_enum[_.name_enum!],
             oblast: oblast.name,
             oblastIso: oblast.iso,
             office: fnSwitch(_.back_office!, {
@@ -334,7 +334,7 @@ export class MpcaDbService {
         const oblast = OblastIndex.byIso(oblastIso)?.name
         return ({
           source: 'bn_rapidResponse',
-          enumerator: Bn_RapidResponseOptions.back_enum_l[_.back_enum ?? _.back_enum_l!],
+          enumerator: Bn_RapidResponse.options.back_enum_l[_.back_enum ?? _.back_enum_l!],
           prog: seq(_.back_prog_type ?? _.back_prog_type_l).map(prog => fnSwitch(prog.split('_')[0], {
             'cfr': MpcaProgram.CashForRent,
             'cfe': MpcaProgram.CashForEducation,
@@ -396,8 +396,8 @@ export class MpcaDbService {
           })(),
           oblast,
           oblastIso,
-          raion: Bn_RapidResponseOptions.ben_det_raion_l[_.ben_det_raion_l!],
-          hromada: Bn_RapidResponseOptions.ben_det_hromada_l[_.ben_det_hromada_l!],
+          raion: Bn_RapidResponse.options.ben_det_raion_l[_.ben_det_raion_l!],
+          hromada: Bn_RapidResponse.options.ben_det_hromada_l[_.ben_det_hromada_l!],
           // amountUahSupposed: _.ass_inc_mpca_ben_l as any,
           id: _.id,
           date: _.submissionTime,
@@ -450,7 +450,7 @@ export class MpcaDbService {
         return ({
           source: 'bn_1_mpcaNfi',
           id: _.id,
-          enumerator: Bn_OldMpcaNfiOptions.staff_names[_.staff_names!],
+          enumerator: Bn_OldMpcaNfi.options.staff_names[_.staff_names!],
           date: _.submissionTime,
           prog: fnSwitch(_.Programme!, {
             'mpca': [MpcaProgram.MPCA],
@@ -528,7 +528,7 @@ export class MpcaDbService {
           return {
             source: 'bn_0_mpcaRegNewShort',
             prog: [MpcaProgram.MPCA],
-            enumerator: Bn_OldMpcaNfiOptions.staff_names[_.staff_names!],
+            enumerator: Bn_OldMpcaNfi.options.staff_names[_.staff_names!],
             oblast: oblast?.name,
             oblastIso: oblast?.iso,
             office: fnSwitch(_.drc_base!, {
@@ -578,7 +578,7 @@ export class MpcaDbService {
           return {
             source: 'bn_0_mpcaReg',
             prog: [MpcaProgram.MPCA],
-            enumerator: Bn_OldMpcaNfiOptions.staff_names[_.staff_names!],
+            enumerator: Bn_OldMpcaNfi.options.staff_names[_.staff_names!],
             oblast: oblast?.name,
             oblastIso: oblast?.iso,
             office: fnSwitch(_.drc_base!, {

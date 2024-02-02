@@ -1,9 +1,9 @@
 import {OblastISO, OblastName} from '../../../core/oblastIndex'
 import {DrcOffice} from '../../../core/DrcUa'
 import {KoboAnswerFlat, KoboAnswerId} from '../../connector/kobo/KoboClient/type/KoboAnswer'
-import {Shelter_TA} from '../../../script/output/kobo/Shelter_TA/Shelter_TA'
 import {ShelterNtaTags, ShelterTaTags} from '../../kobo/tags/ShelterTags'
-import {Shelter_NTA} from '../../../script/output/kobo/Shelter_NTA/Shelter_NTA'
+import {Shelter_TA} from '../../../script/output/kobo/Shelter_TA'
+import {Shelter_NTA} from '../../../script/output/kobo/Shelter_NTA'
 
 export enum ShelterTaPriceLevel {
   Light = 'Light',
@@ -12,11 +12,11 @@ export enum ShelterTaPriceLevel {
 }
 
 export interface ShelterEntity {
-  ta?: KoboAnswerFlat<Shelter_TA, ShelterTaTags> & {
+  ta?: KoboAnswerFlat<Shelter_TA.T, ShelterTaTags> & {
     _price?: number | null
     _priceLevel?: ShelterTaPriceLevel
   }
-  nta?: KoboAnswerFlat<Shelter_NTA, ShelterNtaTags>
+  nta?: KoboAnswerFlat<Shelter_NTA.T, ShelterNtaTags>
   oblastIso?: OblastISO | ''
   oblast?: OblastName | ''
   office?: DrcOffice | ''
