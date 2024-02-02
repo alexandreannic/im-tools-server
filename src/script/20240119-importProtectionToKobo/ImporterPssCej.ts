@@ -1,7 +1,7 @@
 import {fnSwitch} from '@alexandreannic/ts-utils'
 import {parse, setHours} from 'date-fns'
 import {ImportKoboPss} from './KoboImportPss'
-import {Protection_groupSession} from '../output/kobo/Protection_groupSession/Protection_groupSession'
+import {Protection_groupSession} from '../output/kobo/Protection_groupSession'
 
 export namespace ImportPssCej {
 
@@ -27,7 +27,7 @@ export namespace ImportPssCej {
   }
 
   export interface GroupedRow extends Omit<Csv, 'Age' | 'Gender' | 'Status'> {
-    participants: NonNullable<Protection_groupSession['hh_char_hh_det']>
+    participants: NonNullable<Protection_groupSession.T['hh_char_hh_det']>
   }
 
   export const mapStatus = (_: string): any => fnSwitch(_, {

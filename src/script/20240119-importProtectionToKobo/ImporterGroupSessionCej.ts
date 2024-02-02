@@ -1,7 +1,7 @@
 import {KoboImportGroupSession} from './KoboImportGroupSession'
 import {ImportPssLwo} from './ImporterPssLwo'
 import {fnSwitch} from '@alexandreannic/ts-utils'
-import {Protection_groupSession} from '../output/kobo/Protection_groupSession/Protection_groupSession'
+import {Protection_groupSession} from '../output/kobo/Protection_groupSession'
 
 export namespace ImporterGroupSessionCej {
 
@@ -28,7 +28,7 @@ export namespace ImporterGroupSessionCej {
   }
 
   export interface GroupedRow extends Omit<Csv, 'Age' | 'Gender' | 'Status'> {
-    participants: NonNullable<Protection_groupSession['hh_char_hh_det']>
+    participants: NonNullable<Protection_groupSession.T['hh_char_hh_det']>
   }
 
   export const map = (a: ImporterGroupSessionCej.GroupedRow, comments: string): KoboImportGroupSession => {
