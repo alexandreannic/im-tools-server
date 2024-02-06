@@ -8,6 +8,7 @@ export namespace Protection_hhs2_2 {
     deviceid: string,
     // date [date] Date
     date: Date | undefined,
+    prev_id: string
     group_introduction: {
       // group_introduction/staff_to_insert_their_DRC_office [select_one] 1.1. Staff to insert their DRC office
       staff_to_insert_their_DRC_office: undefined | Option<'staff_to_insert_their_DRC_office'>,
@@ -133,7 +134,7 @@ export namespace Protection_hhs2_2 {
       // group_specific_needs/please_specifydo_any_of_these_specific_needs_categories_apply_to_the_head_of_this_household [text] 4.1.1. Please specify
       please_specifydo_any_of_these_specific_needs_categories_apply_to_the_head_of_this_household: string | undefined,
       // group_specific_needs/do_you_have_a_household_member_that_has_a_lot_of_difficulty [select_multiple] 4.2. Do you have a household member that has a lot of difficulty (or cannot do at all) any of the following?
-      do_you_have_a_household_member_that_has_a_lot_of_difficulty_001: undefined | Option<'do_you_have_a_household_member_that_has_a_lot_of_difficulty_001'>[],
+      do_you_have_a_household_member_that_has_a_lot_of_difficulty: undefined | Option<'do_you_have_a_household_member_that_has_a_lot_of_difficulty_001'>[],
       // group_specific_needs/how_many_children_have_one_or_more_of_the_functional_limitations [integer] 4.3. How many children of your housefold have one or more of the functional limitations?
       how_many_children_have_one_or_more_of_the_functional_limitations: number | undefined,
       // group_specific_needs/how_many_adults_members_have_one_or_more_of_the_functional_limitations [integer] 4.4. How many adults members of your household have one or more of the functional limitations?

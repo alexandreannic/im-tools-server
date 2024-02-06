@@ -98,18 +98,18 @@ export class ApiClient {
             const request = {method, url, qs: options?.qs, body: options?.body}
             if (_.response && _.response.data) {
               const message = _.response.data.details ?? _.response.data.timeout ?? JSON.stringify(_.response.data)
-              throw new ApiError(message, {
+              return Promise.reject(new ApiError(message, {
                 code: _.response.status,
                 id: _.response.data.type,
                 request,
                 error: _,
-              })
+              }))
             }
-            throw new ApiError(`Something not caught went wrong`, {
+            return Promise.reject(new ApiError(`Something not caught went wrong`, {
               code: 'uncaught',
               error: _,
               request,
-            })
+            }))
           }),
         )
     }

@@ -38,6 +38,7 @@ export interface KoboApiForm {
         'select_multiple' |
         'start' |
         'end' |
+        'datetime' |
         'date'
       select_from_list_name?: string
     }[]

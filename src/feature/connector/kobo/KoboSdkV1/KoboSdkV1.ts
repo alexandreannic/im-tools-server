@@ -1,5 +1,6 @@
 import {ApiClient} from '../../../../core/client/ApiClient'
 import {KoboAnswer, KoboId} from '../KoboClient/type/KoboAnswer'
+import retry from 'promise-retry'
 
 export interface KoboV1Form {
   uuid: string
@@ -23,21 +24,28 @@ export class KoboSdkV1 {
   readonly submit = async <T extends Record<string, any>>({
     formId,
     data,
+    retries = 20,
   }: {
+    retries?: number
     data: Partial<T>
     formId: KoboId
-  }) => {
+  }): Promise<SubmitResponse> => {
     const uuid = await this.getForms().then(_ => _.find(f => f.id_string === formId)?.uuid)
     if (!uuid) throw new Error(`Kobo form id ${formId} not found.`)
-    return this.api.post<SubmitResponse>(`/submissions.json`, {
-      body: {
-        id: formId,
-        submission: {
-          formhub: {uuid,},
-          ...data,
+    return retry((retry, number) => {
+      return this.api.post<SubmitResponse>(`/submissions.json`, {
+        body: {
+          id: formId,
+          submission: {
+            formhub: {uuid,},
+            ...data,
+          }
         }
-      }
-    })
+      }).catch(x => {
+        console.log('caugth')
+        return retry(x)
+      })
+    }, {retries})
   }
 
   readonly getForms = () => {

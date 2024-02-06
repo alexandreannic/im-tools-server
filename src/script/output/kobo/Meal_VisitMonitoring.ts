@@ -2104,7 +2104,6 @@ mdp: {
 	'KC': `Kateryna Chulska`,
 	'OD': `Olesya Dantseva`,
 	'LA': `Liliia Antonova`,
-	'IB': `Iryna Bidna`,
 	'ISMA': `Isabel Mary Pearson`,
 	'AC': `Anna Chuprina`,
 	'OO': `Oleksandr Oleksandrov`,
@@ -2151,7 +2150,8 @@ mdd_001: {
 	'sdcs': `UKR-000290 SDC Shelter`,
 	'mofa': `UKR-000301 DANISH MoFA`,
 	'nadn': `Needs assessment (DRC/NRC)`,
-	'bha2': `UKR-000345 BHA SCI`
+	'bha2': `UKR-000345 BHA SCI`,
+	'347danida': `UKR-000347-DANIDA`
 },
 mdt: {
 	'nfi': `NFI`,

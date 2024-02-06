@@ -164,6 +164,7 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
     {formName: 'Bn_OldMpcaNfiNaa', formId: koboFormsId.prod.bn_1_mpcaNfiNaa},
     {formName: 'Bn_OldMpcaNfiMyko', formId: koboFormsId.prod.bn_1_mpcaNfiMyko},
     {formName: 'Protection_Hhs2', formId: koboFormsId.prod.protection_Hhs2},
+    {formName: 'Safety_incidentTracker', formId: koboFormsId.prod.safety_incidentTracker},
   ]
   return Promise.all(forms.map(f => new KoboInterfaceGenerator(koboSdk, {
     outDir,
@@ -249,6 +250,7 @@ const extractQuestionName = (_: Record<string, any>) => {
           fnSwitch(x.type, {
             integer: `_.${name} ? +_.${name} : undefined`,
             date: `_.${name} ? new Date(_.${name}) : undefined`,
+            datetime: `_.${name} ? new Date(_.${name}) : undefined`,
             select_multiple: `_.${name}?.split(' ')`,
             begin_repeat: `_.${name}?.map(extractQuestionName)`
           }, _ => undefined)
@@ -292,6 +294,7 @@ const extractQuestionName = (_: Record<string, any>) => {
           'decimal': () => 'number | undefined',
           'text': () => 'string | undefined',
           'date': () => 'Date | undefined',
+          'datetime': () => 'Date | undefined',
         })
         const type = fnSwitch(x.type, {
           ...basicQuestionTypeMapping(lastQuestionNameHavingOptionId),

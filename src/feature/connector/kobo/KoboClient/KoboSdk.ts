@@ -1,7 +1,7 @@
 import {ApiPaginate} from '../../../../core/Type'
 import {ApiClient} from '../../../../core/client/ApiClient'
-import {KoboAnswer, KoboAnswerId, KoboAnswerParams, KoboAnswerUtils, KoboApiList, KoboApiVersion, KoboId} from './type/KoboAnswer'
-import {KoboApiForm} from './type/KoboApiForm'
+import {ApiKoboAnswerMetaData, KoboAnswer, KoboAnswerId, KoboAnswerParams, KoboAnswerUtils, KoboApiList, KoboApiVersion, KoboId} from './type/KoboAnswer'
+import {KoboApiForm, KoboApiType} from './type/KoboApiForm'
 import {map} from '@alexandreannic/ts-utils'
 import axios from 'axios'
 import {appConf} from '../../../../core/conf/AppConf'
@@ -114,11 +114,15 @@ export class KoboSdk {
     return this.api.get<KoboApiForm>(`/v2/assets/${formId}/versions/${versionId}/data.json`)
   }
 
-  readonly getAnswers = (form: KoboId, params: KoboAnswerParams = {}): Promise<ApiPaginate<KoboAnswer>> => {
+  readonly getAnswersRaw = (form: KoboId, params: KoboAnswerParams = {}) => {
     const start = map(params.start, _ => KoboSdk.makeDateFilter('start', 'gte', _))
     const end = map(params.end, _ => KoboSdk.makeDateFilter('start', 'lte', _))
     const query = start && end ? {'$and': [start, end]} : start ?? end
-    return this.api.get<KoboApiList<any>>(`/v2/assets/${form}/data`, {qs: {query: query ? JSON.stringify(query) : undefined}})
+    return this.api.get<KoboApiList<ApiKoboAnswerMetaData & Record<string, any>>>(`/v2/assets/${form}/data`, {qs: {query: query ? JSON.stringify(query) : undefined}})
+  }
+
+  readonly getAnswers = (form: KoboId, params: KoboAnswerParams = {}): Promise<ApiPaginate<KoboAnswer>> => {
+    return this.getAnswersRaw(form, params)
       .then(res => {
         return ({
           ...res,

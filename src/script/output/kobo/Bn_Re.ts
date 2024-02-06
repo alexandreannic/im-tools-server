@@ -382,6 +382,11 @@ back_enum: {
 	'daria_kokalia': `Daria Kokalia`
 },
 back_donor: {
+	'chj_360_novonordisk': `UKR-000360 Novo Nordisk`,
+	'dnk_360_novonordisk': `UKR-000360 Novo Nordisk`,
+	'hrk_360_novonordisk': `UKR-000360 Novo Nordisk`,
+	'lwo_360_novonordisk': `UKR-000360 Novo Nordisk`,
+	'nlv_360_novonordisk': `UKR-000360 Novo Nordisk`,
 	'uhf_chj': `UHF-4`,
 	'uhf_dnk': `UHF-4`,
 	'uhf_hrk': `UHF-4`,
