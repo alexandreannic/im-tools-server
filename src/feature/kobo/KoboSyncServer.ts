@@ -20,27 +20,31 @@ export class KoboSyncServer {
     this.log.info(`Synchronize kobo forms:`)
     for (const form of allForms) {
       try {
-        this.log.info(`Synchronizing ${form.name} by ${updatedBy} (${form.id}) ...`)
         await this.syncApiForm({serverId: form.serverId, formId: form.id, updatedBy})
-        this.log.info(`Synchronizing ${form.name} by ${updatedBy} (${form.id}) completed.`)
       } catch (e) {
-        this.log.error(`Synchronizing ${form.name} by ${updatedBy} (${form.id}) FAILED!`)
         console.error(e)
       }
     }
-    this.log.info(`Synchronize kobo forms completed!`)
+    this.log.info(`Synchronize kobo forms finished!`)
   }
 
   readonly syncApiForm = async ({serverId = koboServerId.prod, formId, updatedBy}: {serverId?: UUID, formId: KoboId, updatedBy?: string}) => {
-    await this.syncApiFormInfo(serverId, formId)
-    await this.syncApiFormAnswers(serverId, formId)
-    await this.prisma.koboForm.update({
-      where: {id: formId},
-      data: {
-        updatedAt: new Date(),
-        updatedBy: updatedBy,
-      }
-    })
+    try {
+      this.log.info(`Synchronizing ${formId} by ${updatedBy}...`)
+      await this.syncApiFormInfo(serverId, formId)
+      await this.syncApiFormAnswers(serverId, formId)
+      await this.prisma.koboForm.update({
+        where: {id: formId},
+        data: {
+          updatedAt: new Date(),
+          updatedBy: updatedBy,
+        }
+      })
+      this.log.info(`Synchronizing ${formId} by ${updatedBy}... COMPLETED.`)
+    } catch (e) {
+      this.log.info(`Synchronizing ${formId} by ${updatedBy}... FAILED.`)
+      throw e
+    }
   }
 
   private readonly syncApiFormInfo = async (serverId: UUID, formId: KoboId) => {
@@ -103,6 +107,7 @@ export class KoboSyncServer {
             uuid: a.uuid,
             validationStatus: a.validationStatus,
             submissionTime: a.submissionTime,
+            attachments: a.attachments,
             answers: a.answers,
           }
         })
