@@ -1,17 +1,18 @@
 import {UUID} from '../../core/Type'
-import {KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
+import {KoboAnswer, KoboId} from '../connector/kobo/KoboClient/type/KoboAnswer'
 import {Prisma, PrismaClient} from '@prisma/client'
 import {KoboSdkGenerator} from './KoboSdkGenerator'
 import {logger, Logger} from '../../helper/Logger'
 import {createdBySystem} from '../../db/DbInit'
 import {koboServerId} from '../../core/conf/KoboFormsId'
+import {seq} from '@alexandreannic/ts-utils'
 
 export class KoboSyncServer {
 
   constructor(
     private prisma: PrismaClient,
     private koboSdkGenerator: KoboSdkGenerator = new KoboSdkGenerator(prisma),
-    private log: Logger = logger('KoboApiService')
+    private log: Logger = logger('KoboSyncServer')
   ) {
   }
 
@@ -58,20 +59,26 @@ export class KoboSyncServer {
 
   private readonly syncApiFormAnswers = async (serverId: UUID, formId: KoboId) => {
     const sdk = await this.koboSdkGenerator.get(serverId)
+    this.log.info(`Fetch remote answers...`)
     const remoteAnswers = await sdk.getAnswers(formId).then(_ => _.data)
+    const remoteIdsIndex = remoteAnswers.reduce((map, curr) => map.set(curr.id, curr), new Map<KoboId, KoboAnswer>)//new Map(remoteAnswers.map(_ => _.id))
+    this.log.info(`Fetch remote answers... ${remoteAnswers.length} fetched.`)
 
-    const localAnswersIndex = await this.prisma.koboAnswers.findMany({where: {formId}, select: {id: true}}).then(_ => {
-      return new Set(_.map(_ => _.id))
+    this.log.info(`Fetch local answers...`)
+    const localAnswersIndex = await this.prisma.koboAnswers.findMany({where: {formId}, select: {id: true, uuid: true}}).then(_ => {
+      return _.reduce((map, curr) => map.set(curr.id, curr.uuid), new Map<KoboId, UUID>())
     })
+    this.log.info(`Fetch local answers... ${localAnswersIndex.size} fetched.`)
 
     const handleDelete = async () => {
-      const remoteIdsIndex = new Set(remoteAnswers.map(_ => _.id))
-      const idsToDelete = [...localAnswersIndex].filter(_ => !remoteIdsIndex.has(_))
+      const idsToDelete = [...localAnswersIndex.keys()].filter(_ => !remoteIdsIndex.has(_))
+      this.log.info(`Handle delete (${idsToDelete.length})...`)
       await this.prisma.koboAnswers.deleteMany({where: {source: null, formId, id: {in: idsToDelete}}})
     }
 
     const handleCreate = async () => {
       const notInsertedAnswers = remoteAnswers.filter(_ => !localAnswersIndex.has(_.id))
+      this.log.info(`Handle create (${notInsertedAnswers.length})...`)
       const inserts = notInsertedAnswers.map(_ => {
         const res: Prisma.KoboAnswersUncheckedCreateInput = {
           formId,
@@ -97,7 +104,12 @@ export class KoboSyncServer {
     }
 
     const handleUpdate = async () => {
-      const answersToUpdate = remoteAnswers.filter(_ => localAnswersIndex.has(_.id))
+      const answersToUpdate = seq([...localAnswersIndex]).map(([id, uuid]) => {
+        const match = remoteIdsIndex.get(id)
+        const hasBeenUpdated = match && match.uuid !== uuid
+        return hasBeenUpdated ? match : undefined
+      }).compact()
+      this.log.info(`Handle update (${answersToUpdate.length})...`)
       await Promise.all(answersToUpdate.map(a => {
         return this.prisma.koboAnswers.update({
           where: {
@@ -117,37 +129,5 @@ export class KoboSyncServer {
     await handleDelete()
     await handleCreate()
     await handleUpdate()
-  }
-
-  /** @deprecated because it duplicates uuid */
-  private readonly softDelete = (serverId: UUID, formId: KoboId, uuids: UUID[]) => {
-    return this.prisma.koboAnswers.findMany({where: {id: {notIn: uuids}}}).then(res => {
-      return Promise.all(res.map(_ => {
-        return this.prisma.koboAnswers.updateMany({
-          where: {
-            id: _.id,
-            source: serverId
-          },
-          data: {
-            deletedAt: new Date(),
-            deletedBy: 'Server sync',
-          }
-        })
-      }))
-    })
-  }
-
-  /** @deprecated because it duplicates uuid */
-  private readonly
-  hardDelete = (uuids: UUID[]) => {
-    return this.prisma.koboAnswers.findMany({where: {id: {notIn: uuids}}}).then(res => {
-      return Promise.all(res.map(_ => {
-        return this.prisma.koboAnswers.deleteMany({
-          where: {
-            id: _.id,
-          },
-        })
-      }))
-    })
   }
 }

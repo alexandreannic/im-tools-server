@@ -6,6 +6,7 @@ dotenv.config()
 const e = env(process.env)
 
 export const appConf = {
+  logLevel: e()('LOG_LEVEL'),
   rootProjectDir: e(defaultValue(__dirname))('ROOT_PROJECT_DIR'),
   disableScheduledTask: e(bool, defaultValue(false))('DISABLED_SCHEDULED_TASK'),
   production: e(_ => _?.toLowerCase() === 'production', defaultValue(true))('NODE_ENV'),

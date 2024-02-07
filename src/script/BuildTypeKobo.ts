@@ -123,6 +123,7 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
       formId: koboFormsId.prod.protection_Hhs2_1,
       overrideAllOptions: {
         other_specify: ['Other'],
+        health_1_2: ['Health'],
       },
       overrideOptionsByQuestion: {
         what_are_the_barriers_to_accessing_health_services: {
@@ -163,7 +164,12 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
     {formName: 'Bn_OldMpcaNfi', formId: koboFormsId.prod.bn_1_mpcaNfi},
     {formName: 'Bn_OldMpcaNfiNaa', formId: koboFormsId.prod.bn_1_mpcaNfiNaa},
     {formName: 'Bn_OldMpcaNfiMyko', formId: koboFormsId.prod.bn_1_mpcaNfiMyko},
-    {formName: 'Protection_Hhs2', formId: koboFormsId.prod.protection_Hhs2},
+    {
+      formName: 'Protection_Hhs2', formId: koboFormsId.prod.protection_Hhs2,
+      overrideAllOptions: {
+        health_1_2: ['Health'],
+      },
+    },
     {formName: 'Safety_incidentTracker', formId: koboFormsId.prod.safety_incidentTracker},
   ]
   return Promise.all(forms.map(f => new KoboInterfaceGenerator(koboSdk, {
