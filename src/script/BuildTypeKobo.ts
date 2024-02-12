@@ -1,6 +1,6 @@
 import {KoboSdk} from '../feature/connector/kobo/KoboClient/KoboSdk'
 import {seq, fnSwitch} from '@alexandreannic/ts-utils'
-import {KoboApiForm} from '../feature/connector/kobo/KoboClient/type/KoboApiForm'
+import {KoboApiForm, KoboApiQuestion, KoboApiType} from '../feature/connector/kobo/KoboClient/type/KoboApiForm'
 import * as fs from 'fs'
 import {koboFormsId} from '../core/conf/KoboFormsId'
 import {ApiClient} from '../core/client/ApiClient'
@@ -149,6 +149,36 @@ export const generateKoboInterface = async (koboSdk: KoboSdk, outDir: string) =>
       }
     },
     {
+      formName: 'Protection_hhs3',
+      formId: koboFormsId.prod.protection_hhs3,
+      overrideAllOptions: {
+        other_specify: ['Other'],
+        health_1_2: ['Health'],
+      },
+      overrideOptionsByQuestion: {
+        what_are_the_barriers_to_accessing_health_services: {
+          safety_risks_associated_with_access_to_presence_at_health_facility: ['Safety risks associated with access to/presence at health facility'],
+        },
+        what_are_your_main_concerns_regarding_your_accommodation: {
+          'risk_of_eviction': [`Risk of eviction`],
+          'accommodations_condition': [`Accommodation’s condition`],
+          'overcrowded_lack_of_privacy': [`Overcrowded/Lack of privacy`],
+          'lack_of_functioning_utilities': [`Lack of functioning utilities`],
+          'lack_of_connectivity': [`Lack of connectivity`],
+          'security_and_safety_risks': [`Security and safety risks`],
+          'lack_of_financial_compensation_or_rehabilitation_for_damage_or_destruction_of_housing': [`Lack of support for damaged housing`],
+        },
+        what_is_the_type_of_your_household: {
+          'one_person_household': [`One person household`],
+          'couple_without_children': [`Couple without children`],
+          'couple_with_children': [`Couple with children`],
+          'mother_with_children': [`Mother with children`],
+          'father_with_children': [`Father with children`],
+          'extended_family': [`Extended family`],
+        }
+      }
+    },
+    {
       formName: 'Bn_0_mpcaRegNewShort', formId: koboFormsId.prod.bn_0_mpcaRegNewShort, skipQuestionTyping: ['hromada', 'raion']
     },
     {
@@ -244,6 +274,14 @@ const extractQuestionName = (_: Record<string, any>) => {
 
   readonly generateFunctionMapping = (survey: KoboApiForm['content']['survey']) => {
     const repeatItems = this.getBeginRepeatQuestion(survey)
+    const basicMapping = (name: string) => {
+      return {
+        integer: () => `_.${name} ? +_.${name} : undefined`,
+        date: () => `_.${name} ? new Date(_.${name}) : undefined`,
+        datetime: () => `_.${name} ? new Date(_.${name}) : undefined`,
+        select_multiple: () => `_.${name}?.split(' ')`,
+      }
+    }
     const fnMappings = survey
       .filter(_ => !ignoredQuestionTypes.includes(_.type))
       .filter(_ => repeatItems.every(r => {
@@ -254,11 +292,24 @@ const extractQuestionName = (_: Record<string, any>) => {
         return [
           name,
           fnSwitch(x.type, {
-            integer: `_.${name} ? +_.${name} : undefined`,
-            date: `_.${name} ? new Date(_.${name}) : undefined`,
-            datetime: `_.${name} ? new Date(_.${name}) : undefined`,
-            select_multiple: `_.${name}?.split(' ')`,
-            begin_repeat: `_.${name}?.map(extractQuestionName)`
+            ...basicMapping(name),
+            // integer: `_.${name} ? +_.${name} : undefined`,
+            // date: `_.${name} ? new Date(_.${name}) : undefined`,
+            // datetime: `_.${name} ? new Date(_.${name}) : undefined`,
+            // select_multiple: `_.${name}?.split(' ')`,
+            begin_repeat: () => {
+              const groupedQuestions = survey.filter(_ => _.name !== x.name && _.$qpath?.includes(x.name + '-'))
+              return `_.${name}?.map(extractQuestionName).map((_: any) => {\n`
+                + groupedQuestions.map(_ => {
+                  const sname = _.name ?? _.$autoname
+                  return [
+                    sname,
+                    fnSwitch(_.type, basicMapping(sname), () => undefined),
+                  ]
+                }).filter(_ => _[1] !== undefined).map(([questionName, fn]) => `\t\t_['${questionName}'] = ${fn}`).join(`\n`)
+                + `\n\t\treturn _`
+                + `\t\n})`
+            }
           }, _ => undefined)
         ]
       })
