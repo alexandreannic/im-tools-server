@@ -72,6 +72,6 @@ export class KoboMappedAnswersService {
   readonly searchBn_0_mpcaReg = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaReg, Bn_0_mpcaReg.map)
   readonly searchBn_0_mpcaRegNoSig = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegNoSig, Bn_0_mpcaRegNoSig.map)
   readonly searchBn_0_mpcaRegESign = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegESign, Bn_0_mpcaRegESign.map)
-  readonly searchBn_ecrecCashRegistration = this.buildMappedSearch(koboFormsId.prod.ecrec_sectoralCashRegistration, Ecrec_sectoralCashRegistration.map)
+  readonly searchBn_ecrecCashRegistration = this.buildMappedSearch(koboFormsId.prod.ecrec_cashRegistration, Ecrec_sectoralCashRegistration.map)
 }
 

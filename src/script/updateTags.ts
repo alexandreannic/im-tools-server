@@ -28,7 +28,7 @@ export const updateTags = async () => {
     console.log(xlsRow.taxid, id)
     await koboService.updateTags({
       answerIds: [id],
-      formId: koboFormsId.prod.ecrec_sectoralCashRegistration,
+      formId: koboFormsId.prod.ecrec_cashRegistration,
       tags: tag
     })
   }

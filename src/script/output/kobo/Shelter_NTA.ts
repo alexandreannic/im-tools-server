@@ -599,7 +599,11 @@ export const map = (_: Record<keyof T, any>): T => ({
 	apartment_number: _.apartment_number ? +_.apartment_number : undefined,
 	owner_number: _.owner_number ? +_.owner_number : undefined,
 	ben_det_hh_size: _.ben_det_hh_size ? +_.ben_det_hh_size : undefined,
-	hh_char_hh_det: _.hh_char_hh_det?.map(extractQuestionName),
+	hh_char_hh_det: _.hh_char_hh_det?.map(extractQuestionName).map((_: any) => {
+		_['hh_char_hh_det_age'] = _.hh_char_hh_det_age ? +_.hh_char_hh_det_age : undefined
+		_['hh_char_hh_det_dis_select'] = _.hh_char_hh_det_dis_select?.split(' ')
+		return _	
+}),
 	window_number: _.window_number ? +_.window_number : undefined,
 	interior_door_damage: _.interior_door_damage ? +_.interior_door_damage : undefined,
 	apartment_window: _.apartment_window ? +_.apartment_window : undefined,
