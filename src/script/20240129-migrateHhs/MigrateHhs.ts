@@ -7,6 +7,8 @@ import {Protection_hhs} from '../output/kobo/Protection_hhs'
 import {Protection_hhs2_2} from '../output/kobo/Protection_hhs2_2'
 import {mapFor} from '@alexandreannic/ts-utils'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
+import {Protection_hhs3Create} from '../output/kobo/Protection_hhs3Create'
+import {capitalize} from '../../helper/Utils'
 
 const retryIds = [
   423959470,
@@ -94,10 +96,10 @@ const retryIds = [
             what_is_the_type_of_your_household: d.what_is_the_type_of_your_household,
             what_is_the_type_of_your_household_min: d.what_is_the_type_of_your_household_min,
             what_is_the_type_of_your_household_max: d.what_is_the_type_of_your_household_max,
-            how_many_ind: d.how_many_ind,
+            ben_det_hh_size: d.how_many_ind,
             hh_char_hh_det: mapFor(d.how_many_ind ?? 0, i => i + 1).map(i => ({
-              hh_char_hh_det_age: d['hh_age_' + i],
-              hh_char_hh_det_gender: d['hh_sex_' + i],
+              age: d['hh_age_' + i],
+              hh_char_hh_det_age: capitalize(d['hh_sex_' + i] as string | undefined),
               // hh_char_hh_det_disability: d.do_you_have_a_household_member_that_has_a_lot_of_difficulty,
             }) as any,),
             // hh_char_hh_det: d.hh_char_hh_det,

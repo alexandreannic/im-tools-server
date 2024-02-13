@@ -74,6 +74,8 @@ export interface ApiKoboAnswerMetaData {
   // 'meta/instanceID': string,
 }
 
+export type ApiKoboAnswer = ApiKoboAnswerMetaData & Record<string, any>
+
 // export interface KoboAnswer extends KoboAnswerMetaData {
 //   [key: string]: string
 // }
@@ -109,7 +111,7 @@ export class KoboAnswerUtils {
     return new Date(_)
   }
 
-  static readonly mapAnswer = (k: ApiKoboAnswerMetaData & Record<string, any>): KoboAnswer => {
+  static readonly mapAnswer = (k: ApiKoboAnswer): KoboAnswer => {
     delete k['formhub/uuid']
     delete k['meta/instanceId']
     const {

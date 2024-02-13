@@ -1,4 +1,4 @@
-export namespace Protection_hhs2_2 {
+export namespace Protection_hhs3Create {
   export type Option<T extends keyof typeof options> = keyof (typeof options)[T]
 
   // Form id: aQBCaoRUxvtb5BQcv7wnTK
@@ -57,11 +57,11 @@ export namespace Protection_hhs2_2 {
       // group_hh_composition/what_is_the_type_of_your_household_max [calculate] undefined
       what_is_the_type_of_your_household_max: string,
       // group_hh_composition/how_many_ind [integer] 3.2. How many individuals, including the respondent, are in the household?
-      how_many_ind: number | undefined,
+      ben_det_hh_size: number | undefined,
       hh_char_hh_det: {
         hh_char_hh_det_gender: undefined | Option<'hh_char_hh_det_gender'> | undefined,
         hh_char_hh_det_age: number | undefined | undefined,
-        do_you_have_a_household_member_that_has_a_lot_of_difficulty: undefined | Option<'do_you_have_a_household_member_that_has_a_lot_of_difficulty_001'>[] | undefined,
+        hh_char_hh_det_disability: undefined | Option<'do_you_have_a_household_member_that_has_a_lot_of_difficulty_001'>[] | undefined,
         have6_15: string | undefined,
         haveBoy: string | undefined,
         haveOtherSex: string | undefined,
