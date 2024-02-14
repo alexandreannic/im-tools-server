@@ -4,25 +4,20 @@ import {PromisePool} from '@supercharge/promise-pool'
 import {ApiKoboAnswerMetaData, KoboAnswer} from '../../feature/connector/kobo/KoboClient/type/KoboAnswer'
 import {scriptConf} from '../ScriptConf'
 import {Protection_hhs} from '../output/kobo/Protection_hhs'
-import {Protection_hhs2_2} from '../output/kobo/Protection_hhs2_2'
 import {mapFor} from '@alexandreannic/ts-utils'
 import {koboFormsId} from '../../core/conf/KoboFormsId'
 import {Protection_hhs3Create} from '../output/kobo/Protection_hhs3Create'
-import {capitalize} from '../../helper/Utils'
 
-const retryIds = [
-  423959470,
-  425154070,
-  491606311,
-  512757719,
-  452130172,
-  420907616,
-];
+const retryIds = []
+const problemId = [
+  424769397,
+  // 531802905
+]
 
-(async () => {
+;(async () => {
   const config = {
     server: 'prod',
-    importConcurrency: 120,
+    importConcurrency: 200,
   } as const
   const serverConfig = {
     dev: {
@@ -31,7 +26,7 @@ const retryIds = [
     },
     prod: {
       formId: koboFormsId.prod.protection_Hhs2_1,
-      newFormId: 'aELsEdoTp3gNXgcmcMGKhK',
+      newFormId: koboFormsId.prod.protection_hhs3,
     }
   }[config.server]
 
@@ -50,18 +45,23 @@ const retryIds = [
 
   const getAllIds: KoboAnswer<Protection_hhs.T>[] = await sdk
     .getAnswers(serverConfig.formId)
-    .then(x => x.data.filter(_ => retryIds.includes(+_.id)).map(a => {
-      return {
-        ...a,
-        answers: Protection_hhs.map(a.answers)
-      }
-    }))
+    .then(x => x.data
+      // .filter(_ => retryIds.includes(+_.id))
+      .map(a => {
+        return {
+          ...a,
+          answers: Protection_hhs.map(a.answers)
+        }
+      }))
+
+  const newFromUuid = await sdkv1.getForms().then(_ => _.find(f => f.id_string === serverConfig.newFormId)?.uuid)
 
   await PromisePool.withConcurrency(config.importConcurrency).for(getAllIds).process(async (row, i) => {
     try {
       const d = row.answers
-      const res = await sdkv1.submit<ApiKoboAnswerMetaData & Protection_hhs2_2.T>({
+      const res = await sdkv1.submit<ApiKoboAnswerMetaData & Protection_hhs3Create.T>({
         formId: serverConfig.newFormId,
+        uuid: newFromUuid,
         data: {
           prev_id: row.id,
           start: new Date(d.start ?? row.submissionTime).toISOString() as any,
@@ -98,8 +98,8 @@ const retryIds = [
             what_is_the_type_of_your_household_max: d.what_is_the_type_of_your_household_max,
             ben_det_hh_size: d.how_many_ind,
             hh_char_hh_det: mapFor(d.how_many_ind ?? 0, i => i + 1).map(i => ({
-              age: d['hh_age_' + i],
-              hh_char_hh_det_age: capitalize(d['hh_sex_' + i] as string | undefined),
+              hh_char_hh_det_age: d['hh_age_' + i],
+              hh_char_hh_det_gender: d['hh_sex_' + i],
               // hh_char_hh_det_disability: d.do_you_have_a_household_member_that_has_a_lot_of_difficulty,
             }) as any,),
             // hh_char_hh_det: d.hh_char_hh_det,
@@ -193,7 +193,7 @@ const retryIds = [
             are_you_and_your_hh_members_registered_as_idps: d.are_you_and_your_hh_members_registered_as_idps,
             hh_char_hh_doc: mapFor(d.how_many_ind ?? 0, i => i + 1).map(i => ({
               is_member_registered: d[`is_member_${i}_registered`],
-              does_lack_doc: d[`does_${i}_lack_doc`],
+              does_lack_doc: d[`does_${i}_lack_doc`]?.join(' '),
               please_specifydoes_lack_doc: d[`please_specifydoes_${i}_lack_doc`],
             })),
             do_you_have_any_of_the_following: d.do_you_have_any_of_the_following,

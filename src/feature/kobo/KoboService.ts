@@ -88,12 +88,13 @@ export class KoboService {
     return this.prisma.koboAnswers.findMany({
       take: paginate.limit,
       skip: paginate.offset,
-      orderBy: {
-        submissionTime: 'desc',
-      },
+      orderBy: [
+        {date: 'desc',},
+        {submissionTime: 'desc',},
+      ],
       where: {
         deletedAt: null,
-        submissionTime: {
+        date: {
           gte: filters.start,
           lt: filters.end,
         },
@@ -126,7 +127,17 @@ export class KoboService {
       answers: d.answers as any,
       formId: d.formId,
       tags: d.tags,
-    }))).then(toApiPaginate)
+    })))
+      // .then(_ => {
+      //   if (_?.[0].answers.date)
+      //     return _.sort((a, b) => {
+      //       return (b.answers.date as string ?? b.submissionTime.toISOString()).localeCompare(
+      //         a.answers.date as string ?? a.submissionTime.toISOString()
+      //       )
+      //     })
+      //   return _
+      // })
+      .then(toApiPaginate)
   }
 
   // readonly generateXLSForHHS = async ({start, end}: {start?: Date, end?: Date}) => {

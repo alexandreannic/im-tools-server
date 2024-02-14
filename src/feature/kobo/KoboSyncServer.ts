@@ -61,7 +61,7 @@ export class KoboSyncServer {
     const sdk = await this.koboSdkGenerator.get(serverId)
     this.log.info(`Fetch remote answers...`)
     const remoteAnswers = await sdk.getAnswers(formId).then(_ => _.data)
-    const remoteIdsIndex = remoteAnswers.reduce((map, curr) => map.set(curr.id, curr), new Map<KoboId, KoboAnswer>)//new Map(remoteAnswers.map(_ => _.id))
+    const remoteIdsIndex: Map<KoboId, KoboAnswer> = remoteAnswers.reduce((map, curr) => map.set(curr.id, curr), new Map<KoboId, KoboAnswer>)//new Map(remoteAnswers.map(_ => _.id))
     this.log.info(`Fetch remote answers... ${remoteAnswers.length} fetched.`)
 
     this.log.info(`Fetch local answers...`)
@@ -85,6 +85,7 @@ export class KoboSyncServer {
           answers: _.answers,
           id: _.id,
           uuid: _.uuid,
+          date: _.date,
           start: _.start,
           end: _.end,
           submissionTime: _.submissionTime,
@@ -118,8 +119,11 @@ export class KoboSyncServer {
           data: {
             uuid: a.uuid,
             validationStatus: a.validationStatus,
-            submissionTime: a.submissionTime,
             attachments: a.attachments,
+            date: a.date,
+            start: a.start,
+            end: a.end,
+            submissionTime: a.submissionTime,
             answers: a.answers,
           }
         })

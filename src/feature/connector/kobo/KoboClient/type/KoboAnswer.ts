@@ -28,6 +28,8 @@ export type KoboAnswerMetaData<TTag extends Record<string, any> | undefined = un
   version?: ApiKoboAnswerMetaData['__version__']
   attachments?: KoboAttachment[]
   geolocation: ApiKoboAnswerMetaData['_geolocation']
+  /** Extracted from question `date` when exists. */
+  date?: Date
   submissionTime: ApiKoboAnswerMetaData['_submission_time']
   id: ApiKoboAnswerMetaData['_id']
   uuid: ApiKoboAnswerMetaData['_uuid']
@@ -135,6 +137,7 @@ export class KoboAnswerUtils {
     return {
       attachments: _attachments,
       geolocation: _geolocation,
+      date: k.date ? new Date(k.date) : submissionTime,
       start: start ? new Date(start) : submissionTime,
       end: end ? new Date(end) : submissionTime,
       submissionTime,

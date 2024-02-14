@@ -18,7 +18,7 @@ import {Bn_0_mpcaRegNewShort} from '../../script/output/kobo/Bn_0_mpcaRegNewShor
 import {Bn_0_mpcaReg} from '../../script/output/kobo/Bn_0_mpcaReg'
 import {Bn_0_mpcaRegESign} from '../../script/output/kobo/Bn_0_mpcaRegESign'
 import {Bn_0_mpcaRegNoSig} from '../../script/output/kobo/Bn_0_mpcaRegNoSig'
-import {Ecrec_sectoralCashRegistration} from '../../script/output/kobo/Ecrec_sectoralCashRegistration'
+import {Ecrec_cashRegistration} from '../../script/output/kobo/Ecrec_cashRegistration'
 
 export class KoboMappedAnswersService {
 
@@ -72,6 +72,6 @@ export class KoboMappedAnswersService {
   readonly searchBn_0_mpcaReg = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaReg, Bn_0_mpcaReg.map)
   readonly searchBn_0_mpcaRegNoSig = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegNoSig, Bn_0_mpcaRegNoSig.map)
   readonly searchBn_0_mpcaRegESign = this.buildMappedSearch(koboFormsId.prod.bn_0_mpcaRegESign, Bn_0_mpcaRegESign.map)
-  readonly searchBn_ecrecCashRegistration = this.buildMappedSearch(koboFormsId.prod.ecrec_cashRegistration, Ecrec_sectoralCashRegistration.map)
+  readonly searchBn_ecrecCashRegistration = this.buildMappedSearch(koboFormsId.prod.ecrec_cashRegistration, Ecrec_cashRegistration.map)
 }
 
