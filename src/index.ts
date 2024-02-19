@@ -11,8 +11,6 @@ import {ScheduledTask} from './scheduledTask/ScheduledTask'
 import {MpcaCachedDb} from './feature/mpca/db/MpcaCachedDb'
 import {EventEmitter} from 'events'
 import {ShelterCachedDb} from './feature/shelter/db/ShelterCachedDb'
-import {KoboSdkGenerator} from './feature/kobo/KoboSdkGenerator'
-import {koboFormsId} from './core/conf/KoboFormsId'
 import cluster from 'cluster'
 import os from 'os'
 
@@ -50,7 +48,7 @@ const startApp = async (conf: AppConf) => {
     // legalAidSdk,
     prisma,
   )
-  if (cluster.isPrimary) {
+  const init = async () => {
     const log = logger('')
     log.info(`Starting...`)
 
@@ -91,7 +89,8 @@ const startApp = async (conf: AppConf) => {
     // }))
 
     console.log(`Master ${process.pid} is running`)
-    for (let i = 0; i < os.cpus().length; i++) {
+    const core = conf.production ? os.cpus().length : 1
+    for (let i = 0; i < core; i++) {
       cluster.fork()
     }
     cluster.on('exit', (worker, code, signal) => {
@@ -102,7 +101,8 @@ const startApp = async (conf: AppConf) => {
       MpcaCachedDb.constructSingleton(prisma).warmUp()
       ShelterCachedDb.constructSingleton(prisma).warmUp()
     }
-  } else {
+  }
+  const start = () => {
     new Server(
       conf,
       prisma,
@@ -110,6 +110,11 @@ const startApp = async (conf: AppConf) => {
       // legalAidSdk,
       services,
     ).start()
+  }
+  if (cluster.isPrimary) {
+    init()
+  } else {
+    start()
   }
 }
 
